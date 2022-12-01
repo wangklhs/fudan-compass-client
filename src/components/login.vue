@@ -46,11 +46,11 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: 'Login',
   data () {
     return {
-      // 默认选中读者身份，管理员默认图书馆为邯郸图书馆
       loginForm: {
         username: '',
         password: ''
@@ -65,8 +65,9 @@ export default {
 
   methods: {
     login (formName) {
-      this.$message.info('username: ' + this.loginForm.username + '\npassword: ' + this.loginForm.password)
-      /**
+      // this.$message.info('username: ' + this.loginForm.username + '\npassword: ' + this.loginForm.password)
+      // this.$router.replace('/')
+
       this.$refs[formName].validate(valid => {
         if (valid) {
           let _this = this
@@ -75,33 +76,17 @@ export default {
           formData.append('password', this.loginForm.password)
           axios({
             method: 'post',
-            url: 'http://139.196.174.46:8081/login',
+            url: 'http://localhost:8081/login',
             headers: {
               'Content-Type': 'multipart/form-data'
             },
-            withCredentials: true,
             data: formData
           })
             .then(resp => {
               if (resp.status === 200) {
-                if (resp.data.authorities.indexOf('Reader') > -1 && _this.reader) {
-                  this.$store.commit('login', resp.data)
-                  // 页面重定向
-                  let redirect = decodeURIComponent(this.$route.query.redirect || '/')
-                  this.$router.replace({path: redirect})
-                  // 存储用户权限的信息
-                  localStorage.setItem('authority', resp.data.authorities)
-                } else if ((resp.data.authorities.indexOf('Librarian') > -1  || resp.data.authorities.indexOf('Admin') > -1) && !_this.reader) {
-                  this.$store.commit('login', resp.data)
-                  let redirect = decodeURIComponent(this.$route.query.redirect || '/')
-                  this.$router.replace({path: redirect})
-                  // 存储管理员登录地点的信息
-                  localStorage.setItem('librarianLocation', this.loginForm.radio + '图书馆')
-                  localStorage.setItem('authority', resp.data.authorities)
-                } else {
-                  // 登录身份与账号不符
-                  this.$message.error('authorities error')
-                }
+                localStorage.setItem('authority', resp.data.authority)
+                localStorage.setItem('username', _this.loginForm.username)
+                this.$router.replace('/')
               } else {
                 this.$message.error('login error')
               }
@@ -112,7 +97,7 @@ export default {
         } else {
           this.$message.error('wrong submit')
         }
-      }) */
+      })
     }
   }
 }
