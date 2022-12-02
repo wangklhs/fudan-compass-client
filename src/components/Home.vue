@@ -65,7 +65,7 @@ export default {
       show: false, // 展示书籍部分是否显示
       booksPerPage: 8, // 一页展示的数量
       cur: 1, // 当前页码
-      starColors: ['#99A9BF', '#F7BA2A', '#FF9900'],
+      starColors: ['#99A9BF', '#F7BA2A', '#FF9900']
     }
   },
   methods: {
