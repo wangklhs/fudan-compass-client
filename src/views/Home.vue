@@ -403,6 +403,7 @@ export default {
       }
     },
     post () {
+      // TODO: post page
       this.$message.info('post')
     },
     sortByTag (tag) {
@@ -433,9 +434,11 @@ export default {
         })
     },
     checkArticleDetail (id) {
-      this.$message.info('check article by id : ' + id)
+      // this.$message.info('check article by id : ' + id)
+      this.$router.push({path: 'articleDetail', query: {articleID: id}})
     },
     likeArticle (id) {
+      // TODO 把评论和点赞功能从主页去掉，不太方便判断文章是否被当前用户点赞过
       this.$message.info('like article by id : ' + id)
       // 1 id 2 type(1 article 2 comment) 3 isLike
       axios.get('http://localhost:8081/like/' + id + '/' + 1 + '/' + 1).then(function (resp) {
