@@ -23,7 +23,7 @@
         <el-button
           class="button"
           size="medium"
-          @click="Login"
+          @click="login"
           native-type="submit"
           type="primary">
           <span class="button-span">Login</span>
@@ -59,6 +59,8 @@ export default {
       //       this.err = err.message
       //     }
       //   })
+      localStorage.setItem('username', '19302010001')
+      this.$router.push({path: '/'})
     }
   }
 }

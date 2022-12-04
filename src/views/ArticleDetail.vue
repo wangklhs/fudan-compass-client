@@ -5,12 +5,19 @@
     </el-header>
     <el-main>
       <div>
-        发布人： {{ articleDetail.user_id }} &nbsp;&nbsp; 发布时间： {{ articleDetail.create_time }} &nbsp;&nbsp; 点赞数： {{ articleDetail.like_num }} &nbsp;&nbsp;
+        {{ articleDetail.title }}
+        <br>
+        发布人： {{ articleDetail.user_id }} &nbsp;&nbsp; 发布时间： {{ articleDetail.create_time }} &nbsp;&nbsp; 点赞数：
+        {{ articleDetail.like_num }} &nbsp;&nbsp;
         <el-button @click="likeButton" type="success">
           <span v-if="!articleDetail.isLikedByUser">点赞</span>
           <span v-else>取消点赞</span>
         </el-button> &nbsp;&nbsp;
-        标签： <span v-for="tag in articleDetail.tags" v-bind:key="tag"> {{ tag }} &nbsp;&nbsp; </span>
+        标签： <span v-for="tag in articleDetail.tags" v-bind:key="tag"> {{ tag }} &nbsp;&nbsp; </span>&nbsp;&nbsp;
+        <el-button @click="modifyButton(articleDetail.article_id)" type="success"
+                   v-if="username === articleDetail.user_id">
+          修改文章
+        </el-button> &nbsp;&nbsp;
       </div>
       <div>
         {{ articleDetail.content }}
@@ -44,11 +51,12 @@ export default {
   name: 'ArticleDetail',
   data () {
     return {
-      username: localStorage.getItem('username') || '',
+      username: localStorage.getItem('username') || '19302010001',
       articleID: this.$route.query.articleID,
       articleDetail: {
         article_id: 1,
-        user_id: 19302010001,
+        user_id: '19302010001',
+        title: '标题1',
         content: '这是一篇文章',
         comment_num: 3,
         like_num: 2,
@@ -155,6 +163,9 @@ export default {
         .catch(error => {
           this.$message.error(error.response.data.message)
         })
+    },
+    modifyButton (articleID) {
+      this.$router.push({path: 'postArticle', query: {articleID: articleID}})
     }
   },
   created () {
@@ -192,6 +203,7 @@ export default {
   color: #333;
   line-height: 60px;
 }
+
 .el-main {
   text-align: center;
 }
