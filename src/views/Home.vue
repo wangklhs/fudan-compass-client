@@ -1,36 +1,60 @@
 <template>
   <el-container id="base_main">
     <el-container>
-      <el-header style="height: 64px; font-size: 14px; text-align: left">
-        <div style="width: 30%; display: inline-block; margin: 15px 2%">
-          <div style="width: 40px; display: inline-block; vertical-align: middle">
-            <img src="static/images/compass.png" alt="" width="30px">
-          </div>
-          <div style="display: inline-block; vertical-align: middle">
-            <h1>Fudan Compass</h1>
-          </div>
-        </div>
+      <el-header style="height: 64px; width: 100%; font-size: 14px; text-align: left; position: fixed; z-index: 999">
+        <el-row style="margin: 15px 0">
+          <el-col :span="6" style="margin: 0 1.5%">
+            <div style="width: 40px; display: inline-block; vertical-align: middle">
+              <img src="static/images/compass.png" alt="" width="30px">
+            </div>
+            <div style="display: inline-block; vertical-align: middle">
+              <h1>Fudan Compass</h1>
+            </div>
+          </el-col>
+          <el-col :span="9" style="text-align: right">
+            <el-input placeholder="快来发布一个新的帖子吧！" />
+          </el-col>
+          <el-col :span="2" style="text-align: left; margin: 0 10px">
+            <el-button type="success" icon="el-icon-chat-round"
+                       v-on:click="post()"> 发帖
+            </el-button>
+          </el-col>
+          <el-col :span="2">&nbsp;</el-col>
+          <el-col :span="2" style="text-align: center; margin-left: 1%">
+            <el-dropdown trigger="hover" @command="handleCommand">
+              <span class="el-dropdown-link el-input__inner" style="display: block; width: 120px; border-radius: 20px">
+                <i class="el-icon-user" /> <span style="color:lightslategray">个人中心</span>
+              </span>
+              <el-dropdown-menu>
+                <el-dropdown-item command="personal center">个人中心</el-dropdown-item>
+                <el-dropdown-item command="login">登录</el-dropdown-item>
+                <el-dropdown-item command="logout">退出登录</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </el-col>
+          <el-col :span="2">&nbsp;</el-col>
+        </el-row>
 
-        <el-button type="success" icon="el-icon-wallet" style="margin-top: -7px; margin-left: 30px"
-                   v-on:click="post()"> 发帖
-        </el-button>
-        <el-dropdown trigger="hover" @command="handleCommand">
-            <span class="el-dropdown-link el-input__inner" style="display:block;width:200px;">
-                <span style="color:lightslategray">个人中心</span>
-            </span>
-          <el-dropdown-menu>
-            <el-dropdown-item command="personal center">个人中心</el-dropdown-item>
-            <el-dropdown-item command="login">登录</el-dropdown-item>
-            <el-dropdown-item command="logout">退出登录</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
       </el-header>
 
-      <el-container style="margin: 20px 0">
+      <el-container style="margin: 84px 0 20px 0">
 
         <el-aside width="330px">
           <el-card style="height: 200px">
             <h2>{{ username }}, 您好</h2>
+            <el-row style="margin: 25px 0">
+              <el-col :span="12">
+                <img src="static/images/mar-bustos.jpg" alt=""
+                     style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%">
+              </el-col>
+              <el-col :span="1">&nbsp;</el-col>
+              <el-col :span="11">
+                <el-row style="margin: 12px 0"><span class="span-title">帖子数：</span>9</el-row>
+                <el-row style="margin: 12px 0"><span class="span-title">评论数：</span>9</el-row>
+                <el-row style="margin: 12px 0"><span class="span-title">获赞数：</span>6</el-row>
+              </el-col>
+            </el-row>
+
           </el-card>
           <el-card>
             <h2>今日课程表 ( {{ day }} )</h2>
@@ -46,16 +70,16 @@
         <el-main>
 
           <el-card style="padding: 20px 0">
-            <el-col :span="12">
+            <el-col :span="13">
               <el-form ref="form" :model="form">
                 <el-input placeholder="请输入内容" v-model="form.input">
-                  <el-button slot="append" icon="el-icon-search" @click="search()"> 搜索</el-button>
+                  <el-button slot="append" icon="el-icon-search" @click="search()">搜索</el-button>
                 </el-input>
               </el-form>
             </el-col>
             <el-col :span="1">&nbsp;</el-col>
-            <el-col :span="4">
-              <el-select v-model="tagOption" placeholder="根据标签筛选" style="width: 100%" multiple>
+            <el-col :span="5">
+              <el-select v-model="tagOption" placeholder="标签筛选" style="width: 100%" multiple>
                 <el-option
                   v-for="item in options"
                   :key="item.value"
@@ -65,11 +89,7 @@
               </el-select>
 <!--              <el-button slot="append" icon="el-icon-search" @click="sortByTag(value)"> 搜索</el-button>-->
             </el-col>
-            <el-col :span="1">
-              <el-button icon="el-icon-search" @click="sortByTag()"> 搜索</el-button>
-            </el-col>
-            <el-col :span="1">&nbsp;</el-col>
-            <el-col :span="4">
+            <el-col :span="5">
               <el-select v-model="orderBy" placeholder="排序方式" style="width: 100%">
                 <el-option
                   v-for="item in orderOptions"
@@ -79,31 +99,80 @@
                 </el-option>
               </el-select>
             </el-col>
+
           </el-card>
 
           <div>
             <el-card v-for="article in this.articleList" v-bind:key="article.articleId">
-              {{ article.title }} <br>
-              发帖人： {{ article.userId }} &nbsp;&nbsp;&nbsp;&nbsp; 发帖时间：{{ article.createTime }} &nbsp;&nbsp;&nbsp;&nbsp;
-              标签： <span v-for="tag in article.tags" v-bind:key="tag"> {{ tag }} &nbsp;&nbsp; </span>
-              <el-button type="primary" @click="checkArticleDetail(article.articleId)">查看详情</el-button>
-              <br>
-              {{ article.content }}
-              <br>
-              点赞数：{{ article.likeNum }} &nbsp;&nbsp;&nbsp;&nbsp;
-              评论数： {{ article.commentNum }} &nbsp;&nbsp;&nbsp;&nbsp;
-              <!--              <el-button type="text" @click="likeArticle(article.article_id)">点赞</el-button>-->
-              <!--              <el-button type="text" @click="openCommentBox(article.article_id)">评论</el-button> &nbsp;&nbsp;&nbsp;&nbsp;-->
-              <div>
-                <div v-for="(comment, index) in article.comments" v-bind:key="comment.commentId">
-                  <div v-show="index < 3">
-                    <el-divider/>
-                    {{ comment.userId + ' ' + comment.createTime }}
-                    <br>
-                    {{ comment.commentContent }}
-                  </div>
-                </div>
-              </div>
+              <el-row>
+                <el-col :span="1">&nbsp;</el-col>
+                <el-col :span="11" style="text-align: left; white-space: nowrap; overflow: hidden">
+                  <span v-if="article.title.length < 21" style="font-size: 16px; font-weight: bolder"> {{ article.title }} </span>
+                  <span v-else style="font-size: 16px; font-weight: bolder"> {{ article.title.substr(0, 21) }}... </span>
+                </el-col>
+                <el-col :span="1">&nbsp;</el-col>
+                <el-col :span="6" style="text-align: right">
+                  <span v-for="tag in article.tags" v-bind:key="tag" class="comment-tag">{{ tag }}</span>
+                </el-col>
+                <el-col :span="1">&nbsp;</el-col>
+                <el-col :span="3" style="text-align: right">
+                  <el-button type="primary" class="details-button" @click="checkArticleDetail(article.articleId)">查看详情</el-button>
+                </el-col>
+                <el-col :span="1">&nbsp;</el-col>
+              </el-row>
+
+              <el-row style="margin: 20px 0; text-align: left; line-height: 30px">
+                <el-col :span="2">&nbsp;</el-col>
+                <el-col :span="20">
+                  <span v-if="article.content.length < 180"> {{ article.content }} </span>
+                  <span v-else> {{ article.content.substr(0, 180) }}... </span>
+                </el-col>
+                <el-col :span="2">&nbsp;</el-col>
+              </el-row>
+
+              <el-row>
+                <el-col :span="1">&nbsp;</el-col>
+                <el-col :span="5" style="text-align: left">
+                  <span><i class="el-icon-user" /> &nbsp;&nbsp;{{ article.userId }} </span>
+                </el-col>
+                <el-col :span="11" style="text-align: left">
+                  <span><i class="el-icon-time" /> &nbsp;&nbsp;{{ article.createTime }} </span>
+                </el-col>
+                <el-col :span="3" style="text-align: right">
+                  <span><i class="el-icon-thumb" /> &nbsp;&nbsp;{{ article.likeNum }} </span>
+                </el-col>
+                <el-col :span="3" style="text-align: right">
+                  <span style="margin: 0 20px"><i class="el-icon-chat-line-round" /> &nbsp;&nbsp;{{ article.commentNum }} </span>
+                </el-col>
+                <el-col :span="1">&nbsp;</el-col>
+              </el-row>
+
+              <el-row v-for="(comment, index) in article.comments" v-show="index < 3" v-bind:key="comment.commentId">
+                <el-divider/>
+                <el-col :span="4" style="text-align: right">
+                  <i class="el-icon-chat-dot-round" style="font-size: 18px; margin-right: 15px" />
+                </el-col>
+                <el-col :span="20">
+                  <el-row style="text-align: left">
+                    <el-col :span="22">
+                      <span v-if="comment.commentContent.length < 70"> {{ comment.commentContent }} </span>
+                      <span v-else> {{ comment.commentContent.substr(0, 70) }}... </span>
+                    </el-col>
+                    <el-col :span="2">&nbsp;</el-col>
+                  </el-row>
+                  <el-row style="text-align: right">
+                    <el-col :span="9">&nbsp;</el-col>
+                    <el-col :span="6">
+                      <span><i class="el-icon-user" /> &nbsp;&nbsp;{{ comment.userId }} </span>
+                    </el-col>
+                    <el-col :span="7">
+                      <span><i class="el-icon-time" /> &nbsp;&nbsp;{{ comment.createTime }} </span>
+                    </el-col>
+                    <el-col :span="2">&nbsp;</el-col>
+                  </el-row>
+                </el-col>
+              </el-row>
+
             </el-card>
 
             <el-pagination
@@ -146,7 +215,6 @@
           </el-card>
           <el-card>
             <h2>热门tag</h2>
-            <br>
             <br>
             <div v-for="popTag in this.popTags" v-bind:key="popTag">
               <el-button type="text" @click="sortByTag(popTag)">
@@ -283,8 +351,8 @@ export default {
         {
           articleId: 1,
           userId: '19302010001',
-          title: '标题',
-          content: '这是一篇文章',
+          title: '标题qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq',
+          content: '这是一篇很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长的文章',
           commentNum: 3,
           likeNum: 5,
           createTime: '2022-11-01 12:34:56',
@@ -294,14 +362,14 @@ export default {
             {
               commentId: 1,
               userId: '20302010001',
-              commentContent: '第一篇文章的第一条评论',
+              commentContent: '第一篇文章的第一条很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长的评论',
               createTime: '2022-11-01 12:34:56',
               updateTime: '2022-11-01 12:34:56'
             },
             {
               commentId: 2,
               userId: '20302010002',
-              commentContent: '第一篇文章的第二条评论',
+              commentContent: '第一篇文章的第二条没那么长没那么长没那么长没那么长没那么长没那么长没那么长没那么长没那么长没那么长没那么长的评论',
               createTime: '2022-11-02 12:34:56',
               updateTime: '2022-11-02 12:34:56'
             },
@@ -317,7 +385,7 @@ export default {
           articleId: 2,
           userId: '19302010002',
           title: '标题2',
-          content: '这是第二篇文章',
+          content: '这是第二篇没那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长的文章',
           commentNum: 0,
           likeNum: 2,
           createTime: '2022-11-01 12:34:56',
@@ -365,7 +433,7 @@ export default {
       articleList1: [],
       articleList2: [],
       popTags: ['娱乐', '饮食', '运动', '生活', '学习'],
-      orderBy: 0
+      orderBy: []
     }
   },
   created () {
@@ -601,14 +669,35 @@ export default {
   background-color: #575757;
 }
 
-h2 {
-  font-size: 16px;
+.details-button {
+  background-color: #575757;
+}
+
+.comment-tag {
+  margin: 0 5px;
+  padding: 5px 12px;
   color: #C0B283;
+  background-color: #FAFAF7;
+  font-weight: bolder;
+  border: 3px solid #DCD0C0;
+  border-radius: 15px;
 }
 
 h1 {
   font-size: 28px;
+  font-weight: bold;
   color: #C0B283;
 }
 
+h2 {
+  font-size: 16px;
+  font-weight: bold;
+  color: #C0B283;
+}
+
+.span-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: #C0B283;
+}
 </style>

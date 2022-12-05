@@ -70,18 +70,15 @@ export default {
 h1 {
   font-size: 26px;
   font-weight: 600;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: rgb(225, 225, 245);
   padding: 25px;
 }
 .button-span {
   font-size: 16px;
   font-weight: 500;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 a {
   font-size: 16px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: rgb(235, 235, 255);
   text-align: right;
   text-decoration-line: none;
