@@ -36,9 +36,9 @@
             <h2>今日课程表 ( {{ day }} )</h2>
             <br>
             <el-table :data="timeTableData" style="width: 100%">
-              <el-table-column prop="index" label="节数" width="45" />
-              <el-table-column prop="time" label="时间" width="105" />
-              <el-table-column prop="name" label="课程" />
+              <el-table-column prop="index" label="节数" width="45"/>
+              <el-table-column prop="time" label="时间" width="105"/>
+              <el-table-column prop="name" label="课程"/>
             </el-table>
           </el-card>
         </el-aside>
@@ -46,16 +46,16 @@
         <el-main>
 
           <el-card style="padding: 20px 0">
-            <el-col :span="17">
+            <el-col :span="12">
               <el-form ref="form" :model="form">
                 <el-input placeholder="请输入内容" v-model="form.input">
-                  <el-button slot="append" icon="el-icon-search" @click="search(form)"> 搜索</el-button>
+                  <el-button slot="append" icon="el-icon-search" @click="search()"> 搜索</el-button>
                 </el-input>
               </el-form>
             </el-col>
             <el-col :span="1">&nbsp;</el-col>
-            <el-col :span="6">
-              <el-select v-model="value" placeholder="根据标签筛选" style="width: 100%">
+            <el-col :span="4">
+              <el-select v-model="tagOption" placeholder="根据标签筛选" style="width: 100%" multiple>
                 <el-option
                   v-for="item in options"
                   :key="item.value"
@@ -63,29 +63,44 @@
                   :value="item.value">
                 </el-option>
               </el-select>
-              <el-button slot="append" icon="el-icon-search" @click="sortByTag(value)"> 搜索</el-button>
+<!--              <el-button slot="append" icon="el-icon-search" @click="sortByTag(value)"> 搜索</el-button>-->
+            </el-col>
+            <el-col :span="1">
+              <el-button icon="el-icon-search" @click="sortByTag()"> 搜索</el-button>
+            </el-col>
+            <el-col :span="1">&nbsp;</el-col>
+            <el-col :span="4">
+              <el-select v-model="orderBy" placeholder="排序方式" style="width: 100%">
+                <el-option
+                  v-for="item in orderOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
             </el-col>
           </el-card>
 
           <div>
-            <el-card v-for="article in this.articleList" v-bind:key="article.article_id">
-              发帖人： {{ article.user_id }} &nbsp;&nbsp;&nbsp;&nbsp; 发帖时间：{{ article.create_time }} &nbsp;&nbsp;&nbsp;&nbsp;
+            <el-card v-for="article in this.articleList" v-bind:key="article.articleId">
+              {{ article.title }} <br>
+              发帖人： {{ article.userId }} &nbsp;&nbsp;&nbsp;&nbsp; 发帖时间：{{ article.createTime }} &nbsp;&nbsp;&nbsp;&nbsp;
               标签： <span v-for="tag in article.tags" v-bind:key="tag"> {{ tag }} &nbsp;&nbsp; </span>
-              <el-button type="primary" @click="checkArticleDetail(article.article_id)">查看详情</el-button>
+              <el-button type="primary" @click="checkArticleDetail(article.articleId)">查看详情</el-button>
               <br>
               {{ article.content }}
               <br>
-              点赞数：{{ article.like_num }} &nbsp;&nbsp;&nbsp;&nbsp;
-              评论数： {{ article.comment_num }} &nbsp;&nbsp;&nbsp;&nbsp;
-              <el-button type="text" @click="likeArticle(article.article_id)">点赞</el-button>
-              <el-button type="text" @click="openCommentBox(article.article_id)">评论</el-button> &nbsp;&nbsp;&nbsp;&nbsp;
+              点赞数：{{ article.likeNum }} &nbsp;&nbsp;&nbsp;&nbsp;
+              评论数： {{ article.commentNum }} &nbsp;&nbsp;&nbsp;&nbsp;
+              <!--              <el-button type="text" @click="likeArticle(article.article_id)">点赞</el-button>-->
+              <!--              <el-button type="text" @click="openCommentBox(article.article_id)">评论</el-button> &nbsp;&nbsp;&nbsp;&nbsp;-->
               <div>
-                <div v-for="(comment, index) in article.comments" v-bind:key="comment.comment_id">
-                  <div v-show="index < 2">
-                    <el-divider />
-                    {{ comment.user_id + ' ' + comment.create_time }}
+                <div v-for="(comment, index) in article.comments" v-bind:key="comment.commentId">
+                  <div v-show="index < 3">
+                    <el-divider/>
+                    {{ comment.userId + ' ' + comment.createTime }}
                     <br>
-                    {{ comment.comment_content }}
+                    {{ comment.commentContent }}
                   </div>
                 </div>
               </div>
@@ -93,11 +108,11 @@
 
             <el-pagination
               layout="prev, pager, next"
-              :total="articlesCount"
+              :total="totalCount"
               :page-size="pageSize"
               :hide-on-single-page="true"
               :current-page="pageNo"
-              @current-change="handleCurrentChange" />
+              @current-change="handleCurrentChange"/>
           </div>
         </el-main>
 
@@ -180,7 +195,14 @@ export default {
         value: '娱乐',
         label: '娱乐'
       }],
-      value: '',
+      orderOptions: [{
+        value: 0,
+        label: '按发帖时间排序'
+      }, {
+        value: 1,
+        label: '按帖子热度排序'
+      }],
+      tagOption: [],
       timeTableData: [
         {
           index: 1,
@@ -253,127 +275,126 @@ export default {
           name: ''
         }
       ],
-      articlesCount: 5,
+      totalCount: 5,
+      totalPage: 1,
       pageNo: 1,
       pageSize: 5,
       articleList: [
         {
-          article_id: 1,
-          user_id: 19302010001,
+          articleId: 1,
+          userId: '19302010001',
+          title: '标题',
           content: '这是一篇文章',
-          comment_num: 2,
-          like_num: 3,
-          create_time: '2022-11-01',
-          update_time: '2022-12-01',
+          commentNum: 3,
+          likeNum: 5,
+          createTime: '2022-11-01 12:34:56',
+          updateTime: '2022-12-01 12:34:56',
           tags: ['生活', '娱乐'],
           comments: [
             {
-              comment_id: 1,
-              commented_id: 1,
-              commented_type: 1,
-              user_id: 20302010001,
-              comment_content: '第一篇文章的第一条评论',
-              like_num: 0,
-              create_time: '2022-11-01 12:34:56',
-              update_time: '2022-11-01 12:34:56'
+              commentId: 1,
+              userId: '20302010001',
+              commentContent: '第一篇文章的第一条评论',
+              createTime: '2022-11-01 12:34:56',
+              updateTime: '2022-11-01 12:34:56'
             },
             {
-              comment_id: 2,
-              commented_id: 1,
-              commented_type: 1,
-              user_id: 20302010002,
-              comment_content: '第一篇文章的第二条评论',
-              like_num: 0,
-              create_time: '2022-11-02 12:34:56',
-              update_time: '2022-11-02 12:34:56'
+              commentId: 2,
+              userId: '20302010002',
+              commentContent: '第一篇文章的第二条评论',
+              createTime: '2022-11-02 12:34:56',
+              updateTime: '2022-11-02 12:34:56'
             },
             {
-              comment_id: 3,
-              commented_id: 1,
-              commented_type: 1,
-              user_id: 20302010003,
-              comment_content: '第一篇文章的第三条评论',
-              like_num: 0,
-              create_time: '2022-11-03 12:34:56',
-              update_time: '2022-11-03 12:34:56'
-            }
-          ]
+              commentId: 3,
+              userId: '20302010003',
+              commentContent: '第一篇文章的第三条评论',
+              createTime: '2022-11-03 12:34:56',
+              updateTime: '2022-11-03 12:34:56'
+            }]
         },
         {
-          article_id: 2,
-          user_id: 19302010002,
+          articleId: 2,
+          userId: '19302010002',
+          title: '标题2',
           content: '这是第二篇文章',
-          comment_num: 2,
-          like_num: 3,
-          create_time: '2022-11-02',
-          update_time: '2022-12-02',
+          commentNum: 0,
+          likeNum: 2,
+          createTime: '2022-11-01 12:34:56',
+          updateTime: '2022-12-01 12:34:56',
           tags: ['学习'],
           comments: []
         },
         {
-          article_id: 3,
-          user_id: 19302010002,
+          articleId: 3,
+          userId: '19302010002',
+          title: '标题3',
           content: '这是第三篇文章',
-          comment_num: 2,
-          like_num: 3,
-          create_time: '2022-11-02',
-          update_time: '2022-12-02',
+          commentNum: 0,
+          likeNum: 2,
+          createTime: '2022-11-01 12:34:56',
+          updateTime: '2022-12-01 12:34:56',
           tags: ['学习'],
           comments: []
         },
         {
-          article_id: 4,
-          user_id: 19302010002,
+          articleId: 4,
+          userId: '19302010002',
+          title: '标题4',
           content: '这是第四篇文章',
-          comment_num: 2,
-          like_num: 3,
-          create_time: '2022-11-02',
-          update_time: '2022-12-02',
+          commentNum: 0,
+          likeNum: 2,
+          createTime: '2022-11-01 12:34:56',
+          updateTime: '2022-12-01 12:34:56',
           tags: ['学习'],
           comments: []
         },
         {
-          article_id: 5,
-          user_id: 19302010002,
+          articleId: 5,
+          userId: '19302010002',
+          title: '标题5',
           content: '这是第五篇文章',
-          comment_num: 2,
-          like_num: 3,
-          create_time: '2022-11-02',
-          update_time: '2022-12-02',
+          commentNum: 0,
+          likeNum: 2,
+          createTime: '2022-11-01 12:34:56',
+          updateTime: '2022-12-01 12:34:56',
           tags: ['学习'],
           comments: []
         }
       ],
       articleList1: [],
       articleList2: [],
-      popTags: ['娱乐', '饮食', '运动', '生活', '学习']
+      popTags: ['娱乐', '饮食', '运动', '生活', '学习'],
+      orderBy: 0
     }
   },
   created () {
     this.$message.info('created')
-    // let _this = this
-    // let formData = new FormData()
-    // formData.append('pageSize', this.pageSize)
-    // formData.append('pageNo', this.pageNo)
-    // axios({
-    //   method: 'post',
-    //   url: 'http://localhost:8081/dashboard',
-    //   headers: {
-    //     'Content-Type': 'multipart/form-data'
-    //   },
-    //   data: formData
-    // })
-    //   .then(resp => {
-    //     if (resp.status === 200) {
-    //       _this.articleList = resp.data.articleList
-    //       _this.articlesCount = resp.data.articlesCount
-    //     } else {
-    //       this.$message.error('search error')
-    //     }
-    //   })
-    //   .catch(error => {
-    //     this.$message.error(error.response.data.message)
-    //   })
+    let _this = this
+    let formData = new FormData()
+    formData.append('pageSize', this.pageSize)
+    formData.append('pageNo', this.pageNo)
+    formData.append('orderBy', this.orderBy)
+    axios({
+      method: 'post',
+      url: 'http://localhost:8081/getAllArticles',
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+      data: formData
+    })
+      .then(resp => {
+        if (resp.status === 200) {
+          _this.articleList = resp.data.articleList
+          _this.totalCount = resp.data.totalCount
+          _this.totalPage = resp.data.totalPage
+        } else {
+          this.$message.error('search error')
+        }
+      })
+      .catch(error => {
+        this.$message.error(error.response.data.message)
+      })
   },
   methods: {
     search () {
@@ -383,6 +404,7 @@ export default {
       formData.append('search_content', this.form.input)
       formData.append('pageSize', this.pageSize)
       formData.append('pageNo', this.pageNo)
+      formData.append('orderBy', this.orderBy)
       axios({
         method: 'post',
         url: 'http://localhost:8081/search',
@@ -394,7 +416,8 @@ export default {
         .then(resp => {
           if (resp.status === 200) {
             _this.articleList = resp.data.articleList
-            _this.articlesCount = resp.data.articlesCount
+            _this.totalCount = resp.data.totalCount
+            _this.totalPage = resp.data.totalPage
           } else {
             this.$message.error('search error')
           }
@@ -416,13 +439,14 @@ export default {
       // TODO: post page
       this.$message.info('post')
     },
-    sortByTag (tag) {
-      this.$message.info('sort by tag : ' + tag)
+    sortByTag () {
+      this.$message.info('sort by tags : ' + this.tagOption)
       let _this = this
       let formData = new FormData()
-      formData.append('tag', tag)
+      formData.append('tags', this.tagOption)
       formData.append('pageSize', this.pageSize)
       formData.append('pageNo', this.pageNo)
+      formData.append('orderBy', this.orderBy)
       axios({
         method: 'post',
         url: 'http://localhost:8081/sortByTag',
@@ -434,7 +458,8 @@ export default {
         .then(resp => {
           if (resp.status === 200) {
             _this.articleList = resp.data.articleList
-            _this.articlesCount = resp.data.articlesCount
+            _this.totalCount = resp.data.totalCount
+            _this.totalPage = resp.data.totalPage
           } else {
             this.$message.error('search error')
           }
@@ -447,57 +472,57 @@ export default {
       // this.$message.info('check article by id : ' + id)
       this.$router.push({path: 'articleDetail', query: {articleID: id}})
     },
-    likeArticle (id) {
-      // TODO 把评论和点赞功能从主页去掉，不太方便判断文章是否被当前用户点赞过
-      this.$message.info('like article by id : ' + id)
-      // 1 id 2 type(1 article 2 comment) 3 isLike
-      axios.get('http://localhost:8081/like/' + id + '/' + 1 + '/' + 1).then(function (resp) {
-        this.$message.success('操作成功')
-      })
-    },
-    openCommentBox (id) {
-      this.$prompt('请输入评论', '评论', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消'
-      }).then(({value}) => {
-        this.commentArticle(id, value)
-        this.$message({
-          type: 'success',
-          message: '你的评论是: ' + value
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '取消评论'
-        })
-      })
-    },
-    commentArticle (id, comment) {
-      this.$message.info('comment article by id : ' + id)
-      let formData = new FormData()
-      formData.append('comment_content', comment)
-      formData.append('user_id', this.username)
-      formData.append('commented_id', id)
-      formData.append('commented_type', 1)
-      axios({
-        method: 'post',
-        url: 'http://localhost:8081/comment',
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
-        data: formData
-      })
-        .then(resp => {
-          if (resp.status === 200) {
-            this.$message.success('评论发表成功')
-          } else {
-            this.$message.error('search error')
-          }
-        })
-        .catch(error => {
-          this.$message.error(error.response.data.message)
-        })
-    },
+    // likeArticle (id) {
+    //   // TODO 把评论和点赞功能从主页去掉，不太方便判断文章是否被当前用户点赞过
+    //   this.$message.info('like article by id : ' + id)
+    //   // 1 id 2 type(1 article 2 comment) 3 isLike
+    //   axios.get('http://localhost:8081/like/' + id + '/' + 1 + '/' + 1).then(function (resp) {
+    //     this.$message.success('操作成功')
+    //   })
+    // },
+    // openCommentBox (id) {
+    //   this.$prompt('请输入评论', '评论', {
+    //     confirmButtonText: '确定',
+    //     cancelButtonText: '取消'
+    //   }).then(({value}) => {
+    //     this.commentArticle(id, value)
+    //     this.$message({
+    //       type: 'success',
+    //       message: '你的评论是: ' + value
+    //     })
+    //   }).catch(() => {
+    //     this.$message({
+    //       type: 'info',
+    //       message: '取消评论'
+    //     })
+    //   })
+    // },
+    // commentArticle (id, comment) {
+    //   this.$message.info('comment article by id : ' + id)
+    //   let formData = new FormData()
+    //   formData.append('comment_content', comment)
+    //   formData.append('user_id', this.username)
+    //   formData.append('commented_id', id)
+    //   formData.append('commented_type', 1)
+    //   axios({
+    //     method: 'post',
+    //     url: 'http://localhost:8081/comment',
+    //     headers: {
+    //       'Content-Type': 'multipart/form-data'
+    //     },
+    //     data: formData
+    //   })
+    //     .then(resp => {
+    //       if (resp.status === 200) {
+    //         this.$message.success('评论发表成功')
+    //       } else {
+    //         this.$message.error('search error')
+    //       }
+    //     })
+    //     .catch(error => {
+    //       this.$message.error(error.response.data.message)
+    //     })
+    // },
     handleCurrentChange: function (val) {
       if (val !== this.pageNo) {
         this.pageNo = val
@@ -507,6 +532,7 @@ export default {
         formData.append('search_content', this.form.input)
         formData.append('pageSize', this.pageSize)
         formData.append('pageNo', this.pageNo)
+        formData.append('orderBy', this.orderBy)
         axios({
           method: 'post',
           url: 'http://localhost:8081/search',
@@ -518,7 +544,8 @@ export default {
           .then(resp => {
             if (resp.status === 200) {
               _this.articleList = resp.data.articleList
-              _this.articlesCount = resp.data.articlesCount
+              _this.totalCount = resp.data.totalCount
+              _this.totalPage = resp.data.totalPage
             } else {
               this.$message.error('search error')
             }
