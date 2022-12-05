@@ -7,6 +7,8 @@ import Register from '@/views/Register'
 import Home from '@/views/Home'
 import ArticleDetail from '@/views/ArticleDetail'
 import PostArticle from '@/views/PostArticle'
+import UserDetail from '@/views/UserDetail'
+import RatingDetail from '@/views/RatingDetail'
 
 Vue.use(Router)
 
@@ -36,6 +38,16 @@ export default new Router({
       path: '/postArticle',
       name: 'PostArticle',
       component: PostArticle
+    },
+    {
+      path: '/userDetail',
+      name: 'UserDetail',
+      component: UserDetail
+    },
+    {
+      path: '/ratingDetail',
+      name: 'RatingDetail',
+      component: RatingDetail
     }
   ]
 })

@@ -5,10 +5,12 @@
     </el-header>
     <el-main>
       <div>
-        {{ articleDetail.title }}
+        {{ ratingDetail.title }}
         <br>
-        发布人： {{ articleDetail.userId }} &nbsp;&nbsp; 发布时间： {{ articleDetail.createTime }} &nbsp;&nbsp; 点赞数：
-        {{ articleDetail.likeNum }} &nbsp;&nbsp;
+        发布人： {{ ratingDetail.userId }} &nbsp;&nbsp; 发布时间： {{ ratingDetail.createTime }} &nbsp;&nbsp; 点赞数：
+        {{ ratingDetail.likeNum }} &nbsp;&nbsp;
+        相关课程： {{ ratingDetail.courseName }} &nbsp;&nbsp;&nbsp;&nbsp; 课程类型： {{ ratingDetail.courseType }} &nbsp;&nbsp;&nbsp;&nbsp;
+        相关专业： {{ ratingDetail.relatedMajor }} &nbsp;&nbsp;&nbsp;&nbsp; 打分： {{ ratingDetail.score }} &nbsp;&nbsp;&nbsp;&nbsp;
         <el-button @click="likeButton" type="success">
           <span v-if="!isLikedByUser">点赞</span>
           <span v-else>取消点赞</span>
@@ -17,29 +19,28 @@
           <span v-if="!isFavouredByUser">收藏</span>
           <span v-else>取消收藏</span>
         </el-button> &nbsp;&nbsp;
-        标签： <span v-for="tag in articleDetail.tags" v-bind:key="tag"> {{ tag }} &nbsp;&nbsp; </span>&nbsp;&nbsp;
-        <el-button @click="modifyButton(articleDetail.articleId)" type="success"
-                   v-if="username === articleDetail.userId">
-          修改文章
+        <el-button @click="modifyButton(ratingDetail.ratingId)" type="success"
+                   v-if="username === ratingDetail.userId">
+          修改课评
         </el-button> &nbsp;&nbsp;
-        <el-button @click="deleteButton(articleDetail.articleId)" type="danger"
-                   v-if="username === articleDetail.userId">
-          删除文章
+        <el-button @click="deleteButton(ratingDetail.ratingId)" type="danger"
+                   v-if="username === ratingDetail.userId">
+          删除课评
         </el-button> &nbsp;&nbsp;
       </div>
       <div>
-        {{ articleDetail.content }}
+        {{ ratingDetail.content }}
       </div>
       <br>
       <div>
         评论：&nbsp;&nbsp;
-        <el-button @click="openCommentBox(articleID)" type="success">
+        <el-button @click="openCommentBox(ratingId)" type="success">
           写评论
         </el-button>
       </div>
       <br>
       <div>
-        <div v-for="comment in articleDetail.comments" v-bind:key="comment.commentId">
+        <div v-for="comment in ratingDetail.comments" v-bind:key="comment.commentId">
           <div>
             {{ comment.userId + ' ' + comment.createTime }}
             <br>
@@ -56,43 +57,31 @@
 import axios from 'axios'
 
 export default {
-  name: 'ArticleDetail',
+  name: 'RatingDetail',
   data () {
     return {
       username: localStorage.getItem('username') || '',
-      articleID: this.$route.query.articleID,
-      articleDetail: {
-        articleId: 1,
+      ratingId: this.$route.query.ratingId,
+      ratingDetail: {
+        ratingId: 1,
         userId: '19302010001',
-        title: '标题',
-        content: '这是一篇文章',
-        commentNum: 3,
-        likeNum: 5,
+        courseName: '项目管理',
+        courseType: '专业必修课',
+        relatedMajor: '软件工程',
+        score: 9,
+        title: '课程评价的标题',
+        content: '这是一篇课程评价',
+        commentNum: 1,
+        likeNum: 3,
         createTime: '2022-11-01 12:34:56',
         updateTime: '2022-12-01 12:34:56',
-        tags: ['生活', '娱乐'],
-        comments: [
-          {
-            commentId: 1,
-            userId: '20302010001',
-            commentContent: '第一篇文章的第一条评论',
-            createTime: '2022-11-01 12:34:56',
-            updateTime: '2022-11-01 12:34:56'
-          },
-          {
-            commentId: 2,
-            userId: '20302010002',
-            commentContent: '第一篇文章的第二条评论',
-            createTime: '2022-11-02 12:34:56',
-            updateTime: '2022-11-02 12:34:56'
-          },
-          {
-            commentId: 3,
-            userId: '20302010003',
-            commentContent: '第一篇文章的第三条评论',
-            createTime: '2022-11-03 12:34:56',
-            updateTime: '2022-11-03 12:34:56'
-          }]
+        comments: [{
+          commentId: 1,
+          userId: '20302010001',
+          commentContent: '第一篇课程评价的第一条评论',
+          createTime: '2022-11-01 12:34:56',
+          updateTime: '2022-11-01 12:34:56'
+        }]
       },
       isLikedByUser: false,
       isFavouredByUser: false
@@ -100,15 +89,11 @@ export default {
   },
   methods: {
     likeButton () {
-      // 1:id 2:userID 3:type(1 article 2 comment) 4:isLike
       if (this.isLikedByUser) {
         this.isLikedByUser = false
-        // axios.get('http://localhost:8081/like/' + this.articleID + '/' + this.username + '/' + 1 + '/' + 0).then(function (resp) {
-        //   this.$message.success('已取消点赞')
-        // })
         let formData = new FormData()
-        formData.append('id', this.articleDetail.articleId)
-        formData.append('likeType', 0)
+        formData.append('id', this.ratingDetail.ratingId)
+        formData.append('likeType', 1)
         formData.append('userId', this.username)
         formData.append('isLike', false)
         axios({
@@ -131,12 +116,9 @@ export default {
           })
       } else {
         this.isLikedByUser = true
-        // axios.get('http://localhost:8081/like/' + this.articleID + '/' + this.username + '/' + 1 + '/' + 1).then(function (resp) {
-        //   this.$message.success('已点赞')
-        // })
         let formData = new FormData()
-        formData.append('id', this.articleDetail.articleId)
-        formData.append('likeType', 0)
+        formData.append('id', this.ratingDetail.ratingId)
+        formData.append('likeType', 1)
         formData.append('userId', this.username)
         formData.append('isLike', true)
         axios({
@@ -160,15 +142,11 @@ export default {
       }
     },
     favourButton () {
-      // 1:id 2:userID 3:type(1 article 2 comment) 4:isLike
       if (this.isFavouredByUser) {
         this.isFavouredByUser = false
-        // axios.get('http://localhost:8081/like/' + this.articleID + '/' + this.username + '/' + 1 + '/' + 0).then(function (resp) {
-        //   this.$message.success('已取消点赞')
-        // })
         let formData = new FormData()
-        formData.append('id', this.articleDetail.articleId)
-        formData.append('favourType', 0)
+        formData.append('id', this.ratingDetail.ratingId)
+        formData.append('favourType', 1)
         formData.append('userId', this.username)
         formData.append('isFavour', false)
         axios({
@@ -191,12 +169,9 @@ export default {
           })
       } else {
         this.isFavouredByUser = true
-        // axios.get('http://localhost:8081/like/' + this.articleID + '/' + this.username + '/' + 1 + '/' + 1).then(function (resp) {
-        //   this.$message.success('已点赞')
-        // })
         let formData = new FormData()
-        formData.append('id', this.articleDetail.articleId)
-        formData.append('favourType', 0)
+        formData.append('id', this.ratingDetail.ratingId)
+        formData.append('favourType', 1)
         formData.append('userId', this.username)
         formData.append('isFavour', true)
         axios({
@@ -230,7 +205,7 @@ export default {
             message: '评论不能为空'
           })
         } else {
-          this.commentArticle(id, value)
+          this.commentRating(id, value)
           this.$message({
             type: 'success',
             message: '你的评论是: ' + value
@@ -243,12 +218,12 @@ export default {
         })
       })
     },
-    commentArticle (id, comment) {
-      this.$message.info('comment article by id : ' + id)
+    commentRating (id, comment) {
+      this.$message.info('comment rating by id : ' + id)
       let formData = new FormData()
-      formData.append('id', this.articleID)
+      formData.append('id', this.ratingId)
       formData.append('userId', this.username)
-      formData.append('commentType', 0)
+      formData.append('commentType', 1)
       formData.append('content', comment)
       axios({
         method: 'post',
@@ -269,14 +244,14 @@ export default {
           this.$message.error(error.response.data.message)
         })
     },
-    modifyButton (articleID) {
-      this.$router.push({path: 'postArticle', query: {articleID: articleID}})
+    modifyButton (ratingId) {
+      this.$router.push({path: 'postRating', query: {ratingId: ratingId}})
     },
-    deleteButton (articleId) {
+    deleteButton (ratingId) {
       let formData = new FormData()
-      formData.append('id', articleId)
+      formData.append('id', ratingId)
       formData.append('userId', this.username)
-      formData.append('deleteType', 0)
+      formData.append('deleteType', 1)
       axios({
         method: 'post',
         url: 'http://localhost:8081/delete',
@@ -300,14 +275,14 @@ export default {
     }
   },
   created () {
-    this.$message.info('check article by id : ' + this.articleID)
+    this.$message.info('check rating by id : ' + this.ratingId)
     let _this = this
     let formData = new FormData()
     formData.append('userId', this.username)
-    formData.append('articleId', this.articleID)
+    formData.append('ratingId', this.ratingId)
     axios({
       method: 'post',
-      url: 'http://localhost:8081/getArticleDetail',
+      url: 'http://localhost:8081/getRatingDetail',
       headers: {
         'Content-Type': 'multipart/form-data'
       },
@@ -315,7 +290,7 @@ export default {
     })
       .then(resp => {
         if (resp.status === 200) {
-          _this.articleDetail = resp.data.articleDetail
+          _this.ratingDetail = resp.data.ratingDetail
           _this.isLikedByUser = resp.data.isLikedByUser
           _this.isFavouredByUser = resp.data.isFavouredByUser
         } else {

@@ -88,7 +88,7 @@ export default {
           if (this.ifNew) {
             // let formData = new FormData()
             // formData.append('content', this.form.content)
-            // formData.append('user_id', this.username)
+            // formData.append('userId', this.username)
             // formData.append('title', this.form.title)
             let tagsData = []
             for (let i = 0; i < this.tags.length; i++) {
@@ -108,7 +108,7 @@ export default {
             // })
             axios.post('http://localhost:8081/postArticle', {
               content: this.form.content,
-              user_id: this.username,
+              userId: this.username,
               title: this.form.title,
               tags: tagsData,
               ifNew: true
@@ -125,8 +125,9 @@ export default {
               })
           } else {
             axios.post('http://localhost:8081/postArticle', {
+              articleId: this.$route.query.articleID,
               content: this.form.content,
-              user_id: this.username,
+              userId: this.username,
               title: this.form.title,
               tags: this.tags,
               ifNew: false
