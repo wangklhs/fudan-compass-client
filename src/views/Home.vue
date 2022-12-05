@@ -2,9 +2,14 @@
   <el-container id="base_main">
     <el-container>
       <el-header style="height: 64px; font-size: 14px; text-align: left">
-        <span style="float: left; margin-left: 1%; margin-right: 10%">
-          <span class="home-title">Fudan Compass</span>
-        </span>
+        <div style="width: 30%; display: inline-block; margin: 15px 2%">
+          <div style="width: 40px; display: inline-block; vertical-align: middle">
+            <img src="static/images/compass.png" alt="" width="30px">
+          </div>
+          <div style="display: inline-block; vertical-align: middle">
+            <h1>Fudan Compass</h1>
+          </div>
+        </div>
 
         <el-button type="success" icon="el-icon-wallet" style="margin-top: -7px; margin-left: 30px"
                    v-on:click="post()"> 发帖
@@ -15,15 +20,10 @@
             </span>
           <el-dropdown-menu>
             <el-dropdown-item command="personal center">个人中心</el-dropdown-item>
+            <el-dropdown-item command="login">登录</el-dropdown-item>
             <el-dropdown-item command="logout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-        <span style="float: right; margin-right: 0">
-          <span style="position: relative; right: 0">
-            <el-divider direction="vertical"/>
-            <router-link to="/login" class="home-login-button">Login</router-link>
-          </span>
-        </span>
       </el-header>
 
       <el-container style="margin: 20px 0">
@@ -410,6 +410,9 @@ export default {
         localStorage.removeItem('username')
         localStorage.removeItem('authority')
         this.$router.push('/login')
+      } else if (command === 'login') {
+        this.$message.info('login')
+        this.$router.push('/login')
       }
     },
     post () {
@@ -573,6 +576,11 @@ export default {
 
 h2 {
   font-size: 16px;
+  color: #C0B283;
+}
+
+h1 {
+  font-size: 28px;
   color: #C0B283;
 }
 
