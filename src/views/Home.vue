@@ -1,41 +1,8 @@
 <template>
   <el-container id="base_main">
     <el-container>
-      <el-header style="height: 64px; width: 100%; font-size: 14px; text-align: left; position: fixed; z-index: 999">
-        <el-row style="margin: 15px 0">
-          <el-col :span="6" style="margin: 0 1.5%">
-            <div style="width: 40px; display: inline-block; vertical-align: middle">
-              <img src="static/images/compass.png" alt="" width="30px">
-            </div>
-            <div style="display: inline-block; vertical-align: middle">
-              <h1>Fudan Compass</h1>
-            </div>
-          </el-col>
-          <el-col :span="9" style="text-align: right">
-            <el-input placeholder="快来发布一个新的帖子吧！在这里输入标题" v-model="title" />
-          </el-col>
-          <el-col :span="2" style="text-align: left; margin: 0 10px">
-            <el-button type="success" icon="el-icon-chat-round"
-                       v-on:click="post()"> 发帖
-            </el-button>
-          </el-col>
-          <el-col :span="2">&nbsp;</el-col>
-          <el-col :span="2" style="text-align: center; margin-left: 1%">
-            <el-dropdown trigger="hover" @command="handleCommand">
-              <span class="el-dropdown-link el-input__inner" style="display: block; width: 120px; border-radius: 20px">
-                <i class="el-icon-user" /> <span style="color:lightslategray">个人中心</span>
-              </span>
-              <el-dropdown-menu>
-                <el-dropdown-item command="personal center">个人中心</el-dropdown-item>
-                <el-dropdown-item command="login">登录</el-dropdown-item>
-                <el-dropdown-item command="logout">退出登录</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-          </el-col>
-          <el-col :span="1">&nbsp;</el-col>
-        </el-row>
 
-      </el-header>
+      <navigation-bar />
 
       <el-container style="margin: 84px 0 20px 0">
 
@@ -197,16 +164,6 @@
                   </el-form>
                 </el-col>
                 <el-col :span="1">&nbsp;</el-col>
-<!--                <el-col :span="5">-->
-<!--                  <el-select v-model="tagOption" placeholder="标签筛选" style="width: 100%" multiple>-->
-<!--                    <el-option-->
-<!--                      v-for="item in options"-->
-<!--                      :key="item.value"-->
-<!--                      :label="item.label"-->
-<!--                      :value="item.value">-->
-<!--                    </el-option>-->
-<!--                  </el-select>-->
-<!--                </el-col>-->
                 <el-col :span="5">
                   <el-select v-model="selectSearchBy" placeholder="类型筛选" style="width: 100%">
                     <el-option label="课程名称" value="1"></el-option>
@@ -363,20 +320,18 @@
       </el-container>
     </el-container>
 
-    <post-article-dialog ref="postArticleDlg" />
-
   </el-container>
 </template>
 
 <script>
 import axios from 'axios'
-import PostArticleDialog from '@/components/PostArticleDialog'
+import NavigationBar from '@/components/NavigationBar'
 
 let weeks = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
 export default {
   name: 'Home',
   components: {
-    PostArticleDialog
+    NavigationBar
   },
   data () {
     return {
@@ -667,23 +622,6 @@ export default {
           this.$message.error(error.response.data.message)
         })
     },
-    handleCommand (command) {
-      if (command === 'logout') {
-        // store.commit('logout');
-        this.$message.info('logout')
-        localStorage.removeItem('username')
-        localStorage.removeItem('authority')
-        this.$router.push('/login')
-      } else if (command === 'login') {
-        this.$message.info('login')
-        this.$router.push('/login')
-      }
-    },
-    post () {
-      // TODO: post page
-      this.$refs.postArticleDlg.pop(this.title)
-      this.$message.info('postArticle')
-    },
     sortByTag () {
       this.$message.info('sort by tags : ' + this.tagOption)
       let _this = this
@@ -716,6 +654,10 @@ export default {
     checkArticleDetail (id) {
       // this.$message.info('check article by id : ' + id)
       this.$router.push({path: 'articleDetail', query: {articleID: id}})
+    },
+    checkRatingDetail (id) {
+      // this.$message.info('check article by id : ' + id)
+      this.$router.push({path: 'ratingDetail', query: {ratingId: id}})
     },
     // likeArticle (id) {
     //   // TODO 把评论和点赞功能从主页去掉，不太方便判断文章是否被当前用户点赞过
@@ -799,9 +741,6 @@ export default {
             this.$message.error(error.response.data.message)
           })
       }
-    },
-    toRatingPage () {
-      this.$router.push({path: 'browseRating'})
     }
   }
 }
@@ -809,45 +748,6 @@ export default {
 </script>
 
 <style scoped>
-.el-header, .el-footer {
-  background-color: #373737;
-  color: #333;
-  text-align: center;
-}
-
-.el-aside {
-  background-color: #DCD0C0;
-  color: #333;
-  text-align: center;
-  margin: 0 15px;
-  padding: 0 25px;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
-.el-main {
-  background-color: #E4E4DB;
-  color: #333;
-  line-height: 40px;
-  text-align: center;
-  margin: 0 15px;
-  padding: 0 25px;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
-.el-card {
-  margin: 20px 0;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
-.el-tabs {
-  margin: 20px 0;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
 .link-button {
   width: 200px;
   margin: 5px 0;

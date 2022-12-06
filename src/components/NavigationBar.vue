@@ -1,0 +1,78 @@
+<template>
+  <el-header>
+    <el-row style="margin: 15px 0">
+      <el-col :span="6" style="margin: 0 1.75% 0 1.5%; white-space: nowrap; overflow: hidden; text-align: left">
+        <div style="width: 40px; display: inline-block; vertical-align: middle">
+          <img src="static/images/compass.png" alt="" width="30px">
+        </div>
+        <div style="display: inline-block; vertical-align: middle">
+          <router-link to='/' style="text-decoration: none">
+            <h1>Fudan Compass</h1>
+          </router-link>
+        </div>
+      </el-col>
+      <el-col :span="9" style="text-align: right">
+        <el-input placeholder="快来发布一个新的帖子吧！在这里输入标题" v-model="title" />
+      </el-col>
+      <el-col :span="2" style="text-align: left; margin: 0 10px">
+        <el-button type="success" icon="el-icon-chat-round"
+                   v-on:click="post()"> 发帖
+        </el-button>
+      </el-col>
+      <el-col :span="2">&nbsp;</el-col>
+      <el-col :span="2" style="text-align: center; margin-left: 1%">
+        <el-dropdown trigger="hover" @command="handleCommand">
+              <span class="el-dropdown-link el-input__inner" style="display: block; width: 120px; border-radius: 20px">
+                <i class="el-icon-user" /> <span style="color:lightslategray">个人中心</span>
+              </span>
+          <el-dropdown-menu>
+            <el-dropdown-item command="personal center">个人中心</el-dropdown-item>
+            <el-dropdown-item command="login">登录</el-dropdown-item>
+            <el-dropdown-item command="logout">退出登录</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </el-col>
+      <el-col :span="1">&nbsp;</el-col>
+    </el-row>
+
+    <post-article-dialog ref="postArticleDlg" />
+
+  </el-header>
+</template>
+
+<script>
+import PostArticleDialog from '@/components/PostArticleDialog'
+
+export default {
+  components: {
+    PostArticleDialog
+  },
+  methods: {
+    handleCommand (command) {
+      if (command === 'logout') {
+        // store.commit('logout');
+        this.$message.info('logout')
+        localStorage.removeItem('username')
+        localStorage.removeItem('authority')
+        this.$router.push('/login')
+      } else if (command === 'login') {
+        this.$message.info('login')
+        this.$router.push('/login')
+      }
+    },
+    post () {
+      // TODO: post page
+      this.$refs.postArticleDlg.pop(this.title)
+      this.$message.info('postArticle')
+    }
+  }
+}
+</script>
+
+<style scoped>
+h1 {
+  font-size: 28px;
+  font-weight: bold;
+  color: #C0B283;
+}
+</style>
