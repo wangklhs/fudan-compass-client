@@ -9,6 +9,8 @@ import ArticleDetail from '@/views/ArticleDetail'
 import PostArticle from '@/views/PostArticle'
 import UserDetail from '@/views/UserDetail'
 import RatingDetail from '@/views/RatingDetail'
+import BrowseRating from '@/views/BrowseRating'
+import PostRating from '@/views/PostRating'
 
 Vue.use(Router)
 
@@ -48,6 +50,16 @@ export default new Router({
       path: '/ratingDetail',
       name: 'RatingDetail',
       component: RatingDetail
+    },
+    {
+      path: '/browseRating',
+      name: 'BrowseRating',
+      component: BrowseRating
+    },
+    {
+      path: '/postRating',
+      name: 'PostRating',
+      component: PostRating
     }
   ]
 })

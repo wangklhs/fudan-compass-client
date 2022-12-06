@@ -12,7 +12,7 @@
             </div>
           </el-col>
           <el-col :span="9" style="text-align: right">
-            <el-input placeholder="快来发布一个新的帖子吧！" />
+            <el-input placeholder="快来发布一个新的帖子吧！"/>
           </el-col>
           <el-col :span="2" style="text-align: left; margin: 0 10px">
             <el-button type="success" icon="el-icon-chat-round"
@@ -23,7 +23,7 @@
           <el-col :span="2" style="text-align: center; margin-left: 1%">
             <el-dropdown trigger="hover" @command="handleCommand">
               <span class="el-dropdown-link el-input__inner" style="display: block; width: 120px; border-radius: 20px">
-                <i class="el-icon-user" /> <span style="color:lightslategray">个人中心</span>
+                <i class="el-icon-user"/> <span style="color:lightslategray">个人中心</span>
               </span>
               <el-dropdown-menu>
                 <el-dropdown-item command="personal center">个人中心</el-dropdown-item>
@@ -33,7 +33,7 @@
             </el-dropdown>
           </el-col>
           <el-col :span="1">
-            <el-button @click="toRatingPage">课评</el-button>
+            <el-button @click="toHomePage">主页</el-button>
           </el-col>
           <el-col :span="1">&nbsp;</el-col>
         </el-row>
@@ -76,21 +76,22 @@
             <el-col :span="13">
               <el-form ref="form" :model="form">
                 <el-input placeholder="请输入内容" v-model="form.input">
-                  <el-button slot="append" icon="el-icon-search" @click="search()">搜索</el-button>
+                  <!--                  <el-button slot="append" icon="el-icon-search" @click="search()">搜索</el-button>-->
                 </el-input>
               </el-form>
             </el-col>
             <el-col :span="1">&nbsp;</el-col>
             <el-col :span="5">
-              <el-select v-model="tagOption" placeholder="标签筛选" style="width: 100%" multiple>
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-<!--              <el-button slot="append" icon="el-icon-search" @click="sortByTag(value)"> 搜索</el-button>-->
+              <el-form ref="selectSearchByForm" :model="selectSearchByForm">
+                <el-input placeholder="请输入内容" v-model="selectSearchByForm.input">
+                  <el-select v-model="selectSearchBy" slot="prepend" placeholder="请选择">
+                    <el-option label="课程名称" value="1"></el-option>
+                    <el-option label="课程类型" value="2"></el-option>
+                    <el-option label="相关专业" value="3"></el-option>
+                  </el-select>
+                  <el-button slot="append" icon="el-icon-search" @click="search()">搜索</el-button>
+                </el-input>
+              </el-form>
             </el-col>
             <el-col :span="5">
               <el-select v-model="orderBy" placeholder="排序方式" style="width: 100%">
@@ -106,20 +107,25 @@
           </el-card>
 
           <div>
-            <el-card v-for="article in this.articleList" v-bind:key="article.articleId">
+            <el-card v-for="rating in this.ratingList" v-bind:key="rating.ratingId">
               <el-row>
                 <el-col :span="1">&nbsp;</el-col>
                 <el-col :span="11" style="text-align: left; white-space: nowrap; overflow: hidden">
-                  <span v-if="article.title.length < 21" style="font-size: 16px; font-weight: bolder"> {{ article.title }} </span>
-                  <span v-else style="font-size: 16px; font-weight: bolder"> {{ article.title.substr(0, 21) }}... </span>
+                  <span v-if="rating.title.length < 21" style="font-size: 16px; font-weight: bolder"> {{
+                      rating.title
+                    }} </span>
+                  <span v-else style="font-size: 16px; font-weight: bolder"> {{ rating.title.substr(0, 21) }}... </span>
                 </el-col>
                 <el-col :span="1">&nbsp;</el-col>
                 <el-col :span="6" style="text-align: right">
-                  <span v-for="tag in article.tags" v-bind:key="tag" class="comment-tag">{{ tag }}</span>
+                  <span class="comment-tag">{{ rating.courseName }}</span>
+                  <span class="comment-tag">{{ rating.courseType }}</span>
+                  <span class="comment-tag">{{ rating.relatedMajor }}</span>
                 </el-col>
                 <el-col :span="1">&nbsp;</el-col>
                 <el-col :span="3" style="text-align: right">
-                  <el-button type="primary" class="details-button" @click="checkArticleDetail(article.articleId)">查看详情</el-button>
+                  <el-button type="primary" class="details-button" @click="checkRatingDetail(rating.ratingId)">查看详情
+                  </el-button>
                 </el-col>
                 <el-col :span="1">&nbsp;</el-col>
               </el-row>
@@ -127,8 +133,8 @@
               <el-row style="margin: 20px 0; text-align: left; line-height: 30px">
                 <el-col :span="2">&nbsp;</el-col>
                 <el-col :span="20">
-                  <span v-if="article.content.length < 180"> {{ article.content }} </span>
-                  <span v-else> {{ article.content.substr(0, 180) }}... </span>
+                  <span v-if="rating.content.length < 180"> {{ rating.content }} </span>
+                  <span v-else> {{ rating.content.substr(0, 180) }}... </span>
                 </el-col>
                 <el-col :span="2">&nbsp;</el-col>
               </el-row>
@@ -136,24 +142,24 @@
               <el-row>
                 <el-col :span="1">&nbsp;</el-col>
                 <el-col :span="5" style="text-align: left">
-                  <span><i class="el-icon-user" /> &nbsp;&nbsp;{{ article.userId }} </span>
+                  <span><i class="el-icon-user"/> &nbsp;&nbsp;{{ rating.userId }} </span>
                 </el-col>
                 <el-col :span="11" style="text-align: left">
-                  <span><i class="el-icon-time" /> &nbsp;&nbsp;{{ article.createTime }} </span>
+                  <span><i class="el-icon-time"/> &nbsp;&nbsp;{{ rating.createTime }} </span>
                 </el-col>
                 <el-col :span="3" style="text-align: right">
-                  <span><i class="el-icon-thumb" /> &nbsp;&nbsp;{{ article.likeNum }} </span>
+                  <span><i class="el-icon-thumb"/> &nbsp;&nbsp;{{ rating.likeNum }} </span>
                 </el-col>
                 <el-col :span="3" style="text-align: right">
-                  <span style="margin: 0 20px"><i class="el-icon-chat-line-round" /> &nbsp;&nbsp;{{ article.commentNum }} </span>
+                  <span style="margin: 0 20px"><i class="el-icon-chat-line-round"/> &nbsp;&nbsp;{{ rating.commentNum }} </span>
                 </el-col>
                 <el-col :span="1">&nbsp;</el-col>
               </el-row>
 
-              <el-row v-for="(comment, index) in article.comments" v-show="index < 3" v-bind:key="comment.commentId">
+              <el-row v-for="(comment, index) in rating.comments" v-show="index < 3" v-bind:key="comment.commentId">
                 <el-divider/>
                 <el-col :span="4" style="text-align: right">
-                  <i class="el-icon-chat-dot-round" style="font-size: 18px; margin-right: 15px" />
+                  <i class="el-icon-chat-dot-round" style="font-size: 18px; margin-right: 15px"/>
                 </el-col>
                 <el-col :span="20">
                   <el-row style="text-align: left">
@@ -166,10 +172,10 @@
                   <el-row style="text-align: right">
                     <el-col :span="9">&nbsp;</el-col>
                     <el-col :span="6">
-                      <span><i class="el-icon-user" /> &nbsp;&nbsp;{{ comment.userId }} </span>
+                      <span><i class="el-icon-user"/> &nbsp;&nbsp;{{ comment.userId }} </span>
                     </el-col>
                     <el-col :span="7">
-                      <span><i class="el-icon-time" /> &nbsp;&nbsp;{{ comment.createTime }} </span>
+                      <span><i class="el-icon-time"/> &nbsp;&nbsp;{{ comment.createTime }} </span>
                     </el-col>
                     <el-col :span="2">&nbsp;</el-col>
                   </el-row>
@@ -216,20 +222,20 @@
               <el-button type="primary" class="link-button">选课系统 (XK)</el-button>
             </a>
           </el-card>
-          <el-card>
-            <h2>热门tag</h2>
-            <br>
-            <div v-for="popTag in this.popTags" v-bind:key="popTag">
-              <el-button type="text" @click="sortByTag(popTag)">
-                # {{ popTag }}
-              </el-button>
-            </div>
-            <div>
-              <el-button type="text">
-                # 清除标签筛选
-              </el-button>
-            </div>
-          </el-card>
+          <!--          <el-card>-->
+          <!--            <h2>热门tag</h2>-->
+          <!--            <br>-->
+          <!--            <div v-for="popTag in this.popTags" v-bind:key="popTag">-->
+          <!--              <el-button type="text" @click="sortByTag(popTag)">-->
+          <!--                # {{ popTag }}-->
+          <!--              </el-button>-->
+          <!--            </div>-->
+          <!--            <div>-->
+          <!--              <el-button type="text">-->
+          <!--                # 清除标签筛选-->
+          <!--              </el-button>-->
+          <!--            </div>-->
+          <!--          </el-card>-->
         </el-aside>
 
       </el-container>
@@ -242,36 +248,23 @@ import axios from 'axios'
 
 let weeks = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
 export default {
-  name: 'Home',
+  name: 'BrowseRating',
   data () {
     return {
       form: {
         input: ''
       },
-      username: localStorage.getItem('username') || 'admin123',
+      selectSearchByForm: {
+        input: ''
+      },
+      username: localStorage.getItem('username') || '',
       day: weeks[new Date().getDay()],
-      options: [{
-        value: '生活',
-        label: '生活'
-      }, {
-        value: '饮食',
-        label: '饮食'
-      }, {
-        value: '运动',
-        label: '运动'
-      }, {
-        value: '学习',
-        label: '学习'
-      }, {
-        value: '娱乐',
-        label: '娱乐'
-      }],
       orderOptions: [{
         value: 0,
-        label: '按发帖时间排序'
+        label: '按发布时间排序'
       }, {
         value: 1,
-        label: '按帖子热度排序'
+        label: '按课评热度排序'
       }],
       tagOption: [],
       timeTableData: [
@@ -350,93 +343,29 @@ export default {
       totalPage: 1,
       pageNo: 1,
       pageSize: 5,
-      articleList: [
-        {
-          articleId: 1,
-          userId: '19302010001',
-          title: '标题qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq',
-          content: '这是一篇很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长的文章',
-          commentNum: 3,
-          likeNum: 5,
+      ratingList: [{
+        ratingId: 1,
+        userId: '19302010001',
+        courseName: '项目管理',
+        courseType: '专业必修课',
+        relatedMajor: '软件工程',
+        score: 5,
+        title: '课程评价的标题',
+        content: '这是一篇课程评价',
+        commentNum: 1,
+        likeNum: 3,
+        createTime: '2022-11-01 12:34:56',
+        updateTime: '2022-12-01 12:34:56',
+        comments: [{
+          commentId: 1,
+          userId: '20302010001',
+          commentContent: '第一篇课程评价的第一条评论',
           createTime: '2022-11-01 12:34:56',
-          updateTime: '2022-12-01 12:34:56',
-          tags: ['生活', '娱乐'],
-          comments: [
-            {
-              commentId: 1,
-              userId: '20302010001',
-              commentContent: '第一篇文章的第一条很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长的评论',
-              createTime: '2022-11-01 12:34:56',
-              updateTime: '2022-11-01 12:34:56'
-            },
-            {
-              commentId: 2,
-              userId: '20302010002',
-              commentContent: '第一篇文章的第二条没那么长没那么长没那么长没那么长没那么长没那么长没那么长没那么长没那么长没那么长没那么长的评论',
-              createTime: '2022-11-02 12:34:56',
-              updateTime: '2022-11-02 12:34:56'
-            },
-            {
-              commentId: 3,
-              userId: '20302010003',
-              commentContent: '第一篇文章的第三条评论',
-              createTime: '2022-11-03 12:34:56',
-              updateTime: '2022-11-03 12:34:56'
-            }]
-        },
-        {
-          articleId: 2,
-          userId: '19302010002',
-          title: '标题2',
-          content: '这是第二篇没那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长的文章',
-          commentNum: 0,
-          likeNum: 2,
-          createTime: '2022-11-01 12:34:56',
-          updateTime: '2022-12-01 12:34:56',
-          tags: ['学习'],
-          comments: []
-        },
-        {
-          articleId: 3,
-          userId: '19302010002',
-          title: '标题3',
-          content: '这是第三篇文章',
-          commentNum: 0,
-          likeNum: 2,
-          createTime: '2022-11-01 12:34:56',
-          updateTime: '2022-12-01 12:34:56',
-          tags: ['学习'],
-          comments: []
-        },
-        {
-          articleId: 4,
-          userId: '19302010002',
-          title: '标题4',
-          content: '这是第四篇文章',
-          commentNum: 0,
-          likeNum: 2,
-          createTime: '2022-11-01 12:34:56',
-          updateTime: '2022-12-01 12:34:56',
-          tags: ['学习'],
-          comments: []
-        },
-        {
-          articleId: 5,
-          userId: '19302010002',
-          title: '标题5',
-          content: '这是第五篇文章',
-          commentNum: 0,
-          likeNum: 2,
-          createTime: '2022-11-01 12:34:56',
-          updateTime: '2022-12-01 12:34:56',
-          tags: ['学习'],
-          comments: []
-        }
-      ],
-      articleList1: [],
-      articleList2: [],
-      popTags: ['娱乐', '饮食', '运动', '生活', '学习'],
-      orderBy: 0
+          updateTime: '2022-11-01 12:34:56'
+        }]
+      }],
+      orderBy: 0,
+      selectSearchBy: ''
     }
   },
   created () {
@@ -448,7 +377,7 @@ export default {
     formData.append('orderBy', this.orderBy)
     axios({
       method: 'post',
-      url: 'http://localhost:8081/getAllArticles',
+      url: 'http://localhost:8081/getAllRatings',
       headers: {
         'Content-Type': 'multipart/form-data'
       },
@@ -456,7 +385,7 @@ export default {
     })
       .then(resp => {
         if (resp.status === 200) {
-          _this.articleList = resp.data.articleList
+          _this.ratingList = resp.data.ratingList
           _this.totalCount = resp.data.totalCount
           _this.totalPage = resp.data.totalPage
         } else {
@@ -476,9 +405,16 @@ export default {
       formData.append('pageSize', this.pageSize)
       formData.append('pageNo', this.pageNo)
       formData.append('orderBy', this.orderBy)
+      if (this.selectSearchBy === 1) {
+        formData.append('courseName', this.selectSearchByForm.input)
+      } else if (this.selectSearchBy === 2) {
+        formData.append('courseType', this.selectSearchByForm.input)
+      } else if (this.selectSearchBy === 3) {
+        formData.append('relatedMajor', this.selectSearchByForm.input)
+      }
       axios({
         method: 'post',
-        url: 'http://localhost:8081/search',
+        url: 'http://localhost:8081/sortRatings',
         headers: {
           'Content-Type': 'multipart/form-data'
         },
@@ -486,7 +422,7 @@ export default {
       })
         .then(resp => {
           if (resp.status === 200) {
-            _this.articleList = resp.data.articleList
+            _this.ratingList = resp.data.ratingList
             _this.totalCount = resp.data.totalCount
             _this.totalPage = resp.data.totalPage
           } else {
@@ -512,92 +448,12 @@ export default {
     post () {
       // TODO: post page
       this.$message.info('post')
-      this.$router.push({path: 'postArticle'})
+      this.$router.push({path: 'postRating'})
     },
-    sortByTag () {
-      this.$message.info('sort by tags : ' + this.tagOption)
-      let _this = this
-      let formData = new FormData()
-      formData.append('tags', this.tagOption)
-      formData.append('pageSize', this.pageSize)
-      formData.append('pageNo', this.pageNo)
-      formData.append('orderBy', this.orderBy)
-      axios({
-        method: 'post',
-        url: 'http://localhost:8081/sortByTag',
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
-        data: formData
-      })
-        .then(resp => {
-          if (resp.status === 200) {
-            _this.articleList = resp.data.articleList
-            _this.totalCount = resp.data.totalCount
-            _this.totalPage = resp.data.totalPage
-          } else {
-            this.$message.error('search error')
-          }
-        })
-        .catch(error => {
-          this.$message.error(error.response.data.message)
-        })
-    },
-    checkArticleDetail (id) {
+    checkRatingDetail (id) {
       // this.$message.info('check article by id : ' + id)
-      this.$router.push({path: 'articleDetail', query: {articleID: id}})
+      this.$router.push({path: 'ratingDetail', query: {ratingId: id}})
     },
-    // likeArticle (id) {
-    //   // TODO 把评论和点赞功能从主页去掉，不太方便判断文章是否被当前用户点赞过
-    //   this.$message.info('like article by id : ' + id)
-    //   // 1 id 2 type(1 article 2 comment) 3 isLike
-    //   axios.get('http://localhost:8081/like/' + id + '/' + 1 + '/' + 1).then(function (resp) {
-    //     this.$message.success('操作成功')
-    //   })
-    // },
-    // openCommentBox (id) {
-    //   this.$prompt('请输入评论', '评论', {
-    //     confirmButtonText: '确定',
-    //     cancelButtonText: '取消'
-    //   }).then(({value}) => {
-    //     this.commentArticle(id, value)
-    //     this.$message({
-    //       type: 'success',
-    //       message: '你的评论是: ' + value
-    //     })
-    //   }).catch(() => {
-    //     this.$message({
-    //       type: 'info',
-    //       message: '取消评论'
-    //     })
-    //   })
-    // },
-    // commentArticle (id, comment) {
-    //   this.$message.info('comment article by id : ' + id)
-    //   let formData = new FormData()
-    //   formData.append('comment_content', comment)
-    //   formData.append('user_id', this.username)
-    //   formData.append('commented_id', id)
-    //   formData.append('commented_type', 1)
-    //   axios({
-    //     method: 'post',
-    //     url: 'http://localhost:8081/comment',
-    //     headers: {
-    //       'Content-Type': 'multipart/form-data'
-    //     },
-    //     data: formData
-    //   })
-    //     .then(resp => {
-    //       if (resp.status === 200) {
-    //         this.$message.success('评论发表成功')
-    //       } else {
-    //         this.$message.error('search error')
-    //       }
-    //     })
-    //     .catch(error => {
-    //       this.$message.error(error.response.data.message)
-    //     })
-    // },
     handleCurrentChange: function (val) {
       if (val !== this.pageNo) {
         this.pageNo = val
@@ -608,9 +464,16 @@ export default {
         formData.append('pageSize', this.pageSize)
         formData.append('pageNo', this.pageNo)
         formData.append('orderBy', this.orderBy)
+        if (this.selectSearchBy === 1) {
+          formData.append('courseName', this.selectSearchByForm.input)
+        } else if (this.selectSearchBy === 2) {
+          formData.append('courseType', this.selectSearchByForm.input)
+        } else if (this.selectSearchBy === 3) {
+          formData.append('relatedMajor', this.selectSearchByForm.input)
+        }
         axios({
           method: 'post',
-          url: 'http://localhost:8081/search',
+          url: 'http://localhost:8081/sortRatings',
           headers: {
             'Content-Type': 'multipart/form-data'
           },
@@ -618,7 +481,7 @@ export default {
         })
           .then(resp => {
             if (resp.status === 200) {
-              _this.articleList = resp.data.articleList
+              _this.ratingList = resp.data.ratingList
               _this.totalCount = resp.data.totalCount
               _this.totalPage = resp.data.totalPage
             } else {
@@ -630,12 +493,11 @@ export default {
           })
       }
     },
-    toRatingPage () {
-      this.$router.push({path: 'browseRating'})
+    toHomePage () {
+      this.$router.push({path: '/'})
     }
   }
 }
-
 </script>
 
 <style scoped>
