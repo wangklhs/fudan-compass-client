@@ -6,10 +6,8 @@ import Login from '@/views/Login'
 import Register from '@/views/Register'
 import Home from '@/views/Home'
 import ArticleDetail from '@/views/ArticleDetail'
-import PostArticle from '@/views/PostArticle'
 import UserDetail from '@/views/UserDetail'
 import RatingDetail from '@/views/RatingDetail'
-import BrowseRating from '@/views/BrowseRating'
 import PostRating from '@/views/PostRating'
 
 Vue.use(Router)
@@ -37,11 +35,6 @@ export default new Router({
       component: ArticleDetail
     },
     {
-      path: '/postArticle',
-      name: 'PostArticle',
-      component: PostArticle
-    },
-    {
       path: '/userDetail',
       name: 'UserDetail',
       component: UserDetail
@@ -50,11 +43,6 @@ export default new Router({
       path: '/ratingDetail',
       name: 'RatingDetail',
       component: RatingDetail
-    },
-    {
-      path: '/browseRating',
-      name: 'BrowseRating',
-      component: BrowseRating
     },
     {
       path: '/postRating',
