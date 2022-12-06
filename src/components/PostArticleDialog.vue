@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="发帖" :visible.sync="visible" width="45%">
+  <el-dialog title="发帖" :visible.sync="visible" :append-to-body="true" width="45%">
     <el-form ref="form" :model="form" label-width="100px" style="padding: 0 50px">
       <el-form-item label="标题" :rules="{required: true, message: '标题不能为空', trigger: 'blur'}">
         <el-input v-model="form.title"></el-input>
@@ -146,7 +146,8 @@ export default {
     if (this.$route.query.articleID != null) {
       this.form.title = 'title'
       this.form.content = 'content'
-      this.ifNew = false
+      // this.ifNew = false
+
       // let _this = this
       // let formData = new FormData()
       // formData.append('user_id', this.username)
