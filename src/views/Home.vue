@@ -758,16 +758,6 @@ export default {
   background-color: #575757;
 }
 
-.comment-tag {
-  margin: 0 5px;
-  padding: 5px 12px;
-  color: #C0B283;
-  background-color: #FAFAF7;
-  font-weight: bolder;
-  border: 3px solid #DCD0C0;
-  border-radius: 15px;
-}
-
 h1 {
   font-size: 28px;
   font-weight: bold;

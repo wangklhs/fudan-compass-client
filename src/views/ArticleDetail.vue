@@ -7,123 +7,98 @@
       <el-main style="margin: 0 375px">
 
         <el-card>
+          <el-row>
+            <el-col :span="1">&nbsp;</el-col>
+            <el-col :span="12" style="text-align: left; white-space: nowrap; overflow: hidden">
+              <span style="font-size: 16px; font-weight: bolder"> {{ articleDetail.title }} </span>
+            </el-col>
+            <el-col :span="1">&nbsp;</el-col>
+            <el-col :span="7" style="text-align: right; white-space: nowrap; overflow: hidden">
+              <span v-for="tag in articleDetail.tags" v-bind:key="tag" class="comment-tag">{{ tag }}</span>
+            </el-col>
+            <el-col :span="1" style="text-align: right">
+              <span style="margin: 0 20px">
+                <span style="color: #575757; cursor: pointer">
+                  <i class="el-icon-star-off clickable-icon" v-if="!isFavouredByUser" @click="favourButton" />
+                  <i class="el-icon-star-on clickable-icon" v-else @click="favourButton" />
+                </span>
+              </span>
+            </el-col>
+            <el-col :span="1">&nbsp;</el-col>
+          </el-row>
 
-<!--          <el-card>-->
-<!--            <el-row>-->
-<!--              <el-col :span="1">&nbsp;</el-col>-->
-<!--              <el-col :span="11" style="text-align: left; white-space: nowrap; overflow: hidden">-->
-<!--                <span style="font-size: 16px; font-weight: bolder"> {{ articleDetail.title }} </span>-->
-<!--              </el-col>-->
-<!--              <el-col :span="1">&nbsp;</el-col>-->
-<!--              <el-col :span="6" style="text-align: right; white-space: nowrap; overflow: hidden">-->
-<!--                <span v-for="tag in articleDetail.tags" v-bind:key="tag" class="comment-tag">{{ tag }}</span>-->
-<!--              </el-col>-->
-<!--              <el-col :span="1">&nbsp;</el-col>-->
-<!--              <el-col :span="3" style="text-align: right">-->
-<!--                <el-button type="primary" class="details-button" @click="checkArticleDetail(articleDetail.articleId)">查看详情</el-button>-->
-<!--              </el-col>-->
-<!--              <el-col :span="1">&nbsp;</el-col>-->
-<!--            </el-row>-->
+          <el-row style="margin: 20px 0; text-align: left; line-height: 30px">
+            <el-col :span="2">&nbsp;</el-col>
+            <el-col :span="20">
+              <span> {{ articleDetail.content }} </span>
+            </el-col>
+            <el-col :span="2">&nbsp;</el-col>
+          </el-row>
 
-<!--            <el-row style="margin: 20px 0; text-align: left; line-height: 30px">-->
-<!--              <el-col :span="2">&nbsp;</el-col>-->
-<!--              <el-col :span="20">-->
-<!--                <span> {{ article.content }} </span>-->
-<!--              </el-col>-->
-<!--              <el-col :span="2">&nbsp;</el-col>-->
-<!--            </el-row>-->
+          <el-row>
+            <el-col :span="1">&nbsp;</el-col>
+            <el-col :span="5" style="text-align: left">
+              <span><i class="el-icon-user" /> &nbsp;&nbsp;{{ articleDetail.userId }} </span>
+            </el-col>
+            <el-col :span="11" style="text-align: left">
+              <span><i class="el-icon-time" /> &nbsp;&nbsp;{{ articleDetail.createTime }} </span>
+            </el-col>
+            <el-col :span="3" style="text-align: right">
+              <span style="margin: 0 20px; white-space: nowrap">
+                <span style="cursor: pointer">
+                  <transition name="bounce" v-if="!isLikedByUser">
+                    <i class="el-icon-thumb clickable-icon" style="color: #373737; position: absolute; margin-top: 7.5px; margin-left: -25px" @click="likeButton"/>
+                  </transition>
+                  <i class="el-icon-thumb clickable-icon" v-else style="color: #F20C00; position: absolute; z-index: 2; margin-top: 7.5px; margin-left: -25px" @click="likeButton"/>
+                </span>
+                &nbsp;&nbsp;{{ articleDetail.likeNum }}
+              </span>
+            </el-col>
+            <el-col :span="3" style="text-align: right">
+              <span style="margin: 0 20px; white-space: nowrap">
+                <span style="color: #575757; cursor: pointer">
+                  <i class="el-icon-chat-line-round clickable-icon" @click="openCommentBox(articleID)" />
+                </span>
+                &nbsp;&nbsp;{{ articleDetail.commentNum }}
+              </span>
+            </el-col>
+            <el-col :span="1">&nbsp;</el-col>
+          </el-row>
 
-<!--            <el-row>-->
-<!--              <el-col :span="1">&nbsp;</el-col>-->
-<!--              <el-col :span="5" style="text-align: left">-->
-<!--                <span><i class="el-icon-user" /> &nbsp;&nbsp;{{ articleDetail.userId }} </span>-->
-<!--              </el-col>-->
-<!--              <el-col :span="11" style="text-align: left">-->
-<!--                <span><i class="el-icon-time" /> &nbsp;&nbsp;{{ articleDetail.createTime }} </span>-->
-<!--              </el-col>-->
-<!--              <el-col :span="3" style="text-align: right">-->
-<!--                <span><i class="el-icon-thumb" /> &nbsp;&nbsp;{{ articleDetail.likeNum }} </span>-->
-<!--              </el-col>-->
-<!--              <el-col :span="3" style="text-align: right">-->
-<!--                <span style="margin: 0 20px"><i class="el-icon-chat-line-round" /> &nbsp;&nbsp;{{ articleDetail.commentNum }} </span>-->
-<!--              </el-col>-->
-<!--              <el-col :span="1">&nbsp;</el-col>-->
-<!--            </el-row>-->
-
-<!--            <el-row v-for="(comment, index) in articleDetail.comments" v-show="index < 3" v-bind:key="comment.commentId">-->
-<!--              <el-divider/>-->
-<!--              <el-col :span="4" style="text-align: right">-->
-<!--                <i class="el-icon-chat-dot-round" style="font-size: 18px; margin-right: 15px" />-->
-<!--              </el-col>-->
-<!--              <el-col :span="20">-->
-<!--                <el-row style="text-align: left">-->
-<!--                  <el-col :span="22">-->
-<!--                    <span v-if="comment.commentContent.length < 70"> {{ comment.commentContent }} </span>-->
-<!--                    <span v-else> {{ comment.commentContent.substr(0, 70) }}... </span>-->
-<!--                  </el-col>-->
-<!--                  <el-col :span="2">&nbsp;</el-col>-->
-<!--                </el-row>-->
-<!--                <el-row style="text-align: right">-->
-<!--                  <el-col :span="9">&nbsp;</el-col>-->
-<!--                  <el-col :span="6">-->
-<!--                    <span><i class="el-icon-user" /> &nbsp;&nbsp;{{ comment.userId }} </span>-->
-<!--                  </el-col>-->
-<!--                  <el-col :span="7">-->
-<!--                    <span><i class="el-icon-time" /> &nbsp;&nbsp;{{ comment.createTime }} </span>-->
-<!--                  </el-col>-->
-<!--                  <el-col :span="2">&nbsp;</el-col>-->
-<!--                </el-row>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
-
-<!--          </el-card>-->
+          <el-row v-for="(comment, index) in articleDetail.comments" v-show="index < 3" v-bind:key="comment.commentId">
+            <el-divider/>
+            <el-col :span="4" style="text-align: right">
+              <i class="el-icon-chat-dot-round" style="font-size: 18px; margin-right: 15px" />
+            </el-col>
+            <el-col :span="20">
+              <el-row style="text-align: left">
+                <el-col :span="22">
+                  <span> {{ comment.commentContent }} </span>
+                </el-col>
+                <el-col :span="2">&nbsp;</el-col>
+              </el-row>
+              <el-row style="text-align: right">
+                <el-col :span="9">&nbsp;</el-col>
+                <el-col :span="6">
+                  <span><i class="el-icon-user" /> &nbsp;&nbsp;{{ comment.userId }} </span>
+                </el-col>
+                <el-col :span="7">
+                  <span><i class="el-icon-time" /> &nbsp;&nbsp;{{ comment.createTime }} </span>
+                </el-col>
+                <el-col :span="2">&nbsp;</el-col>
+              </el-row>
+            </el-col>
+          </el-row>
 
           <div>
-            {{ articleDetail.title }}
-            <br>
-            发布人： {{ articleDetail.userId }} &nbsp;&nbsp; 发布时间： {{ articleDetail.createTime }} &nbsp;&nbsp; 点赞数：
-            {{ articleDetail.likeNum }} &nbsp;&nbsp;
-            <el-button @click="likeButton" type="success">
-              <span v-if="!isLikedByUser">点赞</span>
-              <span v-else>取消点赞</span>
-            </el-button> &nbsp;&nbsp;
-            <el-button @click="favourButton" type="success">
-              <span v-if="!isFavouredByUser">收藏</span>
-              <span v-else>取消收藏</span>
-            </el-button> &nbsp;&nbsp;
-            标签： <span v-for="tag in articleDetail.tags" v-bind:key="tag"> {{ tag }} &nbsp;&nbsp; </span>&nbsp;&nbsp;
-            <el-button @click="modifyButton(articleDetail.articleId)" type="success"
-                       v-if="username === articleDetail.userId">
-              修改文章
-            </el-button> &nbsp;&nbsp;
+<!--            <el-button @click="modifyButton(articleDetail.articleId)" type="success"-->
+<!--                       v-if="username === articleDetail.userId">-->
+<!--              修改文章-->
+<!--            </el-button> &nbsp;&nbsp;-->
             <el-button @click="deleteButton(articleDetail.articleId)" type="danger"
                        v-if="username === articleDetail.userId">
               删除文章
-            </el-button> &nbsp;&nbsp;
-          </div>
-          <div>
-            {{ articleDetail.content }}
-          </div>
-          <br>
-
-          <div>
-            评论：&nbsp;&nbsp;
-            <el-button @click="openCommentBox(articleID)" type="success">
-              写评论
             </el-button>
-          </div>
-
-          <br>
-
-          <div>
-            <div v-for="comment in articleDetail.comments" v-bind:key="comment.commentId">
-              <div>
-                {{ comment.userId + ' ' + comment.createTime }}
-                <br>
-                {{ comment.commentContent }}
-                <el-divider></el-divider>
-              </div>
-            </div>
           </div>
         </el-card>
 
@@ -417,5 +392,30 @@ export default {
 <style scoped>
 .el-main {
   text-align: center;
+}
+
+.clickable-icon {
+  font-size: 20px;
+  font-weight: bolder;
+}
+
+.bounce-enter-active {
+  animation: bounce-in 0.5s;
+}
+.bounce-leave-active {
+  animation: bounce-in 0.5s reverse;
+}
+@keyframes bounce-in {
+  0% {
+    transform: scale(1);
+    color: #F20C00;
+  }
+  50% {
+    transform: scale(1.5);
+  }
+  100% {
+    transform: scale(1);
+    color: #373737;
+  }
 }
 </style>
