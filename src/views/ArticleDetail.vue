@@ -60,7 +60,7 @@
             </el-col>
             <el-col :span="1">&nbsp;</el-col>
             <el-col :span="5" style="text-align: right">
-              <el-button type="primary" @click="favourButton" style="width: 100px; height: 40px; margin-right: 8px; background-color: #575757">
+              <el-button type="primary" class="details-button" @click="favourButton" style="width: 100px; height: 40px; margin-right: 8px">
                 <span v-if="!isFavouredByUser">收藏</span>
                 <span v-else>取消收藏</span>
               </el-button>
@@ -426,6 +426,10 @@ export default {
 </script>
 
 <style scoped>
+.details-button {
+  background-color: #575757;
+}
+
 .clickable-icon {
   font-size: 20px;
   font-weight: bolder;

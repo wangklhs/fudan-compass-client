@@ -735,6 +735,10 @@ export default {
   background-color: #575757;
 }
 
+.details-button {
+  background-color: #575757;
+}
+
 h1 {
   font-size: 28px;
   font-weight: bold;

@@ -59,10 +59,6 @@ export default {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-.details-button {
-  background-color: #575757;
-}
-
 .el-card {
   margin: 20px 0;
   border-radius: 10px;
