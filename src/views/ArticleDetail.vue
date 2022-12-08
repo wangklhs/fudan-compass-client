@@ -47,7 +47,7 @@
                 <span style="color: #575757; cursor: pointer">
                   <i class="el-icon-chat-line-round clickable-icon" @click="openCommentBox(articleID)" />
                 </span>
-                &nbsp;&nbsp;{{ articleDetail.commentNum }}
+                &nbsp;&nbsp;{{ articleDetail.comments.length }}
               </span>
             </el-col>
             <el-col :span="1">&nbsp;</el-col>
@@ -68,7 +68,7 @@
             <el-col :span="1">&nbsp;</el-col>
           </el-row>
 
-          <el-row v-for="(comment, index) in articleDetail.comments" v-show="index < 3" v-bind:key="comment.commentId">
+          <el-row v-for="(comment, index) in articleDetail.comments" v-show="index < 3" v-bind:key="comment.id">
             <el-divider/>
             <el-col :span="4" style="text-align: right">
               <i class="el-icon-chat-dot-round" style="font-size: 18px; margin-right: 15px" />
@@ -76,7 +76,7 @@
             <el-col :span="20">
               <el-row style="text-align: left">
                 <el-col :span="22">
-                  <span> {{ comment.commentContent }} </span>
+                  <span> {{ comment.content }} </span>
                 </el-col>
                 <el-col :span="2">&nbsp;</el-col>
               </el-row>
@@ -99,7 +99,7 @@
 <!--              修改文章-->
 <!--            </el-button> &nbsp;&nbsp;-->
             <el-button @click="deleteButton(articleDetail.articleId)" type="danger"
-                       v-if="username === articleDetail.userId">
+                       v-if="userId === articleDetail.userId">
               删除文章
             </el-button>
           </div>
@@ -123,38 +123,24 @@ export default {
   data () {
     return {
       username: localStorage.getItem('username') || '',
+      userId: localStorage.getItem('userId') * 1 || 1,
       articleID: this.$route.query.articleID,
       articleDetail: {
-        articleId: 1,
-        userId: '19302010001',
+        id: 1,
+        userId: 19302010001,
         title: '标题很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长',
         content: '这是一篇文章',
-        commentNum: 3,
         likeNum: 5,
         createTime: '2022-11-01 12:34:56',
         updateTime: '2022-12-01 12:34:56',
-        tags: ['生活', '娱乐', '生活', '娱乐', '生活', '娱乐', '生活', '娱乐', '生活', '娱乐'],
+        tags: ['生活', '娱乐'],
         comments: [
           {
-            commentId: 1,
+            id: 1,
             userId: '20302010001',
-            commentContent: '第一篇文章的第一条评论',
+            content: '第一篇文章的第一条评论',
             createTime: '2022-11-01 12:34:56',
             updateTime: '2022-11-01 12:34:56'
-          },
-          {
-            commentId: 2,
-            userId: '20302010002',
-            commentContent: '第一篇文章的第二条评论',
-            createTime: '2022-11-02 12:34:56',
-            updateTime: '2022-11-02 12:34:56'
-          },
-          {
-            commentId: 3,
-            userId: '20302010003',
-            commentContent: '第一篇文章的第三条评论',
-            createTime: '2022-11-03 12:34:56',
-            updateTime: '2022-11-03 12:34:56'
           }]
       },
       isLikedByUser: false,
@@ -163,28 +149,34 @@ export default {
   },
   methods: {
     likeButton () {
-      // 1:id 2:userID 3:type(1 article 2 comment) 4:isLike
       if (this.isLikedByUser) {
         this.isLikedByUser = false
         // axios.get('http://localhost:8081/like/' + this.articleID + '/' + this.username + '/' + 1 + '/' + 0).then(function (resp) {
         //   this.$message.success('已取消点赞')
         // })
-        let formData = new FormData()
-        formData.append('id', this.articleDetail.articleId)
-        formData.append('likeType', 0)
-        formData.append('userId', this.username)
-        formData.append('isLike', false)
-        axios({
-          method: 'post',
-          url: 'http://localhost:8081/like',
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          },
-          data: formData
+        // let formData = new FormData()
+        // formData.append('id', this.articleDetail.articleId)
+        // formData.append('likeType', 0)
+        // formData.append('userId', this.username)
+        // formData.append('isLike', false)
+        // axios({
+        //   method: 'post',
+        //   url: 'http://localhost:8081/like',
+        //   headers: {
+        //     'Content-Type': 'multipart/form-data'
+        //   },
+        //   data: formData
+        // })
+        axios.post('http://localhost:8081/like', {
+          id: this.articleDetail.id,
+          userId: this.userId,
+          isLike: false,
+          likeType: 0
         })
           .then(resp => {
             if (resp.status === 200) {
               this.$message.success('已取消点赞')
+              this.refresh()
             } else {
               this.$message.error('点赞错误')
             }
@@ -197,22 +189,29 @@ export default {
         // axios.get('http://localhost:8081/like/' + this.articleID + '/' + this.username + '/' + 1 + '/' + 1).then(function (resp) {
         //   this.$message.success('已点赞')
         // })
-        let formData = new FormData()
-        formData.append('id', this.articleDetail.articleId)
-        formData.append('likeType', 0)
-        formData.append('userId', this.username)
-        formData.append('isLike', true)
-        axios({
-          method: 'post',
-          url: 'http://localhost:8081/like',
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          },
-          data: formData
+        // let formData = new FormData()
+        // formData.append('id', this.articleDetail.articleId)
+        // formData.append('likeType', 0)
+        // formData.append('userId', this.username)
+        // formData.append('isLike', true)
+        // axios({
+        //   method: 'post',
+        //   url: 'http://localhost:8081/like',
+        //   headers: {
+        //     'Content-Type': 'multipart/form-data'
+        //   },
+        //   data: formData
+        // })
+        axios.post('http://localhost:8081/like', {
+          id: this.articleDetail.id,
+          userId: this.userId,
+          isLike: true,
+          likeType: 0
         })
           .then(resp => {
             if (resp.status === 200) {
               this.$message.success('已点赞')
+              this.refresh()
             } else {
               this.$message.error('点赞错误')
             }
@@ -229,22 +228,29 @@ export default {
         // axios.get('http://localhost:8081/like/' + this.articleID + '/' + this.username + '/' + 1 + '/' + 0).then(function (resp) {
         //   this.$message.success('已取消点赞')
         // })
-        let formData = new FormData()
-        formData.append('id', this.articleDetail.articleId)
-        formData.append('favourType', 0)
-        formData.append('userId', this.username)
-        formData.append('isFavour', false)
-        axios({
-          method: 'post',
-          url: 'http://localhost:8081/favour',
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          },
-          data: formData
+        // let formData = new FormData()
+        // formData.append('id', this.articleDetail.articleId)
+        // formData.append('favourType', 0)
+        // formData.append('userId', this.username)
+        // formData.append('isFavour', false)
+        // axios({
+        //   method: 'post',
+        //   url: 'http://localhost:8081/favour',
+        //   headers: {
+        //     'Content-Type': 'multipart/form-data'
+        //   },
+        //   data: formData
+        // })
+        axios.post('http://localhost:8081/favour', {
+          id: this.articleDetail.id,
+          userId: this.userId,
+          isFavour: false,
+          favourType: 0
         })
           .then(resp => {
             if (resp.status === 200) {
               this.$message.success('已取消收藏')
+              this.refresh()
             } else {
               this.$message.error('收藏错误')
             }
@@ -257,22 +263,29 @@ export default {
         // axios.get('http://localhost:8081/like/' + this.articleID + '/' + this.username + '/' + 1 + '/' + 1).then(function (resp) {
         //   this.$message.success('已点赞')
         // })
-        let formData = new FormData()
-        formData.append('id', this.articleDetail.articleId)
-        formData.append('favourType', 0)
-        formData.append('userId', this.username)
-        formData.append('isFavour', true)
-        axios({
-          method: 'post',
-          url: 'http://localhost:8081/favour',
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          },
-          data: formData
+        // let formData = new FormData()
+        // formData.append('id', this.articleDetail.articleId)
+        // formData.append('favourType', 0)
+        // formData.append('userId', this.username)
+        // formData.append('isFavour', true)
+        // axios({
+        //   method: 'post',
+        //   url: 'http://localhost:8081/favour',
+        //   headers: {
+        //     'Content-Type': 'multipart/form-data'
+        //   },
+        //   data: formData
+        // })
+        axios.post('http://localhost:8081/favour', {
+          id: this.articleDetail.id,
+          userId: this.userId,
+          isFavour: true,
+          favourType: 0
         })
           .then(resp => {
             if (resp.status === 200) {
               this.$message.success('已收藏')
+              this.refresh()
             } else {
               this.$message.error('收藏错误')
             }
@@ -308,22 +321,29 @@ export default {
     },
     commentArticle (id, comment) {
       this.$message.info('comment article by id : ' + id)
-      let formData = new FormData()
-      formData.append('id', this.articleID)
-      formData.append('userId', this.username)
-      formData.append('commentType', 0)
-      formData.append('content', comment)
-      axios({
-        method: 'post',
-        url: 'http://localhost:8081/comment',
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
-        data: formData
+      // let formData = new FormData()
+      // formData.append('id', this.articleID)
+      // formData.append('userId', this.username)
+      // formData.append('commentType', 0)
+      // formData.append('content', comment)
+      // axios({
+      //   method: 'post',
+      //   url: 'http://localhost:8081/comment',
+      //   headers: {
+      //     'Content-Type': 'multipart/form-data'
+      //   },
+      //   data: formData
+      // })
+      axios.post('http://localhost:8081/comments', {
+        id: this.articleDetail.id,
+        userId: this.userId,
+        content: comment,
+        commentType: 0
       })
         .then(resp => {
           if (resp.status === 200) {
             this.$message.success('评论发表成功')
+            this.refresh()
           } else {
             this.$message.error('search error')
           }
@@ -332,21 +352,26 @@ export default {
           this.$message.error(error.response.data.message)
         })
     },
-    modifyButton (articleID) {
-      this.$router.push({path: 'postArticle', query: {articleID: articleID}})
-    },
+    // modifyButton (articleID) {
+    //   this.$router.push({path: 'postArticle', query: {articleID: articleID}})
+    // },
     deleteButton (articleId) {
-      let formData = new FormData()
-      formData.append('id', articleId)
-      formData.append('userId', this.username)
-      formData.append('deleteType', 0)
-      axios({
-        method: 'post',
-        url: 'http://localhost:8081/delete',
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
-        data: formData
+      // let formData = new FormData()
+      // formData.append('id', articleId)
+      // formData.append('userId', this.username)
+      // formData.append('deleteType', 0)
+      // axios({
+      //   method: 'post',
+      //   url: 'http://localhost:8081/delete',
+      //   headers: {
+      //     'Content-Type': 'multipart/form-data'
+      //   },
+      //   data: formData
+      // })
+      axios.post('http://localhost:8081/delete', {
+        id: this.articleDetail.id,
+        userId: this.userId,
+        deleteType: 0
       })
         .then(resp => {
           if (resp.status === 200) {
@@ -360,34 +385,42 @@ export default {
           this.$message.error(error.response.data.message)
         })
       this.$router.push({path: '/'})
+    },
+    refresh () {
+      let _this = this
+      axios.post('http://localhost:8081/articles/detail', {
+        articleId: this.articleID * 1,
+        userId: this.userId
+      })
+        .then(resp => {
+          if (resp.status === 200) {
+            console.log(resp.data)
+            _this.articleDetail = resp.data
+            _this.isLikedByUser = resp.data.isLikedByUser
+            _this.isFavouredByUser = resp.data.isFavouredByUser
+          } else {
+            this.$message.error('error')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.response.data.message)
+        })
     }
   },
   created () {
-    this.$message.info('check article by id : ' + this.articleID)
-    let _this = this
-    let formData = new FormData()
-    formData.append('userId', this.username)
-    formData.append('articleId', this.articleID)
-    axios({
-      method: 'post',
-      url: 'http://localhost:8081/getArticleDetail',
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      },
-      data: formData
-    })
-      .then(resp => {
-        if (resp.status === 200) {
-          _this.articleDetail = resp.data.articleDetail
-          _this.isLikedByUser = resp.data.isLikedByUser
-          _this.isFavouredByUser = resp.data.isFavouredByUser
-        } else {
-          this.$message.error('error')
-        }
-      })
-      .catch(error => {
-        this.$message.error(error.response.data.message)
-      })
+    // this.$message.info('check article by id : ' + this.articleID)
+    // let formData = new FormData()
+    // formData.append('userId', this.username)
+    // formData.append('articleId', this.articleID)
+    // axios({
+    //   method: 'post',
+    //   url: 'http://localhost:8081/getArticleDetail',
+    //   headers: {
+    //     'Content-Type': 'multipart/form-data'
+    //   },
+    //   data: formData
+    // })
+    this.refresh()
   }
 }
 </script>

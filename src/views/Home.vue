@@ -35,9 +35,9 @@
         </el-aside>
 
         <el-main>
-          <el-tabs type="border-card">
+          <el-tabs type="border-card" v-model="browseType" @tab-click="handleTabClick">
 
-            <el-tab-pane label="论坛">
+            <el-tab-pane label="论坛" name="article">
               <el-card style="padding: 20px 0; margin-top: 10px">
                 <el-col :span="13">
                   <el-form ref="form" :model="form">
@@ -71,7 +71,7 @@
               </el-card>
 
               <div>
-                <el-card v-for="article in this.articleList" v-bind:key="article.articleId">
+                <el-card v-for="article in this.articleList" v-bind:key="article.id">
                   <el-row>
                     <el-col :span="1">&nbsp;</el-col>
                     <el-col :span="11" style="text-align: left; white-space: nowrap; overflow: hidden">
@@ -84,7 +84,7 @@
                     </el-col>
                     <el-col :span="1">&nbsp;</el-col>
                     <el-col :span="3" style="text-align: right">
-                      <el-button type="primary" class="details-button" @click="checkArticleDetail(article.articleId)">查看详情</el-button>
+                      <el-button type="primary" class="details-button" @click="checkArticleDetail(article.id)">查看详情</el-button>
                     </el-col>
                     <el-col :span="1">&nbsp;</el-col>
                   </el-row>
@@ -110,12 +110,12 @@
                       <span><i class="el-icon-thumb" /> &nbsp;&nbsp;{{ article.likeNum }} </span>
                     </el-col>
                     <el-col :span="3" style="text-align: right">
-                      <span style="margin: 0 20px"><i class="el-icon-chat-line-round" /> &nbsp;&nbsp;{{ article.commentNum }} </span>
+                      <span style="margin: 0 20px"><i class="el-icon-chat-line-round" /> &nbsp;&nbsp;{{ article.comments.length }} </span>
                     </el-col>
                     <el-col :span="1">&nbsp;</el-col>
                   </el-row>
 
-                  <el-row v-for="(comment, index) in article.comments" v-show="index < 3" v-bind:key="comment.commentId">
+                  <el-row v-for="(comment, index) in article.comments" v-show="index < 3" v-bind:key="comment.id">
                     <el-divider/>
                     <el-col :span="4" style="text-align: right">
                       <i class="el-icon-chat-dot-round" style="font-size: 18px; margin-right: 15px" />
@@ -123,8 +123,8 @@
                     <el-col :span="20">
                       <el-row style="text-align: left">
                         <el-col :span="22">
-                          <span v-if="comment.commentContent.length < 70"> {{ comment.commentContent }} </span>
-                          <span v-else> {{ comment.commentContent.substr(0, 70) }}... </span>
+                          <span v-if="comment.content.length < 70"> {{ comment.content }} </span>
+                          <span v-else> {{ comment.content.substr(0, 70) }}... </span>
                         </el-col>
                         <el-col :span="2">&nbsp;</el-col>
                       </el-row>
@@ -153,13 +153,13 @@
               </div>
             </el-tab-pane>
 
-            <el-tab-pane label="课评">
+            <el-tab-pane label="课评" name="rating">
 
               <el-card style="padding: 20px 0; margin-top: 10px">
                 <el-col :span="13">
                   <el-form ref="selectSearchByForm" :model="selectSearchByForm">
                     <el-input placeholder="请输入内容" v-model="selectSearchByForm.input">
-                      <el-button slot="append" icon="el-icon-search" @click="search()">搜索</el-button>
+                      <el-button slot="append" icon="el-icon-search" @click="searchRating()">搜索</el-button>
                     </el-input>
                   </el-form>
                 </el-col>
@@ -262,11 +262,11 @@
 
                 <el-pagination
                   layout="prev, pager, next"
-                  :total="totalCount"
-                  :page-size="pageSize"
+                  :total="totalCountRating"
+                  :page-size="pageSizeRating"
                   :hide-on-single-page="true"
-                  :current-page="pageNo"
-                  @current-change="handleCurrentChange"/>
+                  :current-page="pageNoRating"
+                  @current-change="handleCurrentChangeRating"/>
               </div>
             </el-tab-pane>
 
@@ -301,7 +301,7 @@
               <el-button type="primary" class="link-button">选课系统 (XK)</el-button>
             </a>
           </el-card>
-          <el-card>
+          <el-card v-if="browseType==='article'">
             <h2>热门tag</h2>
             <br>
             <div v-for="popTag in this.popTags" v-bind:key="popTag">
@@ -309,11 +309,25 @@
                 # {{ popTag }}
               </el-button>
             </div>
-            <div>
-              <el-button type="text">
-                # 清除标签筛选
+<!--            <div>-->
+<!--              <el-button type="text">-->
+<!--                # 清除标签筛选-->
+<!--              </el-button>-->
+<!--            </div>-->
+          </el-card>
+          <el-card v-if="browseType==='rating'">
+            <h2>热门课程类型</h2>
+            <br>
+            <div v-for="popCourseType in this.popCourseTypes" v-bind:key="popCourseType">
+              <el-button type="text" @click="sortByCourseType(popCourseType)">
+                # {{ popCourseType }}
               </el-button>
             </div>
+<!--            <div>-->
+<!--              <el-button type="text">-->
+<!--                # 清除课程类型筛选-->
+<!--              </el-button>-->
+<!--            </div>-->
           </el-card>
         </el-aside>
 
@@ -343,6 +357,7 @@ export default {
         input: ''
       },
       username: localStorage.getItem('username') || 'admin123',
+      userId: localStorage.getItem('userId') || 1,
       day: weeks[new Date().getDay()],
       options: [{
         value: '生活',
@@ -447,91 +462,32 @@ export default {
           name: ''
         }
       ],
-      totalCount: 5,
-      totalPage: 1,
+      totalElements: 5,
+      totalPages: 1,
       pageNo: 1,
       pageSize: 5,
+      totalCountRating: 1,
+      totalPageRating: 1,
+      pageNoRating: 1,
+      pageSizeRating: 5,
       articleList: [
         {
-          articleId: 1,
+          id: 1,
           userId: '19302010001',
           title: '标题qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq',
           content: '这是一篇很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长的文章',
-          commentNum: 3,
           likeNum: 5,
           createTime: '2022-11-01 12:34:56',
           updateTime: '2022-12-01 12:34:56',
           tags: ['生活', '娱乐'],
           comments: [
             {
-              commentId: 1,
+              id: 1,
               userId: '20302010001',
-              commentContent: '第一篇文章的第一条很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长的评论',
+              content: '第一篇文章的第一条很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长的评论',
               createTime: '2022-11-01 12:34:56',
               updateTime: '2022-11-01 12:34:56'
-            },
-            {
-              commentId: 2,
-              userId: '20302010002',
-              commentContent: '第一篇文章的第二条没那么长没那么长没那么长没那么长没那么长没那么长没那么长没那么长没那么长没那么长没那么长的评论',
-              createTime: '2022-11-02 12:34:56',
-              updateTime: '2022-11-02 12:34:56'
-            },
-            {
-              commentId: 3,
-              userId: '20302010003',
-              commentContent: '第一篇文章的第三条评论',
-              createTime: '2022-11-03 12:34:56',
-              updateTime: '2022-11-03 12:34:56'
             }]
-        },
-        {
-          articleId: 2,
-          userId: '19302010002',
-          title: '标题2',
-          content: '这是第二篇没那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长那么长的文章',
-          commentNum: 0,
-          likeNum: 2,
-          createTime: '2022-11-01 12:34:56',
-          updateTime: '2022-12-01 12:34:56',
-          tags: ['学习'],
-          comments: []
-        },
-        {
-          articleId: 3,
-          userId: '19302010002',
-          title: '标题3',
-          content: '这是第三篇文章',
-          commentNum: 0,
-          likeNum: 2,
-          createTime: '2022-11-01 12:34:56',
-          updateTime: '2022-12-01 12:34:56',
-          tags: ['学习'],
-          comments: []
-        },
-        {
-          articleId: 4,
-          userId: '19302010002',
-          title: '标题4',
-          content: '这是第四篇文章',
-          commentNum: 0,
-          likeNum: 2,
-          createTime: '2022-11-01 12:34:56',
-          updateTime: '2022-12-01 12:34:56',
-          tags: ['学习'],
-          comments: []
-        },
-        {
-          articleId: 5,
-          userId: '19302010002',
-          title: '标题5',
-          content: '这是第五篇文章',
-          commentNum: 0,
-          likeNum: 2,
-          createTime: '2022-11-01 12:34:56',
-          updateTime: '2022-12-01 12:34:56',
-          tags: ['学习'],
-          comments: []
         }
       ],
       ratingList: [
@@ -560,30 +516,38 @@ export default {
         }
       ],
       popTags: ['娱乐', '饮食', '运动', '生活', '学习'],
+      popCourseTypes: ['专业必修', '专业选修', '七大模块', '通识必修', '通识选修'],
       orderBy: 0,
-      selectSearchBy: ''
+      selectSearchBy: '',
+      browseType: 'article'
     }
   },
   created () {
-    this.$message.info('created')
+    // this.$message.info('created')
     let _this = this
-    let formData = new FormData()
-    formData.append('pageSize', this.pageSize)
-    formData.append('pageNo', this.pageNo)
-    formData.append('orderBy', this.orderBy)
-    axios({
-      method: 'post',
-      url: 'http://localhost:8081/getAllArticles',
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      },
-      data: formData
+    // let formData = new FormData()
+    // formData.append('pageSize', this.pageSize)
+    // formData.append('pageNo', this.pageNo)
+    // formData.append('orderBy', this.orderBy)
+    // axios({
+    //   method: 'post',
+    //   url: 'http://localhost:8081/articles/search',
+    //   headers: {
+    //     'Content-Type': 'multipart/form-data'
+    //   },
+    //   data: formData
+    // })
+    axios.post('http://localhost:8081/articles/search', {
+      orderBy: this.orderBy,
+      pageNo: this.pageNo - 1,
+      pageSize: this.pageSize
     })
       .then(resp => {
         if (resp.status === 200) {
-          _this.articleList = resp.data.articleList
-          _this.totalCount = resp.data.totalCount
-          _this.totalPage = resp.data.totalPage
+          console.log(resp.data)
+          _this.articleList = resp.data.content
+          _this.totalCount = resp.data.totalElements
+          _this.totalPage = resp.data.totalPages
         } else {
           this.$message.error('search error')
         }
@@ -596,24 +560,31 @@ export default {
     search () {
       this.$message.info('search button clicked')
       let _this = this
-      let formData = new FormData()
-      formData.append('searchContent', this.form.input)
-      formData.append('pageSize', this.pageSize)
-      formData.append('pageNo', this.pageNo)
-      formData.append('orderBy', this.orderBy)
-      axios({
-        method: 'post',
-        url: 'http://localhost:8081/search',
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
-        data: formData
+      // let formData = new FormData()
+      // formData.append('searchContent', this.form.input)
+      // formData.append('pageSize', this.pageSize)
+      // formData.append('pageNo', this.pageNo)
+      // formData.append('orderBy', this.orderBy)
+      // axios({
+      //   method: 'post',
+      //   url: 'http://localhost:8081/search',
+      //   headers: {
+      //     'Content-Type': 'multipart/form-data'
+      //   },
+      //   data: formData
+      // })
+      axios.post('http://localhost:8081/articles/search', {
+        orderBy: this.orderBy,
+        pageNo: this.pageNo - 1,
+        pageSize: this.pageSize,
+        searchContent: this.form.input,
+        tags: this.tagOption
       })
         .then(resp => {
           if (resp.status === 200) {
-            _this.articleList = resp.data.articleList
-            _this.totalCount = resp.data.totalCount
-            _this.totalPage = resp.data.totalPage
+            _this.articleList = resp.data.content
+            _this.totalCount = resp.data.totalElements
+            _this.totalPage = resp.data.totalPages
           } else {
             this.$message.error('search error')
           }
@@ -622,17 +593,60 @@ export default {
           this.$message.error(error.response.data.message)
         })
     },
-    sortByTag () {
+    sortByTag (tag) {
       this.$message.info('sort by tags : ' + this.tagOption)
+      this.tagOption = [tag]
+      let _this = this
+      // let formData = new FormData()
+      // formData.append('tags', this.tagOption)
+      // formData.append('pageSize', this.pageSize)
+      // formData.append('pageNo', this.pageNo)
+      // formData.append('orderBy', this.orderBy)
+      // axios({
+      //   method: 'post',
+      //   url: 'http://localhost:8081/sortByTag',
+      //   headers: {
+      //     'Content-Type': 'multipart/form-data'
+      //   },
+      //   data: formData
+      // })
+      axios.post('http://localhost:8081/articles/search', {
+        orderBy: this.orderBy,
+        pageNo: this.pageNo - 1,
+        pageSize: this.pageSize,
+        tags: [tag]
+      })
+        .then(resp => {
+          if (resp.status === 200) {
+            _this.articleList = resp.data.content
+            _this.totalCount = resp.data.totalElements
+            _this.totalPage = resp.data.totalPages
+          } else {
+            this.$message.error('tag sort error')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.response.data.message)
+        })
+    },
+    searchRating () {
+      this.$message.info('search rating button clicked')
       let _this = this
       let formData = new FormData()
-      formData.append('tags', this.tagOption)
-      formData.append('pageSize', this.pageSize)
-      formData.append('pageNo', this.pageNo)
+      formData.append('searchContent', this.form.input)
+      formData.append('pageSize', this.pageSizeRating)
+      formData.append('pageNo', this.pageNoRating)
       formData.append('orderBy', this.orderBy)
+      if (this.selectSearchBy === 1) {
+        formData.append('courseName', this.selectSearchByForm.input)
+      } else if (this.selectSearchBy === 2) {
+        formData.append('courseType', this.selectSearchByForm.input)
+      } else if (this.selectSearchBy === 3) {
+        formData.append('relatedMajor', this.selectSearchByForm.input)
+      }
       axios({
         method: 'post',
-        url: 'http://localhost:8081/sortByTag',
+        url: 'http://localhost:8081/sortRatings',
         headers: {
           'Content-Type': 'multipart/form-data'
         },
@@ -640,9 +654,38 @@ export default {
       })
         .then(resp => {
           if (resp.status === 200) {
-            _this.articleList = resp.data.articleList
-            _this.totalCount = resp.data.totalCount
-            _this.totalPage = resp.data.totalPage
+            _this.ratingList = resp.data.ratingList
+            _this.totalCountRating = resp.data.totalCount
+            _this.totalPageRating = resp.data.totalPage
+          } else {
+            this.$message.error('search error')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.response.data.message)
+        })
+    },
+    sortByCourseType (courseType) {
+      this.$message.info('sort by courseType : ' + courseType)
+      let _this = this
+      let formData = new FormData()
+      formData.append('courseType', courseType)
+      formData.append('pageSize', this.pageSize)
+      formData.append('pageNo', this.pageNo)
+      formData.append('orderBy', this.orderBy)
+      axios({
+        method: 'post',
+        url: 'http://localhost:8081/sortRatings',
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        data: formData
+      })
+        .then(resp => {
+          if (resp.status === 200) {
+            _this.ratingList = resp.data.ratingList
+            _this.totalCountRating = resp.data.totalCount
+            _this.totalPageRating = resp.data.totalPage
           } else {
             this.$message.error('search error')
           }
@@ -659,87 +702,25 @@ export default {
       // this.$message.info('check article by id : ' + id)
       this.$router.push({path: 'ratingDetail', query: {ratingId: id}})
     },
-    // likeArticle (id) {
-    //   // TODO 把评论和点赞功能从主页去掉，不太方便判断文章是否被当前用户点赞过
-    //   this.$message.info('like article by id : ' + id)
-    //   // 1 id 2 type(1 article 2 comment) 3 isLike
-    //   axios.get('http://localhost:8081/like/' + id + '/' + 1 + '/' + 1).then(function (resp) {
-    //     this.$message.success('操作成功')
-    //   })
-    // },
-    // openCommentBox (id) {
-    //   this.$prompt('请输入评论', '评论', {
-    //     confirmButtonText: '确定',
-    //     cancelButtonText: '取消'
-    //   }).then(({value}) => {
-    //     this.commentArticle(id, value)
-    //     this.$message({
-    //       type: 'success',
-    //       message: '你的评论是: ' + value
-    //     })
-    //   }).catch(() => {
-    //     this.$message({
-    //       type: 'info',
-    //       message: '取消评论'
-    //     })
-    //   })
-    // },
-    // commentArticle (id, comment) {
-    //   this.$message.info('comment article by id : ' + id)
-    //   let formData = new FormData()
-    //   formData.append('comment_content', comment)
-    //   formData.append('user_id', this.username)
-    //   formData.append('commented_id', id)
-    //   formData.append('commented_type', 1)
-    //   axios({
-    //     method: 'post',
-    //     url: 'http://localhost:8081/comment',
-    //     headers: {
-    //       'Content-Type': 'multipart/form-data'
-    //     },
-    //     data: formData
-    //   })
-    //     .then(resp => {
-    //       if (resp.status === 200) {
-    //         this.$message.success('评论发表成功')
-    //       } else {
-    //         this.$message.error('search error')
-    //       }
-    //     })
-    //     .catch(error => {
-    //       this.$message.error(error.response.data.message)
-    //     })
-    // },
     handleCurrentChange: function (val) {
       if (val !== this.pageNo) {
         this.pageNo = val
         this.$message.info('pageNo : ' + this.pageNo)
-        let _this = this
-        let formData = new FormData()
-        formData.append('searchContent', this.form.input)
-        formData.append('pageSize', this.pageSize)
-        formData.append('pageNo', this.pageNo)
-        formData.append('orderBy', this.orderBy)
-        axios({
-          method: 'post',
-          url: 'http://localhost:8081/search',
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          },
-          data: formData
-        })
-          .then(resp => {
-            if (resp.status === 200) {
-              _this.articleList = resp.data.articleList
-              _this.totalCount = resp.data.totalCount
-              _this.totalPage = resp.data.totalPage
-            } else {
-              this.$message.error('search error')
-            }
-          })
-          .catch(error => {
-            this.$message.error(error.response.data.message)
-          })
+        this.search()
+      }
+    },
+    handleCurrentChangeRating: function (val) {
+      if (val !== this.pageNoRating) {
+        this.pageNoRating = val
+        this.$message.info('pageNo : ' + this.pageNoRating)
+        this.searchRating()
+      }
+    },
+    handleTabClick (tab, event) {
+      if (this.browseType === 'article') {
+        this.$message.info('browse article')
+      } else if (this.browseType === 'rating') {
+        this.$message.info('browse rating')
       }
     }
   }

@@ -13,19 +13,19 @@
           <el-checkbox label="学习" name="tags"></el-checkbox>
         </el-checkbox-group>
       </el-form-item>
-      <el-form-item
-        v-for="(customTag, index) in form.customTags"
-        :label="'自定义标签 ' + (index+1)"
-        :key="customTag.key"
-        :prop="'customTag.' + index + '.value'"
-        :rules="{required: false, trigger: 'blur'}">
-        <el-input v-model="customTag.value">
-          <el-button @click.prevent="removeCustomTag(customTag)" slot="append">删除</el-button>
-        </el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="addCustomTag">新增自定义标签</el-button>
-      </el-form-item>
+<!--      <el-form-item-->
+<!--        v-for="(customTag, index) in form.customTags"-->
+<!--        :label="'自定义标签 ' + (index+1)"-->
+<!--        :key="customTag.key"-->
+<!--        :prop="'customTag.' + index + '.value'"-->
+<!--        :rules="{required: false, trigger: 'blur'}">-->
+<!--        <el-input v-model="customTag.value">-->
+<!--          <el-button @click.prevent="removeCustomTag(customTag)" slot="append">删除</el-button>-->
+<!--        </el-input>-->
+<!--      </el-form-item>-->
+<!--      <el-form-item>-->
+<!--        <el-button type="primary" @click="addCustomTag">新增自定义标签</el-button>-->
+<!--      </el-form-item>-->
       <el-form-item label="正文内容" :rules="{required: true, message: '正文内容不能为空', trigger: 'blur'}">
         <el-input type="textarea" v-model="form.content" :rows="5"></el-input>
       </el-form-item>
@@ -43,6 +43,7 @@ import axios from 'axios'
 export default {
   data () {
     return {
+      username: localStorage.getItem('username') || null,
       visible: false,
       form: {
         title: '',
@@ -80,28 +81,27 @@ export default {
           // formData.append('content', this.form.content)
           // formData.append('userId', this.username)
           // formData.append('title', this.form.title)
-          let tagsData = []
-          for (let i = 0; i < this.tags.length; i++) {
-            tagsData.push(this.tags[i])
-          }
-          for (let i = 0; i < this.customTags.length; i++) {
-            tagsData.push(this.customTags[i].value)
-          }
-          // formData.append('tags', tagsData)
+          // formData.append('tags', this.tags)
+          // let tagsData = []
+          // for (let i = 0; i < this.tags.length; i++) {
+          //   tagsData.push(this.tags[i])
+          // }
+          // for (let i = 0; i < this.customTags.length; i++) {
+          //   tagsData.push(this.customTags[i].value)
+          // }
           // axios({
           //   method: 'post',
-          //   url: 'http://localhost:8081/postArticle',
+          //   url: 'http://localhost:8081/articles',
           //   headers: {
           //     'Content-Type': 'multipart/form-data'
           //   },
           //   data: formData
           // })
-          axios.post('http://localhost:8081/postArticle', {
+          axios.post('http://localhost:8081/articles', {
             content: this.form.content,
             userId: this.username,
             title: this.form.title,
-            tags: tagsData,
-            ifNew: true
+            tags: this.form.tags
           })
             .then(resp => {
               if (resp.status === 200) {
