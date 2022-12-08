@@ -1,7 +1,7 @@
 <template>
   <el-header>
     <el-row style="margin: 15px 0">
-      <el-col :span="6" style="margin: 0 1.75% 0 1.5%; white-space: nowrap; overflow: hidden; text-align: left">
+      <el-col :span="6" style="margin: 0 1.5% 0 1.5%; white-space: nowrap; overflow: hidden; text-align: left">
         <div style="width: 40px; display: inline-block; vertical-align: middle">
           <img src="static/images/compass.png" alt="" width="30px">
         </div>

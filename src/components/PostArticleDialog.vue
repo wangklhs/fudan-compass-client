@@ -25,7 +25,7 @@
         </el-input>
       </el-form-item>
       <el-form-item v-if="ifNew">
-        <el-button @click="addCustomTag">新增自定义标签</el-button>
+        <el-button type="primary" @click="addCustomTag">新增自定义标签</el-button>
       </el-form-item>
       <el-form-item label="正文内容" :rules="{required: true, message: '正文内容不能为空', trigger: 'blur'}">
         <el-input type="textarea" v-model="form.content" :rows="5"></el-input>

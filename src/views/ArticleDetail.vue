@@ -9,25 +9,13 @@
         <el-card>
           <el-row>
             <el-col :span="1">&nbsp;</el-col>
-            <el-col :span="12" style="text-align: left; white-space: nowrap; overflow: hidden">
-              <span style="font-size: 16px; font-weight: bolder"> {{ articleDetail.title }} </span>
-            </el-col>
-            <el-col :span="1">&nbsp;</el-col>
-            <el-col :span="7" style="text-align: right; white-space: nowrap; overflow: hidden">
-              <span v-for="tag in articleDetail.tags" v-bind:key="tag" class="comment-tag">{{ tag }}</span>
-            </el-col>
-            <el-col :span="1" style="text-align: right">
-              <span style="margin: 0 20px">
-                <span style="color: #575757; cursor: pointer">
-                  <i class="el-icon-star-off clickable-icon" v-if="!isFavouredByUser" @click="favourButton" />
-                  <i class="el-icon-star-on clickable-icon" v-else @click="favourButton" />
-                </span>
-              </span>
+            <el-col :span="22" style="text-align: left">
+              <span style="font-size: 18px; font-weight: bolder"> {{ articleDetail.title }} </span>
             </el-col>
             <el-col :span="1">&nbsp;</el-col>
           </el-row>
 
-          <el-row style="margin: 20px 0; text-align: left; line-height: 30px">
+          <el-row style="margin: 40px 0; text-align: left; line-height: 30px">
             <el-col :span="2">&nbsp;</el-col>
             <el-col :span="20">
               <span> {{ articleDetail.content }} </span>
@@ -61,6 +49,21 @@
                 </span>
                 &nbsp;&nbsp;{{ articleDetail.commentNum }}
               </span>
+            </el-col>
+            <el-col :span="1">&nbsp;</el-col>
+          </el-row>
+
+          <el-row style="margin: 10px 0">
+            <el-col :span="1">&nbsp;</el-col>
+            <el-col :span="16" style="text-align: left; margin-left: -8px">
+              <span v-for="tag in articleDetail.tags" v-bind:key="tag" class="comment-tag">{{ tag }}</span>
+            </el-col>
+            <el-col :span="1">&nbsp;</el-col>
+            <el-col :span="5" style="text-align: right">
+              <el-button type="primary" @click="favourButton" style="width: 100px; height: 40px; margin-right: 8px; background-color: #575757">
+                <span v-if="!isFavouredByUser">收藏</span>
+                <span v-else>取消收藏</span>
+              </el-button>
             </el-col>
             <el-col :span="1">&nbsp;</el-col>
           </el-row>
@@ -124,13 +127,13 @@ export default {
       articleDetail: {
         articleId: 1,
         userId: '19302010001',
-        title: '标题',
+        title: '标题很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长',
         content: '这是一篇文章',
         commentNum: 3,
         likeNum: 5,
         createTime: '2022-11-01 12:34:56',
         updateTime: '2022-12-01 12:34:56',
-        tags: ['生活', '娱乐'],
+        tags: ['生活', '娱乐', '生活', '娱乐', '生活', '娱乐', '生活', '娱乐', '生活', '娱乐'],
         comments: [
           {
             commentId: 1,
@@ -390,10 +393,6 @@ export default {
 </script>
 
 <style scoped>
-.el-main {
-  text-align: center;
-}
-
 .clickable-icon {
   font-size: 20px;
   font-weight: bolder;

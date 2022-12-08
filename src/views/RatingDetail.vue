@@ -1,63 +1,73 @@
 <template>
   <el-container>
-    <el-header>
-      header
-    </el-header>
-    <el-main>
-      <div>
-        {{ ratingDetail.title }}
-        <br>
-        发布人： {{ ratingDetail.userId }} &nbsp;&nbsp; 发布时间： {{ ratingDetail.createTime }} &nbsp;&nbsp; 点赞数：
-        {{ ratingDetail.likeNum }} &nbsp;&nbsp;
-        相关课程： {{ ratingDetail.courseName }} &nbsp;&nbsp;&nbsp;&nbsp; 课程类型： {{ ratingDetail.courseType }} &nbsp;&nbsp;&nbsp;&nbsp;
-        相关专业： {{ ratingDetail.relatedMajor }} &nbsp;&nbsp;&nbsp;&nbsp; 打分： {{ ratingDetail.score }} &nbsp;&nbsp;&nbsp;&nbsp;
-        <el-button @click="likeButton" type="success">
-          <span v-if="!isLikedByUser">点赞</span>
-          <span v-else>取消点赞</span>
-        </el-button> &nbsp;&nbsp;
-        <el-button @click="favourButton" type="success">
-          <span v-if="!isFavouredByUser">收藏</span>
-          <span v-else>取消收藏</span>
-        </el-button> &nbsp;&nbsp;
-        <el-button @click="modifyButton(ratingDetail.ratingId)" type="success"
-                   v-if="username === ratingDetail.userId">
-          修改课评
-        </el-button> &nbsp;&nbsp;
-        <el-button @click="deleteButton(ratingDetail.ratingId)" type="danger"
-                   v-if="username === ratingDetail.userId">
-          删除课评
-        </el-button> &nbsp;&nbsp;
-      </div>
-      <div>
-        {{ ratingDetail.content }}
-      </div>
-      <br>
-      <div>
-        评论：&nbsp;&nbsp;
-        <el-button @click="openCommentBox(ratingId)" type="success">
-          写评论
-        </el-button>
-      </div>
-      <br>
-      <div>
-        <div v-for="comment in ratingDetail.comments" v-bind:key="comment.commentId">
+
+    <navigation-bar />
+
+    <el-container style="margin: 84px 0 20px 0">
+      <el-main style="margin: 0 375px">
+        <el-card>
           <div>
-            {{ comment.userId + ' ' + comment.createTime }}
+            {{ ratingDetail.title }}
             <br>
-            {{ comment.commentContent }}
-            <el-divider></el-divider>
+            发布人： {{ ratingDetail.userId }} &nbsp;&nbsp; 发布时间： {{ ratingDetail.createTime }} &nbsp;&nbsp; 点赞数：
+            {{ ratingDetail.likeNum }} &nbsp;&nbsp;
+            相关课程： {{ ratingDetail.courseName }} &nbsp;&nbsp;&nbsp;&nbsp; 课程类型： {{ ratingDetail.courseType }} &nbsp;&nbsp;&nbsp;&nbsp;
+            相关专业： {{ ratingDetail.relatedMajor }} &nbsp;&nbsp;&nbsp;&nbsp; 打分： {{ ratingDetail.score }} &nbsp;&nbsp;&nbsp;&nbsp;
+            <el-button @click="likeButton" type="success">
+              <span v-if="!isLikedByUser">点赞</span>
+              <span v-else>取消点赞</span>
+            </el-button> &nbsp;&nbsp;
+            <el-button @click="favourButton" type="success">
+              <span v-if="!isFavouredByUser">收藏</span>
+              <span v-else>取消收藏</span>
+            </el-button> &nbsp;&nbsp;
+            <el-button @click="modifyButton(ratingDetail.ratingId)" type="success"
+                       v-if="username === ratingDetail.userId">
+              修改课评
+            </el-button> &nbsp;&nbsp;
+            <el-button @click="deleteButton(ratingDetail.ratingId)" type="danger"
+                       v-if="username === ratingDetail.userId">
+              删除课评
+            </el-button> &nbsp;&nbsp;
           </div>
-        </div>
-      </div>
-    </el-main>
+          <div>
+            {{ ratingDetail.content }}
+          </div>
+          <br>
+          <div>
+            评论：&nbsp;&nbsp;
+            <el-button @click="openCommentBox(ratingId)" type="success">
+              写评论
+            </el-button>
+          </div>
+          <br>
+          <div>
+            <div v-for="comment in ratingDetail.comments" v-bind:key="comment.commentId">
+              <div>
+                {{ comment.userId + ' ' + comment.createTime }}
+                <br>
+                {{ comment.commentContent }}
+                <el-divider></el-divider>
+              </div>
+            </div>
+          </div>
+        </el-card>
+
+      </el-main>
+    </el-container>
+
   </el-container>
 </template>
 
 <script>
 import axios from 'axios'
+import NavigationBar from '@/components/NavigationBar'
 
 export default {
   name: 'RatingDetail',
+  components: {
+    NavigationBar
+  },
   data () {
     return {
       username: localStorage.getItem('username') || '',
@@ -305,14 +315,28 @@ export default {
 </script>
 
 <style scoped>
-.el-header {
-  text-align: center;
-  background-color: #B3C0D1;
-  color: #333;
-  line-height: 60px;
+.clickable-icon {
+  font-size: 20px;
+  font-weight: bolder;
 }
 
-.el-main {
-  text-align: center;
+.bounce-enter-active {
+  animation: bounce-in 0.5s;
+}
+.bounce-leave-active {
+  animation: bounce-in 0.5s reverse;
+}
+@keyframes bounce-in {
+  0% {
+    transform: scale(1);
+    color: #F20C00;
+  }
+  50% {
+    transform: scale(1.5);
+  }
+  100% {
+    transform: scale(1);
+    color: #373737;
+  }
 }
 </style>
