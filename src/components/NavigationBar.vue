@@ -69,7 +69,8 @@ export default {
         value: '课评',
         label: '课评'
       }],
-      postOption: '文章'
+      postOption: '文章',
+      title: ''
     }
   },
   methods: {
