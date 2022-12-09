@@ -1,34 +1,47 @@
 <template>
   <el-dialog title="发布课评" :visible.sync="visible" :append-to-body="true" width="45%">
-    <el-form ref="form" :model="form" :rules="rules" label-width="120px">
-      <el-form-item label="标题" :rules="{
-      required: true, message: '标题不能为空', trigger: 'blur'
-    }">
-        <el-input v-model="form.title"></el-input>
+    <el-form ref="form" :model="form" :rules="rules" label-width="100px" style="padding: 0 50px">
+      <el-form-item label="标题" :rules="{required: true, message: '标题不能为空', trigger: 'blur'}">
+        <el-input v-model="form.title" maxlength="30" show-word-limit />
       </el-form-item>
-      <el-form-item label="课程名称" :rules="{
-      required: true, message: '课程名称不能为空', trigger: 'blur'
-    }">
-        <el-input v-model="form.courseName"></el-input>
+
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="课程名称" :rules="{required: true, message: '课程名称不能为空', trigger: 'blur'}">
+            <el-input v-model="form.courseName" maxlength="20" show-word-limit />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="课程类型" :rules="{required: true, message: '课程类型不能为空', trigger: 'blur'}">
+            <el-input v-model="form.courseType" maxlength="10" show-word-limit />
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="相关专业">
+            <el-input v-model="form.relatedMajor" maxlength="10" show-word-limit />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="打分" prop="score" :rules="{required: true, message: '分数不能为空', trigger: 'blur'}">
+            <el-slider
+              v-model="form.score"
+              :max="10"
+              :step="1"
+              show-stops>
+            </el-slider>
+<!--            <el-input v-model.number="form.score" />-->
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-form-item label="正文内容" :rules="{required: true, message: '正文内容不能为空', trigger: 'blur'}">
+        <el-input type="textarea" v-model="form.content" :rows="5" />
       </el-form-item>
-      <el-form-item label="课程类型" :rules="{
-      required: true, message: '课程类型不能为空', trigger: 'blur'
-    }">
-        <el-input v-model="form.courseType"></el-input>
-      </el-form-item>
-      <el-form-item label="相关专业">
-        <el-input v-model="form.relatedMajor"></el-input>
-      </el-form-item>
-      <el-form-item label="打分" prop="score">
-        <el-input v-model.number="form.score"></el-input>
-      </el-form-item>
-      <el-form-item label="正文内容" :rules="{
-      required: true, message: '正文内容不能为空', trigger: 'blur'
-    }">
-        <el-input type="textarea" v-model="form.content" :rows="10"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="submitForm('form')">提交</el-button>
+      <el-form-item style="text-align: right">
+        <el-button type="success" @click="submitForm('form')" style="width: 150px; background-color: #575757">发布</el-button>
       </el-form-item>
     </el-form>
   </el-dialog>
@@ -65,7 +78,7 @@ export default {
         courseName: '',
         courseType: '',
         relatedMajor: '',
-        score: ''
+        score: 7
       },
       rules: {
         score: [
@@ -80,6 +93,7 @@ export default {
       this.form.title = title
     },
     submitForm (formName) {
+      this.visible = false
       this.$refs[formName].validate((valid) => {
         if (valid) {
           // let formData = new FormData()

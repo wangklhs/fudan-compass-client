@@ -1,8 +1,8 @@
 <template>
-  <el-dialog title="发帖" :visible.sync="visible" :append-to-body="true" width="45%">
+  <el-dialog title="发布文章" :visible.sync="visible" :append-to-body="true" width="45%">
     <el-form ref="form" :model="form" label-width="100px" style="padding: 0 50px">
       <el-form-item label="标题" :rules="{required: true, message: '标题不能为空', trigger: 'blur'}">
-        <el-input v-model="form.title"></el-input>
+        <el-input v-model="form.title" maxlength="30" show-word-limit />
       </el-form-item>
       <el-form-item label="预设标签">
         <el-checkbox-group v-model="form.tags">
@@ -27,7 +27,7 @@
 <!--        <el-button type="primary" @click="addCustomTag">新增自定义标签</el-button>-->
 <!--      </el-form-item>-->
       <el-form-item label="正文内容" :rules="{required: true, message: '正文内容不能为空', trigger: 'blur'}">
-        <el-input type="textarea" v-model="form.content" :rows="5"></el-input>
+        <el-input type="textarea" v-model="form.content" :rows="5" />
       </el-form-item>
       <el-form-item style="text-align: right">
         <el-button type="success" @click="submitForm('form')" style="width: 150px; background-color: #575757">发布
