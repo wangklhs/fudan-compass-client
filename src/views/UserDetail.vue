@@ -1,51 +1,197 @@
 <template>
-<el-container>
-  <el-header>
-    header
-  </el-header>
-  <el-main>
-    <div>
-      用户名:&nbsp;{{ username }}
-      <br>
-      所在专业:&nbsp;{{ major }}
-      <el-button type="primary" @click="openChangeMajorBox">修改专业信息</el-button>
-    </div>
-    <el-divider></el-divider>
-    <div>收藏文章：</div>
-    <el-card v-for="article in this.favourArticles" v-bind:key="article.articleId">
-      {{ article.title }} <br>
-      发帖人： {{ article.userId }} &nbsp;&nbsp;&nbsp;&nbsp; 发帖时间：{{ article.createTime }} &nbsp;&nbsp;&nbsp;&nbsp;
-      标签： <span v-for="tag in article.tags" v-bind:key="tag"> {{ tag }} &nbsp;&nbsp; </span>
-      <el-button type="primary" @click="checkArticleDetail(article.articleId)">查看详情</el-button>
-      <br>
-      {{ article.content }}
-      <br>
-      点赞数：{{ article.likeNum }} &nbsp;&nbsp;&nbsp;&nbsp;
-      评论数： {{ article.commentNum }} &nbsp;&nbsp;&nbsp;&nbsp;
-    </el-card>
-    <el-divider></el-divider>
-    <div>收藏课评：</div>
-    <el-card v-for="rating in this.favourRatings" v-bind:key="rating.ratingId">
-      {{ rating.title }} <br>
-      发帖人： {{ rating.userId }} &nbsp;&nbsp;&nbsp;&nbsp; 发帖时间：{{ rating.createTime }} &nbsp;&nbsp;&nbsp;&nbsp;
-      相关课程： {{ rating.courseName }} &nbsp;&nbsp;&nbsp;&nbsp; 课程类型： {{ rating.courseType }} &nbsp;&nbsp;&nbsp;&nbsp;
-      相关专业： {{ rating.relatedMajor }} &nbsp;&nbsp;&nbsp;&nbsp; 打分： {{ rating.score }} &nbsp;&nbsp;&nbsp;&nbsp;
-      <el-button type="primary" @click="checkRatingDetail(rating.ratingId)">查看详情</el-button>
-      <br>
-      {{ rating.content }}
-      <br>
-      点赞数：{{ rating.likeNum }} &nbsp;&nbsp;&nbsp;&nbsp;
-      评论数： {{ rating.commentNum }} &nbsp;&nbsp;&nbsp;&nbsp;
-    </el-card>
-  </el-main>
-</el-container>
+  <el-container>
+    <el-header>
+      header
+    </el-header>
+    <el-main>
+      <div>
+        用户名:&nbsp;{{ username }}
+        <br>
+        所在专业:&nbsp;{{ major }}
+        <el-button type="primary" @click="openChangeMajorBox">修改专业信息</el-button>
+      </div>
+      <el-divider></el-divider>
+      <div>
+        课程表
+        <el-button type="primary" @click="openChangeTimeTableBox">修改课程表信息</el-button>
+      </div>
+      <el-col :span="24">
+        <el-table
+          :data="timeTableSchedule"
+          stripe
+        >
+          <el-table-column
+            prop="index"
+            label="节数"
+            width="40">
+          </el-table-column>
+          <el-table-column
+            prop="time"
+            label="时间"
+            width="100">
+          </el-table-column>
+          <el-table-column
+            label="周日"
+            width="100">
+            <template slot-scope="scope">
+              <span>{{ timeTable7[scope.$index] }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="周一"
+            width="100">
+            <template slot-scope="scope">
+              <span>{{ timeTable1[scope.$index] }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="周二"
+            width="100">
+            <template slot-scope="scope">
+              <span>{{ timeTable2[scope.$index] }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="周三"
+            width="100">
+            <template slot-scope="scope">
+              <span>{{ timeTable3[scope.$index] }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="周四"
+            width="100">
+            <template slot-scope="scope">
+              <span>{{ timeTable4[scope.$index] }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="周五"
+            width="100">
+            <template slot-scope="scope">
+              <span>{{ timeTable5[scope.$index] }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="周六"
+            width="100">
+            <template slot-scope="scope">
+              <span>{{ timeTable6[scope.$index] }}</span>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-col>
+      <!--      <el-col :span="18">-->
+      <!--        <el-table-->
+      <!--          :data="timeTable"-->
+      <!--          stripe-->
+      <!--        >-->
+      <!--          <el-table-column-->
+      <!--            prop="Sun"-->
+      <!--            label="周日"-->
+      <!--            width="100">-->
+      <!--          </el-table-column>-->
+      <!--          <el-table-column-->
+      <!--            prop="Mon"-->
+      <!--            label="周一"-->
+      <!--            width="100">-->
+      <!--          </el-table-column>-->
+      <!--          <el-table-column-->
+      <!--            prop="Tue"-->
+      <!--            label="周二"-->
+      <!--            width="100">-->
+      <!--          </el-table-column>-->
+      <!--          <el-table-column-->
+      <!--            prop="Wed"-->
+      <!--            label="周三"-->
+      <!--            width="100">-->
+      <!--          </el-table-column>-->
+      <!--          <el-table-column-->
+      <!--            prop="Thu"-->
+      <!--            label="周四"-->
+      <!--            width="100">-->
+      <!--          </el-table-column>-->
+      <!--          <el-table-column-->
+      <!--            prop="Fri"-->
+      <!--            label="周五"-->
+      <!--            width="100">-->
+      <!--          </el-table-column>-->
+      <!--          <el-table-column-->
+      <!--            prop="Sat"-->
+      <!--            label="周六"-->
+      <!--            width="100">-->
+      <!--          </el-table-column>-->
+      <!--        </el-table>-->
+      <!--      </el-col>-->
+      <!--      <el-col :span="10">-->
+      <!--        <el-table-->
+      <!--          :data="timeTable"-->
+      <!--          stripe-->
+      <!--        >-->
+      <!--          <el-table-column-->
+      <!--            prop="index"-->
+      <!--            label="节数"-->
+      <!--            width="40">-->
+      <!--          </el-table-column>-->
+      <!--          <el-table-column-->
+      <!--            prop="time"-->
+      <!--            label="时间"-->
+      <!--            width="100">-->
+      <!--          </el-table-column>-->
+      <!--        </el-table>-->
+      <!--      </el-col>-->
+      <!--      <el-col :span="2">-->
+      <!--        <el-table-->
+      <!--          :data="timeTable7"-->
+      <!--          stripe-->
+      <!--        >-->
+      <!--          <el-table-column-->
+      <!--            label="周日"-->
+      <!--            width="40">-->
+      <!--          </el-table-column>-->
+      <!--        </el-table>-->
+      <!--      </el-col>-->
+      <el-divider></el-divider>
+      <div>收藏文章：</div>
+      <el-card v-for="article in this.favourArticles" v-bind:key="article.articleId">
+        {{ article.title }} <br>
+        发帖人： {{ article.userId }} &nbsp;&nbsp;&nbsp;&nbsp; 发帖时间：{{ article.createTime }} &nbsp;&nbsp;&nbsp;&nbsp;
+        标签： <span v-for="tag in article.tags" v-bind:key="tag"> {{ tag }} &nbsp;&nbsp; </span>
+        <el-button type="primary" @click="checkArticleDetail(article.articleId)">查看详情</el-button>
+        <br>
+        {{ article.content }}
+        <br>
+        点赞数：{{ article.likeNum }} &nbsp;&nbsp;&nbsp;&nbsp;
+        评论数： {{ article.commentNum }} &nbsp;&nbsp;&nbsp;&nbsp;
+      </el-card>
+      <el-divider></el-divider>
+      <div>收藏课评：</div>
+      <el-card v-for="rating in this.favourRatings" v-bind:key="rating.ratingId">
+        {{ rating.title }} <br>
+        发帖人： {{ rating.userId }} &nbsp;&nbsp;&nbsp;&nbsp; 发帖时间：{{ rating.createTime }} &nbsp;&nbsp;&nbsp;&nbsp;
+        相关课程： {{ rating.courseName }} &nbsp;&nbsp;&nbsp;&nbsp; 课程类型： {{ rating.courseType }} &nbsp;&nbsp;&nbsp;&nbsp;
+        相关专业： {{ rating.relatedMajor }} &nbsp;&nbsp;&nbsp;&nbsp; 打分： {{ rating.score }} &nbsp;&nbsp;&nbsp;&nbsp;
+        <el-button type="primary" @click="checkRatingDetail(rating.ratingId)">查看详情</el-button>
+        <br>
+        {{ rating.content }}
+        <br>
+        点赞数：{{ rating.likeNum }} &nbsp;&nbsp;&nbsp;&nbsp;
+        评论数： {{ rating.commentNum }} &nbsp;&nbsp;&nbsp;&nbsp;
+      </el-card>
+    </el-main>
+    <change-time-table-dialog ref="changeTimeTableDlg"/>
+  </el-container>
 </template>
 
 <script>
 import axios from 'axios'
+import ChangeTimeTableDialog from '@/components/ChangeTimeTableDialog'
 
 export default {
   name: 'UserDetail',
+  components: {
+    ChangeTimeTableDialog
+  },
   data () {
     return {
       username: localStorage.getItem('username') || '',
@@ -119,7 +265,216 @@ export default {
             updateTime: '2022-11-01 12:34:56'
           }]
         }
-      ]
+      ],
+      timeTable: [
+        {
+          index: 1,
+          time: '8:00 - 8:45',
+          Sun: '',
+          Mon: '',
+          Tue: '',
+          Wed: '',
+          Thu: '',
+          Fri: '',
+          Sat: ''
+        },
+        {
+          index: 2,
+          time: '8:55 - 9:40',
+          Sun: '',
+          Mon: '',
+          Tue: '',
+          Wed: '',
+          Thu: '',
+          Fri: '',
+          Sat: ''
+        }, {
+          index: 3,
+          time: '9:55 - 10:40',
+          Sun: '',
+          Mon: '',
+          Tue: '',
+          Wed: '',
+          Thu: '',
+          Fri: '项目管理',
+          Sat: ''
+        }, {
+          index: 4,
+          time: '10:50 - 11:35',
+          Sun: '',
+          Mon: '',
+          Tue: '',
+          Wed: '',
+          Thu: '',
+          Fri: '项目管理',
+          Sat: ''
+        }, {
+          index: 5,
+          time: '11:45 - 12:30',
+          Sun: '',
+          Mon: '',
+          Tue: '',
+          Wed: '',
+          Thu: '',
+          Fri: '项目管理',
+          Sat: ''
+        }, {
+          index: 6,
+          time: '13:30 - 14:15',
+          Sun: '',
+          Mon: '',
+          Tue: '',
+          Wed: '',
+          Thu: '',
+          Fri: '编译原理',
+          Sat: ''
+        }, {
+          index: 7,
+          time: '14:25 - 15:10',
+          Sun: '',
+          Mon: '',
+          Tue: '',
+          Wed: '',
+          Thu: '',
+          Fri: '编译原理',
+          Sat: ''
+        }, {
+          index: 8,
+          time: '15:25 - 16:10',
+          Sun: '',
+          Mon: '',
+          Tue: '',
+          Wed: '',
+          Thu: '',
+          Fri: '编译原理',
+          Sat: ''
+        }, {
+          index: 9,
+          time: '16:20 - 17:05',
+          Sun: '',
+          Mon: '',
+          Tue: '',
+          Wed: '',
+          Thu: '',
+          Fri: '',
+          Sat: ''
+        }, {
+          index: 10,
+          time: '17:05 - 18:00',
+          Sun: '',
+          Mon: '',
+          Tue: '',
+          Wed: '',
+          Thu: '',
+          Fri: '',
+          Sat: ''
+        }, {
+          index: 11,
+          time: '18:30 - 19:15',
+          Sun: '',
+          Mon: '',
+          Tue: '',
+          Wed: '',
+          Thu: '',
+          Fri: '面向对象分析与设计',
+          Sat: ''
+        }, {
+          index: 12,
+          time: '19:25 - 20:10',
+          Sun: '',
+          Mon: '',
+          Tue: '',
+          Wed: '',
+          Thu: '',
+          Fri: '面向对象分析与设计',
+          Sat: ''
+        }, {
+          index: 13,
+          time: '20:20 - 21:05',
+          Sun: '',
+          Mon: '',
+          Tue: '',
+          Wed: '',
+          Thu: '',
+          Fri: '面向对象分析与设计',
+          Sat: ''
+        }, {
+          index: 14,
+          time: '21:15 - 22:00',
+          Sun: '',
+          Mon: '',
+          Tue: '',
+          Wed: '',
+          Thu: '',
+          Fri: '',
+          Sat: ''
+        }
+      ],
+      timeTableSchedule: [
+        {
+          index: 1,
+          time: '8:00 - 8:45'
+        },
+        {
+          index: 2,
+          time: '8:55 - 9:40'
+        },
+        {
+          index: 3,
+          time: '9:55 - 10:40'
+        },
+        {
+          index: 4,
+          time: '10:50 - 11:35'
+        },
+        {
+          index: 5,
+          time: '11:45 - 12:30'
+        },
+        {
+          index: 6,
+          time: '13:30 - 14:15'
+        },
+        {
+          index: 7,
+          time: '14:25 - 15:10'
+        },
+        {
+          index: 8,
+          time: '15:25 - 16:10'
+        },
+        {
+          index: 9,
+          time: '16:20 - 17:05'
+        },
+        {
+          index: 10,
+          time: '17:05 - 18:00'
+        },
+        {
+          index: 11,
+          time: '18:30 - 19:15'
+        },
+        {
+          index: 12,
+          time: '19:25 - 20:10'
+        },
+        {
+          index: 13,
+          time: '20:20 - 21:05'
+        },
+        {
+          index: 14,
+          time: '21:15 - 22:00'
+        }
+      ],
+      timeTable1: ['', '', '1-3', '', '', '', '', '', '', '', '', '', '', ''],
+      timeTable2: ['', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+      timeTable3: ['', '', '', '3-4', '', '', '', '', '', '', '', '', '', ''],
+      timeTable4: ['', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+      timeTable5: ['', '', '项目管理', '项目管理', '项目管理', '编译原理', '编译原理', '编译原理', '', '', '面向对象分析与设计', '面向对象分析与设计', '面向对象分析与设计', ''],
+      timeTable6: ['', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+      timeTable7: ['', '', '', '', '7-5', '', '', '', '', '', '', '', '', '']
     }
   },
   methods: {
@@ -179,6 +534,9 @@ export default {
     },
     checkRatingDetail (id) {
       this.$router.push({path: 'ratingDetail', query: {ratingId: id}})
+    },
+    openChangeTimeTableBox () {
+      this.$refs.changeTimeTableDlg.pop()
     }
   },
   created () {
