@@ -55,8 +55,14 @@
 
           <el-row style="margin: 10px 0">
             <el-col :span="1">&nbsp;</el-col>
-            <el-col :span="16" style="text-align: left; margin-left: -8px">
+            <el-col :span="11" style="text-align: left; margin-left: -8px">
               <span v-for="tag in articleDetail.tags" v-bind:key="tag" class="comment-tag">{{ tag }}</span>
+            </el-col>
+            <el-col :span="5" style="text-align: right; margin: 0 -5% 0 5%">&nbsp;
+              <el-button type="danger" @click="deleteButton(articleDetail.articleId)"
+                         v-if="username === articleDetail.userId" style="width: 100px; height: 40px">
+                <span>删除课评</span>
+              </el-button>
             </el-col>
             <el-col :span="1">&nbsp;</el-col>
             <el-col :span="5" style="text-align: right">
@@ -68,7 +74,7 @@
             <el-col :span="1">&nbsp;</el-col>
           </el-row>
 
-          <el-row v-for="(comment, index) in articleDetail.comments" v-show="index < 3" v-bind:key="comment.id">
+          <el-row v-for="(comment) in articleDetail.comments" v-bind:key="comment.id">
             <el-divider/>
             <el-col :span="4" style="text-align: right">
               <i class="el-icon-chat-dot-round" style="font-size: 18px; margin-right: 15px" />
@@ -93,16 +99,6 @@
             </el-col>
           </el-row>
 
-          <div>
-<!--            <el-button @click="modifyButton(articleDetail.articleId)" type="success"-->
-<!--                       v-if="username === articleDetail.userId">-->
-<!--              修改文章-->
-<!--            </el-button> &nbsp;&nbsp;-->
-            <el-button @click="deleteButton(articleDetail.articleId)" type="danger"
-                       v-if="userId === articleDetail.userId">
-              删除文章
-            </el-button>
-          </div>
         </el-card>
 
       </el-main>
