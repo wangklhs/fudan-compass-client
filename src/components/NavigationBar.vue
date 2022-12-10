@@ -84,6 +84,9 @@ export default {
       } else if (command === 'login') {
         this.$message.info('login')
         this.$router.push('/login')
+      } else if (command === 'personal center') {
+        this.$message.info('personal center')
+        this.$router.push('/userDetail')
       }
     },
     post () {

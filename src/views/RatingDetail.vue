@@ -133,6 +133,7 @@ export default {
   },
   data () {
     return {
+      userId: localStorage.getItem('userId') * 1,
       username: localStorage.getItem('username') || '',
       ratingId: this.$route.query.ratingId,
       ratingDetail: {
@@ -164,22 +165,39 @@ export default {
     likeButton () {
       if (this.isLikedByUser) {
         this.isLikedByUser = false
-        let formData = new FormData()
-        formData.append('id', this.ratingDetail.ratingId)
-        formData.append('likeType', 1)
-        formData.append('userId', this.username)
-        formData.append('isLike', false)
-        axios({
-          method: 'post',
-          url: 'http://localhost:8081/like',
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          },
-          data: formData
+        // let formData = new FormData()
+        // formData.append('id', this.ratingDetail.ratingId)
+        // formData.append('likeType', 1)
+        // formData.append('userId', this.username)
+        // formData.append('isLike', false)
+        // axios({
+        //   method: 'post',
+        //   url: 'http://localhost:8081/like',
+        //   headers: {
+        //     'Content-Type': 'multipart/form-data'
+        //   },
+        //   data: formData
+        // })
+        //   .then(resp => {
+        //     if (resp.status === 200) {
+        //       this.$message.success('已取消点赞')
+        //     } else {
+        //       this.$message.error('点赞错误')
+        //     }
+        //   })
+        //   .catch(error => {
+        //     this.$message.error(error.response.data.message)
+        //   })
+        axios.post('http://localhost:8081/like', {
+          id: this.ratingDetail.ratingId,
+          userId: this.userId,
+          isLike: false,
+          likeType: 1
         })
           .then(resp => {
             if (resp.status === 200) {
               this.$message.success('已取消点赞')
+              this.refresh()
             } else {
               this.$message.error('点赞错误')
             }
@@ -189,22 +207,39 @@ export default {
           })
       } else {
         this.isLikedByUser = true
-        let formData = new FormData()
-        formData.append('id', this.ratingDetail.ratingId)
-        formData.append('likeType', 1)
-        formData.append('userId', this.username)
-        formData.append('isLike', true)
-        axios({
-          method: 'post',
-          url: 'http://localhost:8081/like',
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          },
-          data: formData
+        // let formData = new FormData()
+        // formData.append('id', this.ratingDetail.ratingId)
+        // formData.append('likeType', 1)
+        // formData.append('userId', this.username)
+        // formData.append('isLike', true)
+        // axios({
+        //   method: 'post',
+        //   url: 'http://localhost:8081/like',
+        //   headers: {
+        //     'Content-Type': 'multipart/form-data'
+        //   },
+        //   data: formData
+        // })
+        //   .then(resp => {
+        //     if (resp.status === 200) {
+        //       this.$message.success('已点赞')
+        //     } else {
+        //       this.$message.error('点赞错误')
+        //     }
+        //   })
+        //   .catch(error => {
+        //     this.$message.error(error.response.data.message)
+        //   })
+        axios.post('http://localhost:8081/like', {
+          id: this.ratingDetail.ratingId,
+          userId: this.userId,
+          isLike: true,
+          likeType: 1
         })
           .then(resp => {
             if (resp.status === 200) {
               this.$message.success('已点赞')
+              this.refresh()
             } else {
               this.$message.error('点赞错误')
             }
@@ -217,22 +252,39 @@ export default {
     favourButton () {
       if (this.isFavouredByUser) {
         this.isFavouredByUser = false
-        let formData = new FormData()
-        formData.append('id', this.ratingDetail.ratingId)
-        formData.append('favourType', 1)
-        formData.append('userId', this.username)
-        formData.append('isFavour', false)
-        axios({
-          method: 'post',
-          url: 'http://localhost:8081/favour',
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          },
-          data: formData
+        // let formData = new FormData()
+        // formData.append('id', this.ratingDetail.ratingId)
+        // formData.append('favourType', 1)
+        // formData.append('userId', this.username)
+        // formData.append('isFavour', false)
+        // axios({
+        //   method: 'post',
+        //   url: 'http://localhost:8081/favour',
+        //   headers: {
+        //     'Content-Type': 'multipart/form-data'
+        //   },
+        //   data: formData
+        // })
+        //   .then(resp => {
+        //     if (resp.status === 200) {
+        //       this.$message.success('已取消收藏')
+        //     } else {
+        //       this.$message.error('收藏错误')
+        //     }
+        //   })
+        //   .catch(error => {
+        //     this.$message.error(error.response.data.message)
+        //   })
+        axios.post('http://localhost:8081/favour', {
+          id: this.ratingDetail.ratingId,
+          userId: this.userId,
+          isFavour: false,
+          favourType: 1
         })
           .then(resp => {
             if (resp.status === 200) {
               this.$message.success('已取消收藏')
+              this.refresh()
             } else {
               this.$message.error('收藏错误')
             }
@@ -242,22 +294,39 @@ export default {
           })
       } else {
         this.isFavouredByUser = true
-        let formData = new FormData()
-        formData.append('id', this.ratingDetail.ratingId)
-        formData.append('favourType', 1)
-        formData.append('userId', this.username)
-        formData.append('isFavour', true)
-        axios({
-          method: 'post',
-          url: 'http://localhost:8081/favour',
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          },
-          data: formData
+        // let formData = new FormData()
+        // formData.append('id', this.ratingDetail.ratingId)
+        // formData.append('favourType', 1)
+        // formData.append('userId', this.username)
+        // formData.append('isFavour', true)
+        // axios({
+        //   method: 'post',
+        //   url: 'http://localhost:8081/favour',
+        //   headers: {
+        //     'Content-Type': 'multipart/form-data'
+        //   },
+        //   data: formData
+        // })
+        //   .then(resp => {
+        //     if (resp.status === 200) {
+        //       this.$message.success('已收藏')
+        //     } else {
+        //       this.$message.error('收藏错误')
+        //     }
+        //   })
+        //   .catch(error => {
+        //     this.$message.error(error.response.data.message)
+        //   })
+        axios.post('http://localhost:8081/favour', {
+          id: this.ratingDetail.ratingId,
+          userId: this.userId,
+          isFavour: true,
+          favourType: 1
         })
           .then(resp => {
             if (resp.status === 200) {
               this.$message.success('已收藏')
+              this.refresh()
             } else {
               this.$message.error('收藏错误')
             }
@@ -293,22 +362,39 @@ export default {
     },
     commentRating (id, comment) {
       this.$message.info('comment rating by id : ' + id)
-      let formData = new FormData()
-      formData.append('id', this.ratingId)
-      formData.append('userId', this.username)
-      formData.append('commentType', 1)
-      formData.append('content', comment)
-      axios({
-        method: 'post',
-        url: 'http://localhost:8081/comment',
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
-        data: formData
+      // let formData = new FormData()
+      // formData.append('id', this.ratingId)
+      // formData.append('userId', this.username)
+      // formData.append('commentType', 1)
+      // formData.append('content', comment)
+      // axios({
+      //   method: 'post',
+      //   url: 'http://localhost:8081/comment',
+      //   headers: {
+      //     'Content-Type': 'multipart/form-data'
+      //   },
+      //   data: formData
+      // })
+      //   .then(resp => {
+      //     if (resp.status === 200) {
+      //       this.$message.success('评论发表成功')
+      //     } else {
+      //       this.$message.error('search error')
+      //     }
+      //   })
+      //   .catch(error => {
+      //     this.$message.error(error.response.data.message)
+      //   })
+      axios.post('http://localhost:8081/comments', {
+        id: this.ratingDetail.ratingId,
+        userId: this.userId,
+        content: comment,
+        commentType: 1
       })
         .then(resp => {
           if (resp.status === 200) {
             this.$message.success('评论发表成功')
+            this.refresh()
           } else {
             this.$message.error('search error')
           }
@@ -317,10 +403,10 @@ export default {
           this.$message.error(error.response.data.message)
         })
     },
-    modifyButton (ratingId) {
-      this.$router.push({path: 'postRating', query: {ratingId: ratingId}})
-    },
-    deleteButton (ratingId) {
+    // modifyButton (ratingId) {
+    //   this.$router.push({path: 'postRating', query: {ratingId: ratingId}})
+    // },
+    deleteButton (ratingId) { // TODO: deleteButton
       let formData = new FormData()
       formData.append('id', ratingId)
       formData.append('userId', this.username)
@@ -345,34 +431,29 @@ export default {
           this.$message.error(error.response.data.message)
         })
       this.$router.push({path: '/'})
+    },
+    refresh () {
+      let _this = this
+      axios.post('http://localhost:8081/getRatingDetail', {
+        articleId: this.ratingId * 1,
+        userId: this.userId
+      })
+        .then(resp => {
+          if (resp.status === 200) {
+            _this.ratingDetail = resp.data
+            _this.isLikedByUser = resp.data.isLikedByUser
+            _this.isFavouredByUser = resp.data.isFavouredByUser
+          } else {
+            this.$message.error('error')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.response.data.message)
+        })
     }
   },
   created () {
-    this.$message.info('check rating by id : ' + this.ratingId)
-    let _this = this
-    let formData = new FormData()
-    formData.append('userId', this.username)
-    formData.append('ratingId', this.ratingId)
-    axios({
-      method: 'post',
-      url: 'http://localhost:8081/getRatingDetail',
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      },
-      data: formData
-    })
-      .then(resp => {
-        if (resp.status === 200) {
-          _this.ratingDetail = resp.data.ratingDetail
-          _this.isLikedByUser = resp.data.isLikedByUser
-          _this.isFavouredByUser = resp.data.isFavouredByUser
-        } else {
-          this.$message.error('error')
-        }
-      })
-      .catch(error => {
-        this.$message.error(error.response.data.message)
-      })
+    this.refresh()
   }
 }
 </script>

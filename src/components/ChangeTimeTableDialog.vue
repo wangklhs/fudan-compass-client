@@ -75,7 +75,6 @@ export default {
       form: {
         day: 'Sun',
         courses: ['', '', '', '', '', '', '', '', '', '', '', '', '', '']
-
       }
     }
   },
@@ -85,22 +84,22 @@ export default {
     },
     submitForm (formName) {
       this.visible = false
-      // axios.post('http://localhost:8081/articles', {
-      //   content: this.form.content,
-      //   userId: this.username,
-      //   title: this.form.title,
-      //   tags: this.form.tags
-      // })
-      //   .then(resp => {
-      //     if (resp.status === 200) {
-      //       this.$message.success('文章发表成功')
-      //     } else {
-      //       this.$message.error('post error')
-      //     }
-      //   })
-      //   .catch(error => {
-      //     this.$message.error(error.response.data.message)
-      //   })
+      axios.post('http://localhost:8081/setUserTimeTableByDay', {
+        userId: this.userId,
+        day: this.form.day,
+        courses: this.form.courses
+      })
+        .then(resp => {
+          if (resp.status === 200) {
+            this.$message.success('课程表设置成功')
+            this.$router.push({path: '/userDetail'})
+          } else {
+            this.$message.error('post error')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.response.data.message)
+        })
     }
   }
 }

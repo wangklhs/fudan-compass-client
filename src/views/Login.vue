@@ -35,6 +35,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   data () {
     return {
@@ -45,22 +47,23 @@ export default {
 
   methods: {
     login () {
-      // this.err = null
-      // this.$auth({ username: this.username, password: this.password })
-      //   .then(() => this.$router.replace('/'))
-      //   .catch((err) => {
-      //     console.log(err.message)
-      //     if (err.response) {
-      //       this.err =
-      //         err.response.status !== 400
-      //           ? err.response.statusText
-      //           : 'Invalid credentials'
-      //     } else {
-      //       this.err = err.message
-      //     }
-      //   })
-      localStorage.setItem('username', '19302010001')
-      this.$router.push({path: '/'})
+      axios.post('http://localhost:8081/login', {
+        username: this.username,
+        password: this.password
+      })
+        .then(resp => {
+          if (resp.status === 200) {
+            this.$message.success('登录成功')
+            this.$router.push({path: '/'})
+            localStorage.setItem('username', resp.data.username)
+            localStorage.setItem('userId', resp.data.userId)
+          } else {
+            this.$message.error('error')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.response.data.message)
+        })
     }
   }
 }

@@ -119,7 +119,7 @@ export default {
   data () {
     return {
       username: localStorage.getItem('username') || '',
-      userId: localStorage.getItem('userId') * 1 || 1,
+      userId: localStorage.getItem('userId') * 1,
       articleID: this.$route.query.articleID,
       articleDetail: {
         id: 1,
@@ -351,7 +351,7 @@ export default {
     // modifyButton (articleID) {
     //   this.$router.push({path: 'postArticle', query: {articleID: articleID}})
     // },
-    deleteButton (articleId) {
+    deleteButton (articleId) { // TODO: deleteButton
       // let formData = new FormData()
       // formData.append('id', articleId)
       // formData.append('userId', this.username)

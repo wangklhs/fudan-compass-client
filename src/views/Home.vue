@@ -2,7 +2,7 @@
   <el-container id="base_main">
     <el-container>
 
-      <navigation-bar />
+      <navigation-bar/>
 
       <el-container style="margin: 84px 0 20px 0">
 
@@ -16,9 +16,9 @@
               </el-col>
               <el-col :span="1">&nbsp;</el-col>
               <el-col :span="11">
-                <el-row style="margin: 12px 0"><span class="span-title">帖子数：</span>9</el-row>
-                <el-row style="margin: 12px 0"><span class="span-title">评论数：</span>9</el-row>
-                <el-row style="margin: 12px 0"><span class="span-title">获赞数：</span>6</el-row>
+                <el-row style="margin: 12px 0"><span class="span-title">帖子数：</span>{{ userPostCount }}</el-row>
+                <el-row style="margin: 12px 0"><span class="span-title">评论数：</span>{{ userCommentCount }}</el-row>
+                <el-row style="margin: 12px 0"><span class="span-title">获赞数：</span>{{ userLikeCount }}</el-row>
               </el-col>
             </el-row>
 
@@ -26,10 +26,14 @@
           <el-card>
             <h2>今日课程表 ( {{ day }} )</h2>
             <br>
-            <el-table :data="timeTableData" style="width: 100%">
+            <el-table :data="timeTableSchedule" style="width: 100%">
               <el-table-column prop="index" label="节数" width="45"/>
               <el-table-column prop="time" label="时间" width="105"/>
-              <el-table-column prop="name" label="课程"/>
+              <el-table-column label="课程">
+                <template slot-scope="scope">
+                  <span>{{ timeTable[scope.$index] }}</span>
+                </template>
+              </el-table-column>
             </el-table>
           </el-card>
         </el-aside>
@@ -75,8 +79,11 @@
                   <el-row>
                     <el-col :span="1">&nbsp;</el-col>
                     <el-col :span="11" style="text-align: left; white-space: nowrap; overflow: hidden">
-                      <span v-if="article.title.length < 21" style="font-size: 16px; font-weight: bolder"> {{ article.title }} </span>
-                      <span v-else style="font-size: 16px; font-weight: bolder"> {{ article.title.substr(0, 21) }}... </span>
+                      <span v-if="article.title.length < 21"
+                            style="font-size: 16px; font-weight: bolder"> {{ article.title }} </span>
+                      <span v-else style="font-size: 16px; font-weight: bolder"> {{
+                          article.title.substr(0, 21)
+                        }}... </span>
                     </el-col>
                     <el-col :span="1">&nbsp;</el-col>
                     <el-col :span="6" style="text-align: right; white-space: nowrap; overflow: hidden">
@@ -84,7 +91,8 @@
                     </el-col>
                     <el-col :span="1">&nbsp;</el-col>
                     <el-col :span="3" style="text-align: right">
-                      <el-button type="primary" class="details-button" @click="checkArticleDetail(article.id)">查看详情</el-button>
+                      <el-button type="primary" class="details-button" @click="checkArticleDetail(article.id)">查看详情
+                      </el-button>
                     </el-col>
                     <el-col :span="1">&nbsp;</el-col>
                   </el-row>
@@ -101,16 +109,17 @@
                   <el-row>
                     <el-col :span="1">&nbsp;</el-col>
                     <el-col :span="5" style="text-align: left">
-                      <span><i class="el-icon-user" /> &nbsp;&nbsp;{{ article.userId }} </span>
+                      <span><i class="el-icon-user"/> &nbsp;&nbsp;{{ article.userId }} </span>
                     </el-col>
                     <el-col :span="11" style="text-align: left">
-                      <span><i class="el-icon-time" /> &nbsp;&nbsp;{{ article.createTime }} </span>
+                      <span><i class="el-icon-time"/> &nbsp;&nbsp;{{ article.createTime }} </span>
                     </el-col>
                     <el-col :span="3" style="text-align: right">
-                      <span><i class="el-icon-thumb" /> &nbsp;&nbsp;{{ article.likeNum }} </span>
+                      <span><i class="el-icon-thumb"/> &nbsp;&nbsp;{{ article.likeNum }} </span>
                     </el-col>
                     <el-col :span="3" style="text-align: right">
-                      <span style="margin: 0 20px"><i class="el-icon-chat-line-round" /> &nbsp;&nbsp;{{ article.comments.length }} </span>
+                      <span style="margin: 0 20px"><i
+                        class="el-icon-chat-line-round"/> &nbsp;&nbsp;{{ article.comments.length }} </span>
                     </el-col>
                     <el-col :span="1">&nbsp;</el-col>
                   </el-row>
@@ -118,7 +127,7 @@
                   <el-row v-for="(comment, index) in article.comments" v-show="index < 3" v-bind:key="comment.id">
                     <el-divider/>
                     <el-col :span="4" style="text-align: right">
-                      <i class="el-icon-chat-dot-round" style="font-size: 18px; margin-right: 15px" />
+                      <i class="el-icon-chat-dot-round" style="font-size: 18px; margin-right: 15px"/>
                     </el-col>
                     <el-col :span="20">
                       <el-row style="text-align: left">
@@ -131,10 +140,10 @@
                       <el-row style="text-align: right">
                         <el-col :span="9">&nbsp;</el-col>
                         <el-col :span="6">
-                          <span><i class="el-icon-user" /> &nbsp;&nbsp;{{ comment.userId }} </span>
+                          <span><i class="el-icon-user"/> &nbsp;&nbsp;{{ comment.userId }} </span>
                         </el-col>
                         <el-col :span="7">
-                          <span><i class="el-icon-time" /> &nbsp;&nbsp;{{ comment.createTime }} </span>
+                          <span><i class="el-icon-time"/> &nbsp;&nbsp;{{ comment.createTime }} </span>
                         </el-col>
                         <el-col :span="2">&nbsp;</el-col>
                       </el-row>
@@ -189,8 +198,11 @@
                   <el-row>
                     <el-col :span="1">&nbsp;</el-col>
                     <el-col :span="5" style="text-align: left; white-space: nowrap; overflow: hidden">
-                      <span v-if="rating.title.length < 16" style="font-size: 16px; font-weight: bolder"> {{ rating.title }} </span>
-                      <span v-else style="font-size: 16px; font-weight: bolder"> {{ rating.title.substr(0, 16) }}... </span>
+                      <span v-if="rating.title.length < 16"
+                            style="font-size: 16px; font-weight: bolder"> {{ rating.title }} </span>
+                      <span v-else style="font-size: 16px; font-weight: bolder"> {{
+                          rating.title.substr(0, 16)
+                        }}... </span>
                     </el-col>
                     <el-col :span="1">&nbsp;</el-col>
                     <el-col :span="12" style="text-align: right; white-space: nowrap; overflow: hidden">
@@ -227,7 +239,9 @@
                       <span><i class="el-icon-thumb"/> &nbsp;&nbsp;{{ rating.likeNum }} </span>
                     </el-col>
                     <el-col :span="3" style="text-align: right">
-                      <span style="margin: 0 20px"><i class="el-icon-chat-line-round"/> &nbsp;&nbsp;{{ rating.commentNum }} </span>
+                      <span style="margin: 0 20px"><i class="el-icon-chat-line-round"/> &nbsp;&nbsp;{{
+                          rating.commentNum
+                        }} </span>
                     </el-col>
                     <el-col :span="1">&nbsp;</el-col>
                   </el-row>
@@ -309,11 +323,11 @@
                 # {{ popTag }}
               </el-button>
             </div>
-<!--            <div>-->
-<!--              <el-button type="text">-->
-<!--                # 清除标签筛选-->
-<!--              </el-button>-->
-<!--            </div>-->
+            <!--            <div>-->
+            <!--              <el-button type="text">-->
+            <!--                # 清除标签筛选-->
+            <!--              </el-button>-->
+            <!--            </div>-->
           </el-card>
           <el-card v-if="browseType==='rating'">
             <h2>热门课程类型</h2>
@@ -323,11 +337,11 @@
                 # {{ popCourseType }}
               </el-button>
             </div>
-<!--            <div>-->
-<!--              <el-button type="text">-->
-<!--                # 清除课程类型筛选-->
-<!--              </el-button>-->
-<!--            </div>-->
+            <!--            <div>-->
+            <!--              <el-button type="text">-->
+            <!--                # 清除课程类型筛选-->
+            <!--              </el-button>-->
+            <!--            </div>-->
           </el-card>
         </el-aside>
 
@@ -342,6 +356,7 @@ import axios from 'axios'
 import NavigationBar from '@/components/NavigationBar'
 
 let weeks = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+let weeks2 = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 export default {
   name: 'Home',
   components: {
@@ -462,6 +477,65 @@ export default {
           name: ''
         }
       ],
+      timeTableSchedule: [
+        {
+          index: 1,
+          time: '8:00 - 8:45'
+        },
+        {
+          index: 2,
+          time: '8:55 - 9:40'
+        },
+        {
+          index: 3,
+          time: '9:55 - 10:40'
+        },
+        {
+          index: 4,
+          time: '10:50 - 11:35'
+        },
+        {
+          index: 5,
+          time: '11:45 - 12:30'
+        },
+        {
+          index: 6,
+          time: '13:30 - 14:15'
+        },
+        {
+          index: 7,
+          time: '14:25 - 15:10'
+        },
+        {
+          index: 8,
+          time: '15:25 - 16:10'
+        },
+        {
+          index: 9,
+          time: '16:20 - 17:05'
+        },
+        {
+          index: 10,
+          time: '17:05 - 18:00'
+        },
+        {
+          index: 11,
+          time: '18:30 - 19:15'
+        },
+        {
+          index: 12,
+          time: '19:25 - 20:10'
+        },
+        {
+          index: 13,
+          time: '20:20 - 21:05'
+        },
+        {
+          index: 14,
+          time: '21:15 - 22:00'
+        }
+      ],
+      timeTable: ['', '', '项目管理', '项目管理', '项目管理', '编译原理', '编译原理', '编译原理', '', '', '面向对象分析与设计', '面向对象分析与设计', '面向对象分析与设计', ''],
       totalElements: 5,
       totalPages: 1,
       pageNo: 1,
@@ -519,7 +593,10 @@ export default {
       popCourseTypes: ['专业必修', '专业选修', '七大模块', '通识必修', '通识选修'],
       orderBy: 0,
       selectSearchBy: '',
-      browseType: 'article'
+      browseType: 'article',
+      userPostCount: 9,
+      userCommentCount: 9,
+      userLikeCount: 6
     }
   },
   created () {
@@ -549,7 +626,38 @@ export default {
           _this.totalCount = resp.data.totalElements
           _this.totalPage = resp.data.totalPages
         } else {
-          this.$message.error('search error')
+          this.$message.error('error')
+        }
+      })
+      .catch(error => {
+        this.$message.error(error.response.data.message)
+      })
+    axios.post('http://localhost:8081/getUserTimeTableByDay', {
+      userId: this.userId,
+      day: weeks2[new Date().getDay()]
+    })
+      .then(resp => {
+        if (resp.status === 200) {
+          // console.log(resp.data)
+          _this.timeTable = resp.data.timeTable
+        } else {
+          this.$message.error('error')
+        }
+      })
+      .catch(error => {
+        this.$message.error(error.response.data.message)
+      })
+    axios.post('http://localhost:8081/user/getInfo', {
+      userId: this.userId
+    })
+      .then(resp => {
+        if (resp.status === 200) {
+          // console.log(resp.data)
+          _this.userPostCount = resp.data.postCount
+          _this.userCommentCount = resp.data.commentCount
+          _this.userLikeCount = resp.data.likeCount
+        } else {
+          this.$message.error('error')
         }
       })
       .catch(error => {

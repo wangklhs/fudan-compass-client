@@ -195,6 +195,7 @@ export default {
   data () {
     return {
       username: localStorage.getItem('username') || '',
+      userId: localStorage.getItem('userId'),
       major: '',
       favourArticles: [
         {
@@ -505,22 +506,13 @@ export default {
     changeMajor (major) {
       this.$message.info('change major to : ' + major)
       this.major = major
-      let _this = this
-      let formData = new FormData()
-      formData.append('major', major)
-      formData.append('userId', this.username)
-      axios({
-        method: 'post',
-        url: 'http://localhost:8081/setUserMajor',
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
-        data: formData
+      axios.post('http://localhost:8081/setUserMajor', {
+        userId: this.userId,
+        major: this.major
       })
         .then(resp => {
           if (resp.status === 200) {
             this.$message.success('专业修改成功')
-            _this.major = major
           } else {
             this.$message.error('error')
           }
@@ -541,18 +533,12 @@ export default {
   },
   created () {
     let _this = this
-    let formData = new FormData()
-    formData.append('userId', this.username)
-    axios({
-      method: 'post',
-      url: 'http://localhost:8081/getUserMajor',
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      },
-      data: formData
+    axios.post('http://localhost:8081/getUserMajor', {
+      userId: this.userId
     })
       .then(resp => {
         if (resp.status === 200) {
+          // console.log(resp.data)
           _this.major = resp.data.major
         } else {
           this.$message.error('error')
@@ -561,17 +547,132 @@ export default {
       .catch(error => {
         this.$message.error(error.response.data.message)
       })
-    axios({
-      method: 'post',
-      url: 'http://localhost:8081/getUserFavourArticles',
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      },
-      data: formData
+    axios.post('http://localhost:8081/getUserFavourArticles', {
+      userId: this.userId
     })
       .then(resp => {
         if (resp.status === 200) {
+          // console.log(resp.data)
           _this.favourArticles = resp.data.articleList
+        } else {
+          this.$message.error('error')
+        }
+      })
+      .catch(error => {
+        this.$message.error(error.response.data.message)
+      })
+    axios.post('http://localhost:8081/getUserFavourRatings', {
+      userId: this.userId
+    })
+      .then(resp => {
+        if (resp.status === 200) {
+          // console.log(resp.data)
+          _this.favourRatings = resp.data.ratingList
+        } else {
+          this.$message.error('error')
+        }
+      })
+      .catch(error => {
+        this.$message.error(error.response.data.message)
+      })
+    axios.post('http://localhost:8081/getUserTimeTableByDay', {
+      userId: this.userId,
+      day: 'Mon'
+    })
+      .then(resp => {
+        if (resp.status === 200) {
+          // console.log(resp.data)
+          _this.timeTable1 = resp.data.timeTable
+        } else {
+          this.$message.error('error')
+        }
+      })
+      .catch(error => {
+        this.$message.error(error.response.data.message)
+      })
+    axios.post('http://localhost:8081/getUserTimeTableByDay', {
+      userId: this.userId,
+      day: 'Tue'
+    })
+      .then(resp => {
+        if (resp.status === 200) {
+          // console.log(resp.data)
+          _this.timeTable2 = resp.data.timeTable
+        } else {
+          this.$message.error('error')
+        }
+      })
+      .catch(error => {
+        this.$message.error(error.response.data.message)
+      })
+    axios.post('http://localhost:8081/getUserTimeTableByDay', {
+      userId: this.userId,
+      day: 'Wed'
+    })
+      .then(resp => {
+        if (resp.status === 200) {
+          // console.log(resp.data)
+          _this.timeTable3 = resp.data.timeTable
+        } else {
+          this.$message.error('error')
+        }
+      })
+      .catch(error => {
+        this.$message.error(error.response.data.message)
+      })
+    axios.post('http://localhost:8081/getUserTimeTableByDay', {
+      userId: this.userId,
+      day: 'Thu'
+    })
+      .then(resp => {
+        if (resp.status === 200) {
+          // console.log(resp.data)
+          _this.timeTable4 = resp.data.timeTable
+        } else {
+          this.$message.error('error')
+        }
+      })
+      .catch(error => {
+        this.$message.error(error.response.data.message)
+      })
+    axios.post('http://localhost:8081/getUserTimeTableByDay', {
+      userId: this.userId,
+      day: 'Fri'
+    })
+      .then(resp => {
+        if (resp.status === 200) {
+          // console.log(resp.data)
+          _this.timeTable5 = resp.data.timeTable
+        } else {
+          this.$message.error('error')
+        }
+      })
+      .catch(error => {
+        this.$message.error(error.response.data.message)
+      })
+    axios.post('http://localhost:8081/getUserTimeTableByDay', {
+      userId: this.userId,
+      day: 'Sat'
+    })
+      .then(resp => {
+        if (resp.status === 200) {
+          // console.log(resp.data)
+          _this.timeTable6 = resp.data.timeTable
+        } else {
+          this.$message.error('error')
+        }
+      })
+      .catch(error => {
+        this.$message.error(error.response.data.message)
+      })
+    axios.post('http://localhost:8081/getUserTimeTableByDay', {
+      userId: this.userId,
+      day: 'Sun'
+    })
+      .then(resp => {
+        if (resp.status === 200) {
+          // console.log(resp.data)
+          _this.timeTable7 = resp.data.timeTable
         } else {
           this.$message.error('error')
         }
