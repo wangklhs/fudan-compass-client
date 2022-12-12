@@ -41,9 +41,9 @@
         <el-main>
           <el-tabs type="border-card" v-model="browseType" @tab-click="handleTabClick">
 
-            <el-tab-pane label="论坛" name="article">
+            <el-tab-pane label="文章" name="article">
               <el-card style="padding: 20px 0; margin-top: 10px">
-                <el-col :span="13">
+                <el-col :span="11">
                   <el-form ref="form" :model="form">
                     <el-input placeholder="请输入内容" v-model="form.input">
                       <el-button slot="append" icon="el-icon-search" @click="search()">搜索</el-button>
@@ -51,24 +51,22 @@
                   </el-form>
                 </el-col>
                 <el-col :span="1">&nbsp;</el-col>
-                <el-col :span="5">
-                  <el-select v-model="tagOption" placeholder="标签筛选" style="width: 100%" multiple>
+                <el-col :span="6">
+                  <el-select v-model="tagOption" placeholder="标签筛选" style="width: 100%" multiple collapse-tags>
                     <el-option
                       v-for="item in options"
                       :key="item.value"
                       :label="item.label"
-                      :value="item.value">
-                    </el-option>
+                      :value="item.value" />
                   </el-select>
                 </el-col>
-                <el-col :span="5">
+                <el-col :span="6">
                   <el-select v-model="orderBy" placeholder="排序方式" style="width: 100%">
                     <el-option
                       v-for="item in orderOptions"
                       :key="item.value"
                       :label="item.label"
-                      :value="item.value">
-                    </el-option>
+                      :value="item.value" />
                   </el-select>
                 </el-col>
 
@@ -165,7 +163,7 @@
             <el-tab-pane label="课评" name="rating">
 
               <el-card style="padding: 20px 0; margin-top: 10px">
-                <el-col :span="13">
+                <el-col :span="11">
                   <el-form ref="selectSearchByForm" :model="selectSearchByForm">
                     <el-input placeholder="请输入内容" v-model="selectSearchByForm.input">
                       <el-button slot="append" icon="el-icon-search" @click="searchRating()">搜索</el-button>
@@ -173,7 +171,7 @@
                   </el-form>
                 </el-col>
                 <el-col :span="1">&nbsp;</el-col>
-                <el-col :span="5">
+                <el-col :span="6">
                   <el-select v-model="selectSearchBy" placeholder="类型筛选" style="width: 100%">
                     <el-option label="课程名称" value="1"></el-option>
                     <el-option label="课程类型" value="2"></el-option>
@@ -181,7 +179,7 @@
                     <el-option label="课评内容" value="4"></el-option>
                   </el-select>
                 </el-col>
-                <el-col :span="5">
+                <el-col :span="6">
                   <el-select v-model="orderBy" placeholder="排序方式" style="width: 100%">
                     <el-option
                       v-for="item in orderRatingOptions"
@@ -357,6 +355,7 @@ import axios from 'axios'
 import NavigationBar from '@/components/NavigationBar'
 
 let weeks = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+// eslint-disable-next-line
 let weeks2 = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 export default {
   name: 'Home',
@@ -763,7 +762,7 @@ export default {
         orderBy: this.orderBy,
         pageNo: this.pageNo - 1,
         pageSize: this.pageSize,
-        courseType: courseType,
+        courseType: courseType
       })
         .then(resp => {
           if (resp.status === 200) {

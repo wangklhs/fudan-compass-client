@@ -31,9 +31,9 @@
       </el-col>
       <el-col :span="2">&nbsp;</el-col>
       <el-col :span="2" style="text-align: center">
-        <el-dropdown trigger="hover" @command="handleCommand">
+        <el-dropdown trigger="hover" @command="handleCommand" style="cursor: pointer">
               <span class="el-dropdown-link el-input__inner" style="display: block; width: 120px; border-radius: 20px">
-                <i class="el-icon-user"/> <span style="color:lightslategray">个人中心</span>
+                <i class="el-icon-user"/> <span style="color: lightslategray">个人中心</span>
               </span>
           <el-dropdown-menu>
             <el-dropdown-item command="personal center">个人中心</el-dropdown-item>
