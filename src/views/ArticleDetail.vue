@@ -59,9 +59,9 @@
               <span v-for="tag in articleDetail.tags" v-bind:key="tag" class="comment-tag">{{ tag }}</span>
             </el-col>
             <el-col :span="5" style="text-align: right; margin: 0 -5% 0 5%">&nbsp;
-              <el-button type="danger" @click="deleteButton(articleDetail.articleId)"
-                         v-if="username === articleDetail.userId" style="width: 100px; height: 40px">
-                <span>删除课评</span>
+              <el-button type="danger" @click="deleteButton()"
+                         v-if="userId === articleDetail.userId" style="width: 100px; height: 40px">
+                <span>删除文章</span>
               </el-button>
             </el-col>
             <el-col :span="1">&nbsp;</el-col>
@@ -118,8 +118,8 @@ export default {
   },
   data () {
     return {
-      username: localStorage.getItem('username') || '',
       userId: localStorage.getItem('userId') * 1,
+      username: localStorage.getItem('username'),
       articleID: this.$route.query.articleID,
       articleDetail: {
         id: 1,
@@ -147,22 +147,6 @@ export default {
     likeButton () {
       if (this.isLikedByUser) {
         this.isLikedByUser = false
-        // axios.get('http://localhost:8081/like/' + this.articleID + '/' + this.username + '/' + 1 + '/' + 0).then(function (resp) {
-        //   this.$message.success('已取消点赞')
-        // })
-        // let formData = new FormData()
-        // formData.append('id', this.articleDetail.articleId)
-        // formData.append('likeType', 0)
-        // formData.append('userId', this.username)
-        // formData.append('isLike', false)
-        // axios({
-        //   method: 'post',
-        //   url: 'http://localhost:8081/like',
-        //   headers: {
-        //     'Content-Type': 'multipart/form-data'
-        //   },
-        //   data: formData
-        // })
         axios.post('http://localhost:8081/like', {
           id: this.articleDetail.id,
           userId: this.userId,
@@ -182,22 +166,6 @@ export default {
           })
       } else {
         this.isLikedByUser = true
-        // axios.get('http://localhost:8081/like/' + this.articleID + '/' + this.username + '/' + 1 + '/' + 1).then(function (resp) {
-        //   this.$message.success('已点赞')
-        // })
-        // let formData = new FormData()
-        // formData.append('id', this.articleDetail.articleId)
-        // formData.append('likeType', 0)
-        // formData.append('userId', this.username)
-        // formData.append('isLike', true)
-        // axios({
-        //   method: 'post',
-        //   url: 'http://localhost:8081/like',
-        //   headers: {
-        //     'Content-Type': 'multipart/form-data'
-        //   },
-        //   data: formData
-        // })
         axios.post('http://localhost:8081/like', {
           id: this.articleDetail.id,
           userId: this.userId,
@@ -218,25 +186,8 @@ export default {
       }
     },
     favourButton () {
-      // 1:id 2:userID 3:type(1 article 2 comment) 4:isLike
       if (this.isFavouredByUser) {
         this.isFavouredByUser = false
-        // axios.get('http://localhost:8081/like/' + this.articleID + '/' + this.username + '/' + 1 + '/' + 0).then(function (resp) {
-        //   this.$message.success('已取消点赞')
-        // })
-        // let formData = new FormData()
-        // formData.append('id', this.articleDetail.articleId)
-        // formData.append('favourType', 0)
-        // formData.append('userId', this.username)
-        // formData.append('isFavour', false)
-        // axios({
-        //   method: 'post',
-        //   url: 'http://localhost:8081/favour',
-        //   headers: {
-        //     'Content-Type': 'multipart/form-data'
-        //   },
-        //   data: formData
-        // })
         axios.post('http://localhost:8081/favour', {
           id: this.articleDetail.id,
           userId: this.userId,
@@ -256,22 +207,6 @@ export default {
           })
       } else {
         this.isFavouredByUser = true
-        // axios.get('http://localhost:8081/like/' + this.articleID + '/' + this.username + '/' + 1 + '/' + 1).then(function (resp) {
-        //   this.$message.success('已点赞')
-        // })
-        // let formData = new FormData()
-        // formData.append('id', this.articleDetail.articleId)
-        // formData.append('favourType', 0)
-        // formData.append('userId', this.username)
-        // formData.append('isFavour', true)
-        // axios({
-        //   method: 'post',
-        //   url: 'http://localhost:8081/favour',
-        //   headers: {
-        //     'Content-Type': 'multipart/form-data'
-        //   },
-        //   data: formData
-        // })
         axios.post('http://localhost:8081/favour', {
           id: this.articleDetail.id,
           userId: this.userId,
@@ -316,20 +251,6 @@ export default {
       })
     },
     commentArticle (id, comment) {
-      this.$message.info('comment article by id : ' + id)
-      // let formData = new FormData()
-      // formData.append('id', this.articleID)
-      // formData.append('userId', this.username)
-      // formData.append('commentType', 0)
-      // formData.append('content', comment)
-      // axios({
-      //   method: 'post',
-      //   url: 'http://localhost:8081/comment',
-      //   headers: {
-      //     'Content-Type': 'multipart/form-data'
-      //   },
-      //   data: formData
-      // })
       axios.post('http://localhost:8081/comments', {
         id: this.articleDetail.id,
         userId: this.userId,
@@ -348,27 +269,8 @@ export default {
           this.$message.error(error.response.data.message)
         })
     },
-    // modifyButton (articleID) {
-    //   this.$router.push({path: 'postArticle', query: {articleID: articleID}})
-    // },
-    deleteButton (articleId) { // TODO: deleteButton
-      // let formData = new FormData()
-      // formData.append('id', articleId)
-      // formData.append('userId', this.username)
-      // formData.append('deleteType', 0)
-      // axios({
-      //   method: 'post',
-      //   url: 'http://localhost:8081/delete',
-      //   headers: {
-      //     'Content-Type': 'multipart/form-data'
-      //   },
-      //   data: formData
-      // })
-      axios.post('http://localhost:8081/delete', {
-        id: this.articleDetail.id,
-        userId: this.userId,
-        deleteType: 0
-      })
+    deleteButton () {
+      axios.delete('http://localhost:8081/articles/' + this.articleID * 1)
         .then(resp => {
           if (resp.status === 200) {
             this.$message.success('文章已删除')
@@ -380,7 +282,6 @@ export default {
         .catch(error => {
           this.$message.error(error.response.data.message)
         })
-      this.$router.push({path: '/'})
     },
     refresh () {
       let _this = this
@@ -404,18 +305,6 @@ export default {
     }
   },
   created () {
-    // this.$message.info('check article by id : ' + this.articleID)
-    // let formData = new FormData()
-    // formData.append('userId', this.username)
-    // formData.append('articleId', this.articleID)
-    // axios({
-    //   method: 'post',
-    //   url: 'http://localhost:8081/getArticleDetail',
-    //   headers: {
-    //     'Content-Type': 'multipart/form-data'
-    //   },
-    //   data: formData
-    // })
     this.refresh()
   }
 }

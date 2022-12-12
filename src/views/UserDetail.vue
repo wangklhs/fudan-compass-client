@@ -194,8 +194,8 @@ export default {
   },
   data () {
     return {
-      username: localStorage.getItem('username') || '',
-      userId: localStorage.getItem('userId'),
+      userId: localStorage.getItem('userId') * 1,
+      username: localStorage.getItem('username'),
       major: '',
       favourArticles: [
         {

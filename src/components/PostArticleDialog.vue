@@ -43,7 +43,8 @@ import axios from 'axios'
 export default {
   data () {
     return {
-      username: localStorage.getItem('username') || null,
+      userId: localStorage.getItem('userId') * 1,
+      username: localStorage.getItem('username'),
       visible: false,
       form: {
         title: '',
@@ -77,35 +78,17 @@ export default {
       this.visible = false
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          // let formData = new FormData()
-          // formData.append('content', this.form.content)
-          // formData.append('userId', this.username)
-          // formData.append('title', this.form.title)
-          // formData.append('tags', this.tags)
-          // let tagsData = []
-          // for (let i = 0; i < this.tags.length; i++) {
-          //   tagsData.push(this.tags[i])
-          // }
-          // for (let i = 0; i < this.customTags.length; i++) {
-          //   tagsData.push(this.customTags[i].value)
-          // }
-          // axios({
-          //   method: 'post',
-          //   url: 'http://localhost:8081/articles',
-          //   headers: {
-          //     'Content-Type': 'multipart/form-data'
-          //   },
-          //   data: formData
-          // })
           axios.post('http://localhost:8081/articles', {
             content: this.form.content,
-            userId: this.username,
+            userId: this.userId,
             title: this.form.title,
             tags: this.form.tags
           })
             .then(resp => {
               if (resp.status === 200) {
                 this.$message.success('文章发表成功')
+                this.$router.push({path: '/'})
+                location.reload()
               } else {
                 this.$message.error('post error')
               }
@@ -114,7 +97,7 @@ export default {
               this.$message.error(error.response.data.message)
             })
         } else {
-          console.log('error submit!!')
+          this.$message.error('error submit!!')
           return false
         }
       })

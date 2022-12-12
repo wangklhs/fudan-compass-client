@@ -69,7 +69,7 @@ export default {
   name: 'ChangeTimeTableDialog',
   data () {
     return {
-      userId: localStorage.getItem('userId'),
+      userId: localStorage.getItem('userId') * 1,
       username: localStorage.getItem('username'),
       visible: false,
       form: {
