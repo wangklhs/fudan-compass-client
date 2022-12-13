@@ -76,8 +76,9 @@ export default {
             this.$message.error('error')
           }
         })
+        // eslint-disable-next-line handle-callback-err
         .catch(error => {
-          this.$message.error(error.response.data.message)
+          this.$message.error('用户名已存在')
         })
     }
   }
