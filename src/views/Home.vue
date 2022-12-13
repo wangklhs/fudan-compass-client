@@ -79,9 +79,7 @@
                     <el-col :span="11" style="text-align: left; white-space: nowrap; overflow: hidden">
                       <span v-if="article.title.length < 21"
                             style="font-size: 16px; font-weight: bolder"> {{ article.title }} </span>
-                      <span v-else style="font-size: 16px; font-weight: bolder"> {{
-                          article.title.substr(0, 21)
-                        }}... </span>
+                      <span v-else style="font-size: 16px; font-weight: bolder"> {{ article.title.substr(0, 21) }}... </span>
                     </el-col>
                     <el-col :span="1">&nbsp;</el-col>
                     <el-col :span="6" style="text-align: right; white-space: nowrap; overflow: hidden">
@@ -89,8 +87,7 @@
                     </el-col>
                     <el-col :span="1">&nbsp;</el-col>
                     <el-col :span="3" style="text-align: right">
-                      <el-button type="primary" class="details-button" @click="checkArticleDetail(article.id)">查看详情
-                      </el-button>
+                      <el-button type="primary" class="details-button" @click="checkArticleDetail(article.id)">查看详情</el-button>
                     </el-col>
                     <el-col :span="1">&nbsp;</el-col>
                   </el-row>
@@ -287,13 +284,11 @@
         </el-main>
 
         <el-aside width="330px">
-          <el-card style="height: 200px">
+          <el-card style="height: 200px; line-height: 25px">
             <h2>公告栏</h2>
             <br>
-            <br>
-            请各位用户自觉遵守用户守则
-            <br>
-            共同维护网络社区的和谐稳定
+            <p>请各位用户自觉遵守用户守则</p>
+            <p>共同维护网络社区的和谐稳定</p>
           </el-card>
           <el-card>
             <h2>复旦各官网快捷通道</h2>

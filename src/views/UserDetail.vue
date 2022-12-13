@@ -9,32 +9,96 @@
           <el-tabs type="border-card" v-model="browseType" @tab-click="handleTabClick">
             <el-tab-pane label="收藏文章" name="article">
               <el-card v-for="article in this.favourArticles" v-bind:key="article.articleId">
-                {{ article.title }} <br>
-                {{ article.createTime.substr(0, 10) }}
-<!--                发帖人： {{ article.userId }} &nbsp;&nbsp;&nbsp;&nbsp; 发帖时间：{{ article.createTime }} &nbsp;&nbsp;&nbsp;&nbsp;-->
-                标签： <span v-for="tag in article.tags" v-bind:key="tag"> {{ tag }} &nbsp;&nbsp; </span>
-                <el-button type="primary" @click="checkArticleDetail(article.articleId)">查看详情</el-button>
-                <br>
-                {{ article.content }}
-                <br>
-                点赞数：{{ article.likeNum }} &nbsp;&nbsp;&nbsp;&nbsp;
-                评论数： {{ article.commentNum }} &nbsp;&nbsp;&nbsp;&nbsp;
+                <el-row>
+                  <el-col :span="1">&nbsp;</el-col>
+                  <el-col :span="15" style="text-align: left; white-space: nowrap; overflow: hidden">
+                    <span v-if="article.title.length < 16"
+                          style="font-size: 16px; font-weight: bolder"> {{ article.title }} </span>
+                    <span v-else style="font-size: 16px; font-weight: bolder"> {{ article.title.substr(0, 16) }}... </span>
+                  </el-col>
+                  <el-col :span="1">&nbsp;</el-col>
+                  <el-col :span="6">
+                    <el-button type="primary" class="details-button2" @click="checkArticleDetail(article.articleId)">查看详情</el-button>
+                  </el-col>
+                  <el-col :span="1">&nbsp;</el-col>
+                </el-row>
+
+                <el-row style="margin: 20px 0; text-align: left; line-height: 30px">
+                  <el-col :span="2">&nbsp;</el-col>
+                  <el-col :span="20">
+                    <span v-if="article.content.length < 50"> {{ article.content }} </span>
+                    <span v-else> {{ article.content.substr(0, 50) }}... </span>
+                  </el-col>
+                  <el-col :span="2">&nbsp;</el-col>
+                </el-row>
+
+                <el-row>
+                  <el-col :span="1">&nbsp;</el-col>
+                  <el-col :span="12" style="text-align: left">
+                    <span><i class="el-icon-date"/> &nbsp;&nbsp;{{ article.createTime.substr(0, 10) }} </span>
+                  </el-col>
+                  <el-col :span="5" style="text-align: right">
+                    <span><i class="el-icon-thumb"/> &nbsp;&nbsp;{{ article.likeNum }} </span>
+                  </el-col>
+                  <el-col :span="5" style="text-align: right">
+                      <span style="margin: 0 20px"><i
+                        class="el-icon-chat-line-round"/> &nbsp;&nbsp;{{ article.commentNum }} </span>
+                  </el-col>
+                  <el-col :span="1">&nbsp;</el-col>
+                </el-row>
               </el-card>
             </el-tab-pane>
 
             <el-tab-pane label="收藏课评" name="rating">
               <el-card v-for="rating in this.favourRatings" v-bind:key="rating.ratingId">
-                {{ rating.title }} <br>
-                {{ rating.createTime.substr(0, 10) }}
-<!--                发帖人： {{ rating.userId }} &nbsp;&nbsp;&nbsp;&nbsp; 发帖时间：{{ rating.createTime }} &nbsp;&nbsp;&nbsp;&nbsp;-->
-                相关课程： {{ rating.courseName }} &nbsp;&nbsp;&nbsp;&nbsp; 课程类型： {{ rating.courseType }} &nbsp;&nbsp;&nbsp;&nbsp;
-                相关专业： {{ rating.relatedMajor }} &nbsp;&nbsp;&nbsp;&nbsp; 打分： {{ rating.score }} &nbsp;&nbsp;&nbsp;&nbsp;
-                <el-button type="primary" @click="checkRatingDetail(rating.ratingId)">查看详情</el-button>
-                <br>
-                {{ rating.content }}
-                <br>
-                点赞数：{{ rating.likeNum }} &nbsp;&nbsp;&nbsp;&nbsp;
-                评论数： {{ rating.commentNum }} &nbsp;&nbsp;&nbsp;&nbsp;
+                <el-row>
+                  <el-col :span="1">&nbsp;</el-col>
+                  <el-col :span="15" style="text-align: left; white-space: nowrap; overflow: hidden">
+                    <span v-if="rating.title.length < 16"
+                          style="font-size: 16px; font-weight: bolder"> {{ rating.title }} </span>
+                    <span v-else style="font-size: 16px; font-weight: bolder"> {{ rating.title.substr(0, 16) }}... </span>
+                  </el-col>
+                  <el-col :span="1">&nbsp;</el-col>
+                  <el-col :span="6">
+                    <el-button type="primary" class="details-button2" @click="checkRatingDetail(rating.ratingId)">查看详情</el-button>
+                  </el-col>
+                  <el-col :span="1">&nbsp;</el-col>
+                </el-row>
+
+                <el-row style="margin: 20px 0; text-align: left; line-height: 30px">
+                  <el-col :span="2">&nbsp;</el-col>
+                  <el-col :span="20">
+                    <span v-if="rating.content.length < 50"> {{ rating.content }} </span>
+                    <span v-else> {{ rating.content.substr(0, 50) }}... </span>
+                  </el-col>
+                  <el-col :span="2">&nbsp;</el-col>
+                </el-row>
+
+                <el-row style="margin: 10px 0">
+                  <el-col :span="1">&nbsp;</el-col>
+                  <el-col :span="11" style="text-align: left">
+                    <span><i class="el-icon-data-board"/> &nbsp;&nbsp;{{ rating.courseName }} </span>
+                  </el-col>
+                  <el-col :span="11" style="text-align: right">
+                    <span style="margin: 0 18px"><i class="el-icon-pie-chart"/> &nbsp;&nbsp;{{ rating.score }} </span>
+                  </el-col>
+                  <el-col :span="1">&nbsp;</el-col>
+                </el-row>
+
+                <el-row>
+                  <el-col :span="1">&nbsp;</el-col>
+                  <el-col :span="12" style="text-align: left">
+                    <span><i class="el-icon-date"/> &nbsp;&nbsp;{{ rating.createTime.substr(0, 10) }} </span>
+                  </el-col>
+                  <el-col :span="5" style="text-align: right">
+                    <span><i class="el-icon-thumb"/> &nbsp;&nbsp;{{ rating.likeNum }} </span>
+                  </el-col>
+                  <el-col :span="5" style="text-align: right">
+                      <span style="margin: 0 20px"><i
+                        class="el-icon-chat-line-round"/> &nbsp;&nbsp;{{ rating.commentNum }} </span>
+                  </el-col>
+                  <el-col :span="1">&nbsp;</el-col>
+                </el-row>
               </el-card>
             </el-tab-pane>
           </el-tabs>
@@ -43,61 +107,127 @@
 
         <el-main>
           <el-card>
-            用户名:&nbsp;{{ username }}
-            <br>
-            所在专业:&nbsp;{{ major }}
-            <el-button type="primary" @click="openChangeMajorBox">修改专业信息</el-button>
+            <el-row style="margin-bottom: 30px">
+              <el-col :span="1">&nbsp;</el-col>
+              <el-col :span="22" style="text-align: left">
+                <h1>用户信息</h1>
+              </el-col>
+              <el-col :span="1">&nbsp;</el-col>
+            </el-row>
+
+            <el-row style="margin-bottom: 30px">
+              <el-col :span="12">
+                <el-row>
+                  <el-col :span="1">&nbsp;</el-col>
+                  <el-col :span="22" style="text-align: left">
+                    <h2>用户名:&nbsp;&nbsp;&nbsp; <span style="color: #bbb">{{ username }}</span></h2>
+                  </el-col>
+                  <el-col :span="1">&nbsp;</el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="1">&nbsp;</el-col>
+                  <el-col :span="11" style="text-align: left">
+                    <h2>所在专业:&nbsp;&nbsp;&nbsp; <span style="color: #bbb">{{ major }}</span></h2>
+                  </el-col>
+                  <el-col :span="11" style="text-align: right">
+                    <el-button type="primary" class="details-button" @click="openChangeMajorBox">修改专业信息</el-button>
+                  </el-col>
+                  <el-col :span="1">&nbsp;</el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="1">&nbsp;</el-col>
+                  <el-col :span="22" style="text-align: left">
+                    <h2>帖子数:&nbsp;&nbsp;&nbsp; <span style="color: #bbb">{{ userPostCount }}</span></h2>
+                  </el-col>
+                  <el-col :span="1">&nbsp;</el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="1">&nbsp;</el-col>
+                  <el-col :span="22" style="text-align: left">
+                    <h2>评论数:&nbsp;&nbsp;&nbsp; <span style="color: #bbb">{{ userCommentCount }}</span></h2>
+                  </el-col>
+                  <el-col :span="1">&nbsp;</el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="1">&nbsp;</el-col>
+                  <el-col :span="22" style="text-align: left">
+                    <h2>获赞数:&nbsp;&nbsp;&nbsp; <span style="color: #bbb">{{ userLikeCount }}</span></h2>
+                  </el-col>
+                  <el-col :span="1">&nbsp;</el-col>
+                </el-row>
+              </el-col>
+
+              <el-col :span="12">
+                <img src="static/images/mar-bustos.jpg" alt=""
+                     style="width: 220px; height: 220px; object-fit: cover; border-radius: 50%">
+                <div style="margin-top: 0px; margin-left: 0">
+                  <span style="color: #bbb; font-size: 12px; font-family: 'OCR A Extended'">Fudan-Compass Premium Member</span>
+                </div>
+              </el-col>
+            </el-row>
           </el-card>
 
           <el-card>
-            <div>
-              课程表
-              <el-button type="primary" @click="openChangeTimeTableBox">修改课程表信息</el-button>
-            </div>
+            <el-row style="margin-bottom: 10px">
+              <el-col :span="1">&nbsp;</el-col>
+              <el-col :span="11" style="text-align: left">
+                <h1>课程表</h1>
+              </el-col>
+              <el-col :span="11" style="text-align: right">
+                <el-button type="primary" class="details-button" @click="openChangeTimeTableBox">修改课程表信息</el-button>
+              </el-col>
+              <el-col :span="1">&nbsp;</el-col>
+            </el-row>
+
             <el-row>
-              <el-table :data="timeTableSchedule" stripe>
-                <el-table-column prop="index" label="节数" width="50" />
-                <el-table-column prop="time" label="时间" width="100" />
-                <el-table-column label="周日" width="90">
-                  <template slot-scope="scope">
-                    <span>{{ timeTable7[scope.$index] }}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column label="周一" width="90">
-                  <template slot-scope="scope">
-                    <span>{{ timeTable1[scope.$index] }}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column label="周二" width="90">
-                  <template slot-scope="scope">
-                    <span>{{ timeTable2[scope.$index] }}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column label="周三" width="90">
-                  <template slot-scope="scope">
-                    <span>{{ timeTable3[scope.$index] }}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column label="周四" width="90">
-                  <template slot-scope="scope">
-                    <span>{{ timeTable4[scope.$index] }}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column label="周五" width="90">
-                  <template slot-scope="scope">
-                    <span>{{ timeTable5[scope.$index] }}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column label="周六" width="90">
-                  <template slot-scope="scope">
-                    <span>{{ timeTable6[scope.$index] }}</span>
-                  </template>
-                </el-table-column>
-              </el-table>
+              <el-col :span="1">&nbsp;</el-col>
+              <el-col :span="22">
+                <el-table :data="timeTableSchedule" stripe border highlight-current-row style="border-radius: 10px">
+                  <el-table-column prop="index" label="节数" width="60" />
+                  <el-table-column prop="time" label="时间" width="95" />
+                  <el-table-column label="周日" width="80">
+                    <template slot-scope="scope">
+                      <span>{{ timeTable7[scope.$index] }}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="周一" width="80">
+                    <template slot-scope="scope">
+                      <span>{{ timeTable1[scope.$index] }}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="周二" width="80">
+                    <template slot-scope="scope">
+                      <span>{{ timeTable2[scope.$index] }}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="周三" width="80">
+                    <template slot-scope="scope">
+                      <span>{{ timeTable3[scope.$index] }}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="周四" width="80">
+                    <template slot-scope="scope">
+                      <span>{{ timeTable4[scope.$index] }}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="周五" width="80">
+                    <template slot-scope="scope">
+                      <span>{{ timeTable5[scope.$index] }}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="周六" width="80">
+                    <template slot-scope="scope">
+                      <span>{{ timeTable6[scope.$index] }}</span>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </el-col>
+              <el-col :span="1">&nbsp;</el-col>
             </el-row>
           </el-card>
 
         </el-main>
+
       </el-container>
 
     </el-container>
@@ -161,7 +291,7 @@ export default {
           articleId: 2,
           userId: '19302010002',
           title: '标题2',
-          content: '这是第二篇文章',
+          content: '这是第二篇长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长文章',
           commentNum: 0,
           likeNum: 2,
           createTime: '2022-11-01 12:34:56',
@@ -401,7 +531,10 @@ export default {
       timeTable4: ['', '', '', '', '', '', '', '', '', '', '', '', '', ''],
       timeTable5: ['', '', '项目管理', '项目管理', '项目管理', '编译原理', '编译原理', '编译原理', '', '', '面向对象分析与设计', '面向对象分析与设计', '面向对象分析与设计', ''],
       timeTable6: ['', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-      timeTable7: ['', '', '', '', '7-5', '', '', '', '', '', '', '', '', '']
+      timeTable7: ['', '', '', '', '7-5', '', '', '', '', '', '', '', '', ''],
+      userPostCount: 9,
+      userCommentCount: 9,
+      userLikeCount: 6
     }
   },
   methods: {
@@ -602,5 +735,26 @@ export default {
 </script>
 
 <style scoped>
+h1 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #C0B283;
+}
 
+h2 {
+  font-size: 16px;
+  font-weight: bold;
+  color: #C0B283;
+}
+
+.details-button {
+  width: 120px;
+  background-color: #575757;
+}
+
+.details-button2 {
+  height: 30px;
+  padding: 0 20px;
+  background-color: #575757;
+}
 </style>
