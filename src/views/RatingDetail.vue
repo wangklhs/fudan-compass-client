@@ -43,7 +43,7 @@
           <el-row>
             <el-col :span="1">&nbsp;</el-col>
             <el-col :span="5" style="text-align: left">
-              <span><i class="el-icon-user" /> &nbsp;&nbsp;{{ ratingDetail.userId }} </span>
+              <span><i class="el-icon-user" /> &nbsp;&nbsp;{{ ratingDetail.username }} </span>
             </el-col>
             <el-col :span="11" style="text-align: left">
               <span><i class="el-icon-time" /> &nbsp;&nbsp;{{ ratingDetail.createTime }} </span>
@@ -95,7 +95,7 @@
               <i class="el-icon-chat-dot-round" style="font-size: 18px; margin-right: 15px" />
             </el-col>
             <el-col :span="20">
-              <el-row style="text-align: left">
+              <el-row style="text-align: left; line-height: 30px">
                 <el-col :span="22">
                   <span> {{ comment.content }} </span>
                 </el-col>
@@ -104,7 +104,7 @@
               <el-row style="text-align: right">
                 <el-col :span="9">&nbsp;</el-col>
                 <el-col :span="6">
-                  <span><i class="el-icon-user" /> &nbsp;&nbsp;{{ comment.userId }} </span>
+                  <span><i class="el-icon-user" /> &nbsp;&nbsp;{{ comment.username }} </span>
                 </el-col>
                 <el-col :span="7">
                   <span><i class="el-icon-time" /> &nbsp;&nbsp;{{ comment.createTime }} </span>

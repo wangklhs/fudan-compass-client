@@ -14,8 +14,8 @@
                 <img src="static/images/mar-bustos.jpg" alt=""
                      style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%">
               </el-col>
-              <el-col :span="1">&nbsp;</el-col>
-              <el-col :span="11">
+              <el-col :span="2">&nbsp;</el-col>
+              <el-col :span="10" style="text-align: left">
                 <el-row style="margin: 12px 0"><span class="span-title">帖子数：</span>{{ userInfo.postCount }}</el-row>
                 <el-row style="margin: 12px 0"><span class="span-title">评论数：</span>{{ userInfo.commentCount }}</el-row>
                 <el-row style="margin: 12px 0"><span class="span-title">获赞数：</span>{{ userInfo.likeCount }}</el-row>
@@ -77,9 +77,9 @@
                   <el-row>
                     <el-col :span="1">&nbsp;</el-col>
                     <el-col :span="11" style="text-align: left; white-space: nowrap; overflow: hidden">
-                      <span v-if="article.title.length < 21"
+                      <span v-if="article.title.length < 16"
                             style="font-size: 16px; font-weight: bolder"> {{ article.title }} </span>
-                      <span v-else style="font-size: 16px; font-weight: bolder"> {{ article.title.substr(0, 21) }}... </span>
+                      <span v-else style="font-size: 16px; font-weight: bolder"> {{ article.title.substr(0, 15) }}... </span>
                     </el-col>
                     <el-col :span="1">&nbsp;</el-col>
                     <el-col :span="6" style="text-align: right; white-space: nowrap; overflow: hidden">
@@ -104,7 +104,7 @@
                   <el-row>
                     <el-col :span="1">&nbsp;</el-col>
                     <el-col :span="5" style="text-align: left">
-                      <span><i class="el-icon-user"/> &nbsp;&nbsp;{{ article.userId }} </span>
+                      <span><i class="el-icon-user"/> &nbsp;&nbsp;{{ article.username }} </span>
                     </el-col>
                     <el-col :span="11" style="text-align: left">
                       <span><i class="el-icon-time"/> &nbsp;&nbsp;{{ article.createTime }} </span>
@@ -135,7 +135,7 @@
                       <el-row style="text-align: right">
                         <el-col :span="9">&nbsp;</el-col>
                         <el-col :span="6">
-                          <span><i class="el-icon-user"/> &nbsp;&nbsp;{{ comment.userId }} </span>
+                          <span><i class="el-icon-user"/> &nbsp;&nbsp;{{ comment.username }} </span>
                         </el-col>
                         <el-col :span="7">
                           <span><i class="el-icon-time"/> &nbsp;&nbsp;{{ comment.createTime }} </span>
@@ -196,9 +196,7 @@
                     <el-col :span="5" style="text-align: left; white-space: nowrap; overflow: hidden">
                       <span v-if="rating.title.length < 16"
                             style="font-size: 16px; font-weight: bolder"> {{ rating.title }} </span>
-                      <span v-else style="font-size: 16px; font-weight: bolder"> {{
-                          rating.title.substr(0, 16)
-                        }}... </span>
+                      <span v-else style="font-size: 16px; font-weight: bolder"> {{ rating.title.substr(0, 15) }}... </span>
                     </el-col>
                     <el-col :span="1">&nbsp;</el-col>
                     <el-col :span="12" style="text-align: right; white-space: nowrap; overflow: hidden">
@@ -226,7 +224,7 @@
                   <el-row>
                     <el-col :span="1">&nbsp;</el-col>
                     <el-col :span="5" style="text-align: left">
-                      <span><i class="el-icon-user"/> &nbsp;&nbsp;{{ rating.userId }} </span>
+                      <span><i class="el-icon-user"/> &nbsp;&nbsp;{{ rating.username }} </span>
                     </el-col>
                     <el-col :span="11" style="text-align: left">
                       <span><i class="el-icon-time"/> &nbsp;&nbsp;{{ rating.createTime }} </span>
@@ -235,9 +233,7 @@
                       <span><i class="el-icon-thumb"/> &nbsp;&nbsp;{{ rating.likeNum }} </span>
                     </el-col>
                     <el-col :span="3" style="text-align: right">
-                      <span style="margin: 0 20px"><i class="el-icon-chat-line-round"/> &nbsp;&nbsp;{{
-                          rating.commentNum
-                        }} </span>
+                      <span style="margin: 0 20px"><i class="el-icon-chat-line-round"/> &nbsp;&nbsp;{{ rating.comments.length }} </span>
                     </el-col>
                     <el-col :span="1">&nbsp;</el-col>
                   </el-row>
@@ -258,7 +254,7 @@
                       <el-row style="text-align: right">
                         <el-col :span="9">&nbsp;</el-col>
                         <el-col :span="6">
-                          <span><i class="el-icon-user"/> &nbsp;&nbsp;{{ comment.userId }} </span>
+                          <span><i class="el-icon-user"/> &nbsp;&nbsp;{{ comment.username }} </span>
                         </el-col>
                         <el-col :span="7">
                           <span><i class="el-icon-time"/> &nbsp;&nbsp;{{ comment.createTime }} </span>
@@ -290,6 +286,26 @@
             <p>请各位用户自觉遵守用户守则</p>
             <p>共同维护网络社区的和谐稳定</p>
           </el-card>
+
+          <el-card v-if="browseType==='article'">
+            <h2>热门tag</h2>
+            <br>
+            <div v-for="popTag in this.popTags" v-bind:key="popTag">
+              <el-button type="text" @click="sortByTag(popTag)">
+                # {{ popTag }}
+              </el-button>
+            </div>
+          </el-card>
+          <el-card v-if="browseType==='rating'">
+            <h2>热门课程类型</h2>
+            <br>
+            <div v-for="popCourseType in this.popCourseTypes" v-bind:key="popCourseType">
+              <el-button type="text" @click="sortByCourseType(popCourseType)">
+                # {{ popCourseType }}
+              </el-button>
+            </div>
+          </el-card>
+
           <el-card>
             <h2>复旦各官网快捷通道</h2>
             <br>
@@ -309,34 +325,7 @@
               <el-button type="primary" class="link-button">选课系统 (XK)</el-button>
             </a>
           </el-card>
-          <el-card v-if="browseType==='article'">
-            <h2>热门tag</h2>
-            <br>
-            <div v-for="popTag in this.popTags" v-bind:key="popTag">
-              <el-button type="text" @click="sortByTag(popTag)">
-                # {{ popTag }}
-              </el-button>
-            </div>
-            <!--            <div>-->
-            <!--              <el-button type="text">-->
-            <!--                # 清除标签筛选-->
-            <!--              </el-button>-->
-            <!--            </div>-->
-          </el-card>
-          <el-card v-if="browseType==='rating'">
-            <h2>热门课程类型</h2>
-            <br>
-            <div v-for="popCourseType in this.popCourseTypes" v-bind:key="popCourseType">
-              <el-button type="text" @click="sortByCourseType(popCourseType)">
-                # {{ popCourseType }}
-              </el-button>
-            </div>
-            <!--            <div>-->
-            <!--              <el-button type="text">-->
-            <!--                # 清除课程类型筛选-->
-            <!--              </el-button>-->
-            <!--            </div>-->
-          </el-card>
+
         </el-aside>
 
       </el-container>
@@ -538,6 +527,7 @@ export default {
       ],
       timeTable: ['', '', '项目管理', '项目管理', '项目管理', '编译原理', '编译原理', '编译原理', '', '', '面向对象分析与设计', '面向对象分析与设计', '面向对象分析与设计', ''],
       totalElements: 5,
+      totalCount: 1,
       totalPages: 1,
       pageNo: 1,
       pageSize: 5,
@@ -623,7 +613,7 @@ export default {
       })
     axios.post('http://localhost:8081/ratings/search', {
       orderBy: this.orderBy,
-      pageNo: this.pageNo - 1,
+      pageNo: this.pageNoRating - 1,
       pageSize: this.pageSize
     })
       .then(resp => {
@@ -721,7 +711,7 @@ export default {
       let _this = this
       axios.post('http://localhost:8081/ratings/search', {
         orderBy: this.orderBy,
-        pageNo: this.pageNo - 1,
+        pageNo: this.pageNoRating - 1,
         pageSize: this.pageSize,
         searchContent: this.selectSearchBy === '课评内容' ? this.selectSearchByForm.input : '',
         courseName: this.selectSearchBy === '课程名称' ? this.selectSearchByForm.input : '',

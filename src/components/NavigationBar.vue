@@ -32,9 +32,9 @@
       <el-col :span="2">&nbsp;</el-col>
       <el-col :span="2" style="text-align: center">
         <el-dropdown trigger="hover" @command="handleCommand" style="cursor: pointer">
-              <span class="el-dropdown-link el-input__inner" style="display: block; width: 120px; border-radius: 20px">
-                <i class="el-icon-user"/> <span style="color: lightslategray">个人中心</span>
-              </span>
+          <span class="el-dropdown-link el-input__inner" style="display: block; width: 120px; border-radius: 20px">
+            <i class="el-icon-user"/> <span style="color: lightslategray">个人中心</span>
+          </span>
           <el-dropdown-menu>
             <el-dropdown-item command="personal center">个人中心</el-dropdown-item>
             <el-dropdown-item command="login">登录</el-dropdown-item>
@@ -92,10 +92,10 @@ export default {
     post () {
       if (this.postOption === '文章') {
         this.$refs.postArticleDlg.pop(this.title)
-        this.$message.info('postArticle')
+        // this.$message.info('postArticle')
       } else if (this.postOption === '课评') {
         this.$refs.postRatingDlg.pop(this.title)
-        this.$message.info('postRating')
+        // this.$message.info('postRating')
       }
     }
   }

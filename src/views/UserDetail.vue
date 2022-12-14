@@ -8,13 +8,14 @@
         <el-aside width="35%">
           <el-tabs type="border-card" v-model="browseType" @tab-click="handleTabClick">
             <el-tab-pane label="收藏文章" name="article">
+              <el-empty v-if="this.favourArticles.length === 0" description="您还未收藏任何文章"></el-empty>
               <el-card v-for="article in this.favourArticles" v-bind:key="article.articleId">
                 <el-row>
                   <el-col :span="1">&nbsp;</el-col>
                   <el-col :span="15" style="text-align: left; white-space: nowrap; overflow: hidden">
-                    <span v-if="article.title.length < 16"
+                    <span v-if="article.title.length < 14"
                           style="font-size: 16px; font-weight: bolder"> {{ article.title }} </span>
-                    <span v-else style="font-size: 16px; font-weight: bolder"> {{ article.title.substr(0, 16) }}... </span>
+                    <span v-else style="font-size: 16px; font-weight: bolder"> {{ article.title.substr(0, 14) }}... </span>
                   </el-col>
                   <el-col :span="1">&nbsp;</el-col>
                   <el-col :span="6">
@@ -50,13 +51,14 @@
             </el-tab-pane>
 
             <el-tab-pane label="收藏课评" name="rating">
+              <el-empty v-if="this.favourRatings.length === 0" description="您还未收藏任何课评"></el-empty>
               <el-card v-for="rating in this.favourRatings" v-bind:key="rating.ratingId">
                 <el-row>
                   <el-col :span="1">&nbsp;</el-col>
                   <el-col :span="15" style="text-align: left; white-space: nowrap; overflow: hidden">
-                    <span v-if="rating.title.length < 16"
+                    <span v-if="rating.title.length < 14"
                           style="font-size: 16px; font-weight: bolder"> {{ rating.title }} </span>
-                    <span v-else style="font-size: 16px; font-weight: bolder"> {{ rating.title.substr(0, 16) }}... </span>
+                    <span v-else style="font-size: 16px; font-weight: bolder"> {{ rating.title.substr(0, 14) }}... </span>
                   </el-col>
                   <el-col :span="1">&nbsp;</el-col>
                   <el-col :span="6">
@@ -119,18 +121,18 @@
               <el-col :span="12">
                 <el-row>
                   <el-col :span="1">&nbsp;</el-col>
-                  <el-col :span="22" style="text-align: left">
-                    <h2>用户名:&nbsp;&nbsp;&nbsp; <span style="color: #bbb">{{ username }}</span></h2>
-                  </el-col>
-                  <el-col :span="1">&nbsp;</el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="1">&nbsp;</el-col>
                   <el-col :span="11" style="text-align: left">
                     <h2>所在专业:&nbsp;&nbsp;&nbsp; <span style="color: #bbb">{{ major }}</span></h2>
                   </el-col>
                   <el-col :span="11" style="text-align: right">
                     <el-button type="primary" class="details-button" @click="openChangeMajorBox">修改专业信息</el-button>
+                  </el-col>
+                  <el-col :span="1">&nbsp;</el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="1">&nbsp;</el-col>
+                  <el-col :span="22" style="text-align: left">
+                    <h2>用户名:&nbsp;&nbsp;&nbsp; <span style="color: #bbb">{{ username }}</span></h2>
                   </el-col>
                   <el-col :span="1">&nbsp;</el-col>
                 </el-row>
@@ -159,7 +161,7 @@
 
               <el-col :span="12">
                 <img src="static/images/mar-bustos.jpg" alt=""
-                     style="width: 220px; height: 220px; object-fit: cover; border-radius: 50%">
+                     style="width: 180px; height: 180px; object-fit: cover; border-radius: 50%">
                 <div style="margin-top: 0px; margin-left: 0">
                   <span style="color: #bbb; font-size: 12px; font-family: 'OCR A Extended'">Fudan-Compass Premium Member</span>
                 </div>
@@ -168,7 +170,7 @@
           </el-card>
 
           <el-card>
-            <el-row style="margin-bottom: 10px">
+            <el-row style="margin-bottom: 30px">
               <el-col :span="1">&nbsp;</el-col>
               <el-col :span="11" style="text-align: left">
                 <h1>课程表</h1>
