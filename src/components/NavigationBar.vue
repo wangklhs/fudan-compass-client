@@ -77,20 +77,19 @@ export default {
     handleCommand (command) {
       if (command === 'logout') {
         // store.commit('logout');
-        this.$message.info('logout')
+        this.$message.info('已退出登录')
         localStorage.removeItem('username')
         localStorage.removeItem('authority')
         this.$router.push('/login')
       } else if (command === 'login') {
-        this.$message.info('login')
+        // this.$message.info('login')
         this.$router.push('/login')
       } else if (command === 'personal center') {
-        this.$message.info('personal center')
+        // this.$message.info('personal center')
         this.$router.push('/userDetail')
       }
     },
     post () {
-      // TODO: post page
       if (this.postOption === '文章') {
         this.$refs.postArticleDlg.pop(this.title)
         this.$message.info('postArticle')

@@ -16,9 +16,9 @@
               </el-col>
               <el-col :span="1">&nbsp;</el-col>
               <el-col :span="11">
-                <el-row style="margin: 12px 0"><span class="span-title">帖子数：</span>{{ userPostCount }}</el-row>
-                <el-row style="margin: 12px 0"><span class="span-title">评论数：</span>{{ userCommentCount }}</el-row>
-                <el-row style="margin: 12px 0"><span class="span-title">获赞数：</span>{{ userLikeCount }}</el-row>
+                <el-row style="margin: 12px 0"><span class="span-title">帖子数：</span>{{ userInfo.postCount }}</el-row>
+                <el-row style="margin: 12px 0"><span class="span-title">评论数：</span>{{ userInfo.commentCount }}</el-row>
+                <el-row style="margin: 12px 0"><span class="span-title">获赞数：</span>{{ userInfo.likeCount }}</el-row>
               </el-col>
             </el-row>
 
@@ -385,7 +385,8 @@ export default {
         }, {
           value: '娱乐',
           label: '娱乐'
-        }],
+        }
+      ],
       orderOptions: [
         {
           value: 0,
@@ -594,26 +595,15 @@ export default {
       orderBy: 0,
       selectSearchBy: '课评内容',
       browseType: 'article',
-      userPostCount: 9,
-      userCommentCount: 9,
-      userLikeCount: 6
+      userInfo: {
+        postCount: 0,
+        commentCount: 0,
+        likeCount: 0
+      }
     }
   },
   created () {
-    // this.$message.info('created')
     let _this = this
-    // let formData = new FormData()
-    // formData.append('pageSize', this.pageSize)
-    // formData.append('pageNo', this.pageNo)
-    // formData.append('orderBy', this.orderBy)
-    // axios({
-    //   method: 'post',
-    //   url: 'http://localhost:8081/articles/search',
-    //   headers: {
-    //     'Content-Type': 'multipart/form-data'
-    //   },
-    //   data: formData
-    // })
     axios.post('http://localhost:8081/articles/search', {
       orderBy: this.orderBy,
       pageNo: this.pageNo - 1,
@@ -649,37 +639,38 @@ export default {
       .catch(error => {
         this.$message.error(error.response.data.message)
       })
-    // axios.post('http://localhost:8081/getUserTimeTableByDay', {
-    //   userId: this.userId,
-    //   day: weeks2[new Date().getDay()]
-    // })
-    //   .then(resp => {
-    //     if (resp.status === 200) {
-    //       // console.log(resp.data)
-    //       _this.timeTable = resp.data.timeTable
-    //     } else {
-    //       this.$message.error('error')
-    //     }
-    //   })
-    //   .catch(error => {
-    //     this.$message.error(error.response.data.message)
-    //   })
-    // axios.post('http://localhost:8081/user/getInfo', {
-    //   userId: this.userId
-    // })
-    //   .then(resp => {
-    //     if (resp.status === 200) {
-    //       console.log('getInfo' + resp.data)
-    //       _this.userPostCount = resp.data.postCount
-    //       _this.userCommentCount = resp.data.commentCount
-    //       _this.userLikeCount = resp.data.likeCount
-    //     } else {
-    //       this.$message.error('error')
-    //     }
-    //   })
-    //   .catch(error => {
-    //     this.$message.error(error.response.data.message)
-    //   })
+    let formData = new FormData()
+    formData.append('userId', this.userId)
+    formData.append('day', weeks2[new Date().getDay()])
+    axios({
+      method: 'post',
+      url: 'http://localhost:8081/user/getUserTimeTableByDay',
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+      data: formData
+    })
+      .then(resp => {
+        if (resp.status === 200) {
+          _this.timeTable = resp.data.data.timeTable
+        } else {
+          this.$message.error('error')
+        }
+      })
+      .catch(error => {
+        this.$message.error(error.response.data.message)
+      })
+    axios.get('http://localhost:8081/user/getInfo?userId=' + this.userId)
+      .then(resp => {
+        if (resp.status === 200) {
+          _this.userInfo = resp.data.data
+        } else {
+          this.$message.error('error')
+        }
+      })
+      .catch(error => {
+        this.$message.error(error.response.data.message)
+      })
   },
   methods: {
     search () {
@@ -732,14 +723,13 @@ export default {
         orderBy: this.orderBy,
         pageNo: this.pageNo - 1,
         pageSize: this.pageSize,
-        searchContent: this.selectSearchBy === 4 ? this.selectSearchByForm.input : '',
-        courseName: this.selectSearchBy === 1 ? this.selectSearchByForm.input : '',
-        courseType: this.selectSearchBy === 2 ? this.selectSearchByForm.input : '',
-        relatedMajor: this.selectSearchBy === 3 ? this.selectSearchByForm.input : ''
+        searchContent: this.selectSearchBy === '课评内容' ? this.selectSearchByForm.input : '',
+        courseName: this.selectSearchBy === '课程名称' ? this.selectSearchByForm.input : '',
+        courseType: this.selectSearchBy === '课程类型' ? this.selectSearchByForm.input : '',
+        relatedMajor: this.selectSearchBy === '相关专业' ? this.selectSearchByForm.input : ''
       })
         .then(resp => {
           if (resp.status === 200) {
-            console.log(resp.data)
             _this.ratingList = resp.data.content
             _this.totalCountRating = resp.data.totalElements
             _this.totalPageRating = resp.data.totalPages

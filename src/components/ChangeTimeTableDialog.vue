@@ -128,7 +128,7 @@ export default {
     },
     submitForm (formName) {
       this.visible = false
-      axios.post('http://localhost:8081/setUserTimeTableByDay', {
+      axios.post('http://localhost:8081/user/setUserTimeTableByDay', {
         userId: this.userId,
         day: this.form.day,
         courses: this.form.courses
@@ -137,6 +137,7 @@ export default {
           if (resp.status === 200) {
             this.$message.success('课程表设置成功')
             this.$router.push({path: '/userDetail'})
+            location.reload()
           } else {
             this.$message.error('post error')
           }

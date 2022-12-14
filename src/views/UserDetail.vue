@@ -137,21 +137,21 @@
                 <el-row>
                   <el-col :span="1">&nbsp;</el-col>
                   <el-col :span="22" style="text-align: left">
-                    <h2>帖子数:&nbsp;&nbsp;&nbsp; <span style="color: #bbb">{{ userPostCount }}</span></h2>
+                    <h2>帖子数:&nbsp;&nbsp;&nbsp; <span style="color: #bbb">{{ userInfo.postCount }}</span></h2>
                   </el-col>
                   <el-col :span="1">&nbsp;</el-col>
                 </el-row>
                 <el-row>
                   <el-col :span="1">&nbsp;</el-col>
                   <el-col :span="22" style="text-align: left">
-                    <h2>评论数:&nbsp;&nbsp;&nbsp; <span style="color: #bbb">{{ userCommentCount }}</span></h2>
+                    <h2>评论数:&nbsp;&nbsp;&nbsp; <span style="color: #bbb">{{ userInfo.commentCount }}</span></h2>
                   </el-col>
                   <el-col :span="1">&nbsp;</el-col>
                 </el-row>
                 <el-row>
                   <el-col :span="1">&nbsp;</el-col>
                   <el-col :span="22" style="text-align: left">
-                    <h2>获赞数:&nbsp;&nbsp;&nbsp; <span style="color: #bbb">{{ userLikeCount }}</span></h2>
+                    <h2>获赞数:&nbsp;&nbsp;&nbsp; <span style="color: #bbb">{{ userInfo.likeCount }}</span></h2>
                   </el-col>
                   <el-col :span="1">&nbsp;</el-col>
                 </el-row>
@@ -525,16 +525,18 @@ export default {
           time: '21:15 - 22:00'
         }
       ],
-      timeTable1: ['', '', '1-3', '', '', '', '', '', '', '', '', '', '', ''],
+      timeTable1: ['', '', '', '', '', '', '', '', '', '', '', '', '', ''],
       timeTable2: ['', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-      timeTable3: ['', '', '', '3-4', '', '', '', '', '', '', '', '', '', ''],
+      timeTable3: ['', '', '', '', '', '', '', '', '', '', '', '', '', ''],
       timeTable4: ['', '', '', '', '', '', '', '', '', '', '', '', '', ''],
       timeTable5: ['', '', '项目管理', '项目管理', '项目管理', '编译原理', '编译原理', '编译原理', '', '', '面向对象分析与设计', '面向对象分析与设计', '面向对象分析与设计', ''],
       timeTable6: ['', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-      timeTable7: ['', '', '', '', '7-5', '', '', '', '', '', '', '', '', ''],
-      userPostCount: 9,
-      userCommentCount: 9,
-      userLikeCount: 6
+      timeTable7: ['', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+      userInfo: {
+        postCount: 0,
+        commentCount: 0,
+        likeCount: 0
+      }
     }
   },
   methods: {
@@ -625,111 +627,164 @@ export default {
       .catch(error => {
         this.$message.error(error.response.data.message)
       })
-    // axios.post('http://localhost:8081/getUserTimeTableByDay', {
-    //   userId: this.userId,
-    //   day: 'Mon'
-    // })
-    //   .then(resp => {
-    //     if (resp.status === 200) {
-    //       // console.log(resp.data)
-    //       _this.timeTable1 = resp.data.timeTable
-    //     } else {
-    //       this.$message.error('error')
-    //     }
-    //   })
-    //   .catch(error => {
-    //     this.$message.error(error.response.data.message)
-    //   })
-    // axios.post('http://localhost:8081/getUserTimeTableByDay', {
-    //   userId: this.userId,
-    //   day: 'Tue'
-    // })
-    //   .then(resp => {
-    //     if (resp.status === 200) {
-    //       // console.log(resp.data)
-    //       _this.timeTable2 = resp.data.timeTable
-    //     } else {
-    //       this.$message.error('error')
-    //     }
-    //   })
-    //   .catch(error => {
-    //     this.$message.error(error.response.data.message)
-    //   })
-    // axios.post('http://localhost:8081/getUserTimeTableByDay', {
-    //   userId: this.userId,
-    //   day: 'Wed'
-    // })
-    //   .then(resp => {
-    //     if (resp.status === 200) {
-    //       // console.log(resp.data)
-    //       _this.timeTable3 = resp.data.timeTable
-    //     } else {
-    //       this.$message.error('error')
-    //     }
-    //   })
-    //   .catch(error => {
-    //     this.$message.error(error.response.data.message)
-    //   })
-    // axios.post('http://localhost:8081/getUserTimeTableByDay', {
-    //   userId: this.userId,
-    //   day: 'Thu'
-    // })
-    //   .then(resp => {
-    //     if (resp.status === 200) {
-    //       // console.log(resp.data)
-    //       _this.timeTable4 = resp.data.timeTable
-    //     } else {
-    //       this.$message.error('error')
-    //     }
-    //   })
-    //   .catch(error => {
-    //     this.$message.error(error.response.data.message)
-    //   })
-    // axios.post('http://localhost:8081/getUserTimeTableByDay', {
-    //   userId: this.userId,
-    //   day: 'Fri'
-    // })
-    //   .then(resp => {
-    //     if (resp.status === 200) {
-    //       // console.log(resp.data)
-    //       _this.timeTable5 = resp.data.timeTable
-    //     } else {
-    //       this.$message.error('error')
-    //     }
-    //   })
-    //   .catch(error => {
-    //     this.$message.error(error.response.data.message)
-    //   })
-    // axios.post('http://localhost:8081/getUserTimeTableByDay', {
-    //   userId: this.userId,
-    //   day: 'Sat'
-    // })
-    //   .then(resp => {
-    //     if (resp.status === 200) {
-    //       // console.log(resp.data)
-    //       _this.timeTable6 = resp.data.timeTable
-    //     } else {
-    //       this.$message.error('error')
-    //     }
-    //   })
-    //   .catch(error => {
-    //     this.$message.error(error.response.data.message)
-    //   })
-    // axios.post('http://localhost:8081/getUserTimeTableByDay', {
-    //   userId: this.userId,
-    //   day: 'Sun'
-    // })
-    //   .then(resp => {
-    //     if (resp.status === 200) {
-    //       // console.log(resp.data)
-    //       _this.timeTable7 = resp.data.timeTable
-    //     } else {
-    //       this.$message.error('error')
-    //     }
-    //   })
-    //   .catch(error => {
-    //     this.$message.error(error.response.data.message)
-    //   })
+    axios.get('http://localhost:8081/user/getInfo?userId=' + this.userId)
+      .then(resp => {
+        if (resp.status === 200) {
+          _this.userInfo = resp.data.data
+        } else {
+          this.$message.error('error')
+        }
+      })
+      .catch(error => {
+        this.$message.error(error.response.data.message)
+      })
+    let formData = new FormData()
+    formData.append('userId', this.userId)
+    formData.append('day', 'Mon')
+    axios({
+      method: 'post',
+      url: 'http://localhost:8081/user/getUserTimeTableByDay',
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+      data: formData
+    })
+      .then(resp => {
+        if (resp.status === 200) {
+          _this.timeTable1 = resp.data.data.timeTable
+        } else {
+          this.$message.error('error')
+        }
+      })
+      .catch(error => {
+        this.$message.error(error.response.data.message)
+      })
+    formData = new FormData()
+    formData.append('userId', this.userId)
+    formData.append('day', 'Tue')
+    axios({
+      method: 'post',
+      url: 'http://localhost:8081/user/getUserTimeTableByDay',
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+      data: formData
+    })
+      .then(resp => {
+        if (resp.status === 200) {
+          _this.timeTable2 = resp.data.data.timeTable
+        } else {
+          this.$message.error('error')
+        }
+      })
+      .catch(error => {
+        this.$message.error(error.response.data.message)
+      })
+    formData = new FormData()
+    formData.append('userId', this.userId)
+    formData.append('day', 'Wed')
+    axios({
+      method: 'post',
+      url: 'http://localhost:8081/user/getUserTimeTableByDay',
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+      data: formData
+    })
+      .then(resp => {
+        if (resp.status === 200) {
+          _this.timeTable3 = resp.data.data.timeTable
+        } else {
+          this.$message.error('error')
+        }
+      })
+      .catch(error => {
+        this.$message.error(error.response.data.message)
+      })
+    formData = new FormData()
+    formData.append('userId', this.userId)
+    formData.append('day', 'Thu')
+    axios({
+      method: 'post',
+      url: 'http://localhost:8081/user/getUserTimeTableByDay',
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+      data: formData
+    })
+      .then(resp => {
+        if (resp.status === 200) {
+          _this.timeTable4 = resp.data.data.timeTable
+        } else {
+          this.$message.error('error')
+        }
+      })
+      .catch(error => {
+        this.$message.error(error.response.data.message)
+      })
+    formData = new FormData()
+    formData.append('userId', this.userId)
+    formData.append('day', 'Fri')
+    axios({
+      method: 'post',
+      url: 'http://localhost:8081/user/getUserTimeTableByDay',
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+      data: formData
+    })
+      .then(resp => {
+        if (resp.status === 200) {
+          _this.timeTable5 = resp.data.data.timeTable
+        } else {
+          this.$message.error('error')
+        }
+      })
+      .catch(error => {
+        this.$message.error(error.response.data.message)
+      })
+    formData = new FormData()
+    formData.append('userId', this.userId)
+    formData.append('day', 'Sat')
+    axios({
+      method: 'post',
+      url: 'http://localhost:8081/user/getUserTimeTableByDay',
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+      data: formData
+    })
+      .then(resp => {
+        if (resp.status === 200) {
+          _this.timeTable6 = resp.data.data.timeTable
+        } else {
+          this.$message.error('error')
+        }
+      })
+      .catch(error => {
+        this.$message.error(error.response.data.message)
+      })
+    formData = new FormData()
+    formData.append('userId', this.userId)
+    formData.append('day', 'Sun')
+    axios({
+      method: 'post',
+      url: 'http://localhost:8081/user/getUserTimeTableByDay',
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+      data: formData
+    })
+      .then(resp => {
+        if (resp.status === 200) {
+          _this.timeTable7 = resp.data.data.timeTable
+        } else {
+          this.$message.error('error')
+        }
+      })
+      .catch(error => {
+        this.$message.error(error.response.data.message)
+      })
   }
 }
 </script>
