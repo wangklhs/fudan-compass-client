@@ -238,10 +238,6 @@ export default {
           })
         } else {
           this.commentArticle(id, value)
-          this.$message({
-            type: 'success',
-            message: '你的评论是: ' + value
-          })
         }
       }).catch(() => {
         this.$message({

@@ -170,10 +170,10 @@
                 <el-col :span="1">&nbsp;</el-col>
                 <el-col :span="6">
                   <el-select v-model="selectSearchBy" placeholder="类型筛选" style="width: 100%">
-                    <el-option label="课程名称" value="1"></el-option>
-                    <el-option label="课程类型" value="2"></el-option>
-                    <el-option label="相关专业" value="3"></el-option>
-                    <el-option label="课评内容" value="4"></el-option>
+                    <el-option label="课程名称" value="课程名称"></el-option>
+                    <el-option label="课程类型" value="课程类型"></el-option>
+                    <el-option label="相关专业" value="相关专业"></el-option>
+                    <el-option label="课评内容" value="课评内容"></el-option>
                   </el-select>
                 </el-col>
                 <el-col :span="6">
@@ -751,7 +751,6 @@ export default {
       })
         .then(resp => {
           if (resp.status === 200) {
-            console.log(resp.data)
             _this.ratingList = resp.data.content
             _this.totalCountRating = resp.data.totalElements
             _this.totalPageRating = resp.data.totalPages

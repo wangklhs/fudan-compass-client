@@ -18,7 +18,7 @@
                   </el-col>
                   <el-col :span="1">&nbsp;</el-col>
                   <el-col :span="6">
-                    <el-button type="primary" class="details-button2" @click="checkArticleDetail(article.articleId)">查看详情</el-button>
+                    <el-button type="primary" class="details-button2" @click="checkArticleDetail(article.id)">查看详情</el-button>
                   </el-col>
                   <el-col :span="1">&nbsp;</el-col>
                 </el-row>
@@ -42,7 +42,7 @@
                   </el-col>
                   <el-col :span="5" style="text-align: right">
                       <span style="margin: 0 20px"><i
-                        class="el-icon-chat-line-round"/> &nbsp;&nbsp;{{ article.commentNum }} </span>
+                        class="el-icon-chat-line-round"/> &nbsp;&nbsp;{{ article.comments.length }} </span>
                   </el-col>
                   <el-col :span="1">&nbsp;</el-col>
                 </el-row>
@@ -60,7 +60,7 @@
                   </el-col>
                   <el-col :span="1">&nbsp;</el-col>
                   <el-col :span="6">
-                    <el-button type="primary" class="details-button2" @click="checkRatingDetail(rating.ratingId)">查看详情</el-button>
+                    <el-button type="primary" class="details-button2" @click="checkRatingDetail(rating.id)">查看详情</el-button>
                   </el-col>
                   <el-col :span="1">&nbsp;</el-col>
                 </el-row>
@@ -95,7 +95,7 @@
                   </el-col>
                   <el-col :span="5" style="text-align: right">
                       <span style="margin: 0 20px"><i
-                        class="el-icon-chat-line-round"/> &nbsp;&nbsp;{{ rating.commentNum }} </span>
+                        class="el-icon-chat-line-round"/> &nbsp;&nbsp;{{ rating.comments.length }} </span>
                   </el-col>
                   <el-col :span="1">&nbsp;</el-col>
                 </el-row>
@@ -255,7 +255,7 @@ export default {
       browseType: 'article',
       favourArticles: [
         {
-          articleId: 1,
+          id: 1,
           userId: '19302010001',
           title: '标题',
           content: '这是一篇文章',
@@ -286,23 +286,11 @@ export default {
               createTime: '2022-11-03 12:34:56',
               updateTime: '2022-11-03 12:34:56'
             }]
-        },
-        {
-          articleId: 2,
-          userId: '19302010002',
-          title: '标题2',
-          content: '这是第二篇长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长文章',
-          commentNum: 0,
-          likeNum: 2,
-          createTime: '2022-11-01 12:34:56',
-          updateTime: '2022-12-01 12:34:56',
-          tags: ['学习'],
-          comments: []
         }
       ],
       favourRatings: [
         {
-          ratingId: 1,
+          id: 1,
           userId: '19302010001',
           courseName: '项目管理',
           courseType: '专业必修课',

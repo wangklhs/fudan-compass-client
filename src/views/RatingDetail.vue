@@ -255,10 +255,6 @@ export default {
           })
         } else {
           this.commentRating(id, value)
-          this.$message({
-            type: 'success',
-            message: '你的评论是: ' + value
-          })
         }
       }).catch(() => {
         this.$message({
@@ -268,7 +264,6 @@ export default {
       })
     },
     commentRating (id, comment) {
-      this.$message.info('comment rating by id : ' + id)
       axios.post('http://localhost:8081/comments', {
         id: this.ratingId,
         userId: this.userId,

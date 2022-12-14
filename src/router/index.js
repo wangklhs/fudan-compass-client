@@ -8,7 +8,6 @@ import Home from '@/views/Home'
 import ArticleDetail from '@/views/ArticleDetail'
 import UserDetail from '@/views/UserDetail'
 import RatingDetail from '@/views/RatingDetail'
-import PostRating from '@/views/PostRating'
 
 Vue.use(Router)
 
@@ -43,11 +42,6 @@ export default new Router({
       path: '/ratingDetail',
       name: 'RatingDetail',
       component: RatingDetail
-    },
-    {
-      path: '/postRating',
-      name: 'PostRating',
-      component: PostRating
     }
   ]
 })
