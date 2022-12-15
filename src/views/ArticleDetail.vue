@@ -66,7 +66,7 @@
             </el-col>
             <el-col :span="1">&nbsp;</el-col>
             <el-col :span="5" style="text-align: right">
-              <el-button type="primary" class="details-button" @click="favourButton" style="width: 100px; height: 40px; margin-right: 8px">
+              <el-button type="primary" class="details-button" @click="favourButton" style="width: 100px; height: 40px; margin-right: 8px" v-if="username">
                 <span v-if="!isFavouredByUser">收藏</span>
                 <span v-else>取消收藏</span>
               </el-button>
@@ -145,44 +145,48 @@ export default {
   },
   methods: {
     likeButton () {
-      if (this.isLikedByUser) {
-        this.isLikedByUser = false
-        axios.post('http://localhost:8081/like', {
-          id: this.articleDetail.id,
-          userId: this.userId,
-          isLike: false,
-          likeType: 0
-        })
-          .then(resp => {
-            if (resp.status === 200) {
-              this.$message.success('已取消点赞')
-              this.refresh()
-            } else {
-              this.$message.error('点赞错误')
-            }
+      if (this.username) {
+        if (this.isLikedByUser) {
+          this.isLikedByUser = false
+          axios.post('http://localhost:8081/like', {
+            id: this.articleDetail.id,
+            userId: this.userId,
+            isLike: false,
+            likeType: 0
           })
-          .catch(error => {
-            this.$message.error(error.response.data.message)
+            .then(resp => {
+              if (resp.status === 200) {
+                this.$message.success('已取消点赞')
+                this.refresh()
+              } else {
+                this.$message.error('点赞错误')
+              }
+            })
+            .catch(error => {
+              this.$message.error(error.response.data.message)
+            })
+        } else {
+          this.isLikedByUser = true
+          axios.post('http://localhost:8081/like', {
+            id: this.articleDetail.id,
+            userId: this.userId,
+            isLike: true,
+            likeType: 0
           })
+            .then(resp => {
+              if (resp.status === 200) {
+                this.$message.success('已点赞')
+                this.refresh()
+              } else {
+                this.$message.error('点赞错误')
+              }
+            })
+            .catch(error => {
+              this.$message.error(error.response.data.message)
+            })
+        }
       } else {
-        this.isLikedByUser = true
-        axios.post('http://localhost:8081/like', {
-          id: this.articleDetail.id,
-          userId: this.userId,
-          isLike: true,
-          likeType: 0
-        })
-          .then(resp => {
-            if (resp.status === 200) {
-              this.$message.success('已点赞')
-              this.refresh()
-            } else {
-              this.$message.error('点赞错误')
-            }
-          })
-          .catch(error => {
-            this.$message.error(error.response.data.message)
-          })
+        this.$message.error('请登录')
       }
     },
     favourButton () {
@@ -227,24 +231,28 @@ export default {
       }
     },
     openCommentBox (id) {
-      this.$prompt('请输入评论', '评论', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消'
-      }).then(({value}) => {
-        if (value == null || value.trim() === '') {
+      if (this.username) {
+        this.$prompt('请输入评论', '评论', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消'
+        }).then(({value}) => {
+          if (value == null || value.trim() === '') {
+            this.$message({
+              type: 'error',
+              message: '评论不能为空'
+            })
+          } else {
+            this.commentArticle(id, value)
+          }
+        }).catch(() => {
           this.$message({
-            type: 'error',
-            message: '评论不能为空'
+            type: 'info',
+            message: '取消评论'
           })
-        } else {
-          this.commentArticle(id, value)
-        }
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '取消评论'
         })
-      })
+      } else {
+        this.$message.error('请登录')
+      }
     },
     commentArticle (id, comment) {
       axios.post('http://localhost:8081/comments', {

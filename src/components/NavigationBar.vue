@@ -26,7 +26,7 @@
       </el-col>
       <el-col :span="2" style="text-align: left; margin: 0 10px">
         <el-button type="success" icon="el-icon-chat-round"
-                   v-on:click="post()"> 发帖
+                   v-on:click="post()" v-if="username"> 发帖
         </el-button>
       </el-col>
       <el-col :span="2">&nbsp;</el-col>
@@ -36,9 +36,9 @@
             <i class="el-icon-user"/> <span style="color: lightslategray">个人中心</span>
           </span>
           <el-dropdown-menu>
-            <el-dropdown-item command="personal center">个人中心</el-dropdown-item>
-            <el-dropdown-item command="login">登录</el-dropdown-item>
-            <el-dropdown-item command="logout">退出登录</el-dropdown-item>
+            <el-dropdown-item command="personal center" v-if="username">个人中心</el-dropdown-item>
+            <el-dropdown-item command="login" v-if="!username">登录</el-dropdown-item>
+            <el-dropdown-item command="logout" v-if="username">退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </el-col>
@@ -62,6 +62,7 @@ export default {
   },
   data () {
     return {
+      username: localStorage.getItem('username'),
       postOptions: [{
         value: '文章',
         label: '文章'
@@ -79,6 +80,7 @@ export default {
         // store.commit('logout');
         this.$message.info('已退出登录')
         localStorage.removeItem('username')
+        localStorage.removeItem('userId')
         localStorage.removeItem('authority')
         this.$router.push('/login')
       } else if (command === 'login') {

@@ -8,7 +8,7 @@
 
         <el-aside width="330px">
           <el-card style="height: 200px">
-            <h2>{{ username }}, 您好</h2>
+            <h2>您好, {{ username || '请登录'}}</h2>
             <el-row style="margin: 25px 0">
               <el-col :span="12">
                 <img src="static/images/mar-bustos.jpg" alt=""
@@ -525,7 +525,7 @@ export default {
           time: '21:15 - 22:00'
         }
       ],
-      timeTable: ['', '', '项目管理', '项目管理', '项目管理', '编译原理', '编译原理', '编译原理', '', '', '面向对象分析与设计', '面向对象分析与设计', '面向对象分析与设计', ''],
+      timeTable: ['', '', '', '', '', '', '', '', '', '', '', '', '', ''],
       totalElements: 5,
       totalCount: 1,
       totalPages: 1,
@@ -629,38 +629,40 @@ export default {
       .catch(error => {
         this.$message.error(error.response.data.message)
       })
-    let formData = new FormData()
-    formData.append('userId', this.userId)
-    formData.append('day', weeks2[new Date().getDay()])
-    axios({
-      method: 'post',
-      url: 'http://localhost:8081/user/getUserTimeTableByDay',
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      },
-      data: formData
-    })
-      .then(resp => {
-        if (resp.status === 200) {
-          _this.timeTable = resp.data.data.timeTable
-        } else {
-          this.$message.error('error')
-        }
+    if (this.username) {
+      let formData = new FormData()
+      formData.append('userId', this.userId)
+      formData.append('day', weeks2[new Date().getDay()])
+      axios({
+        method: 'post',
+        url: 'http://localhost:8081/user/getUserTimeTableByDay',
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        data: formData
       })
-      .catch(error => {
-        this.$message.error(error.response.data.message)
-      })
-    axios.get('http://localhost:8081/user/getInfo?userId=' + this.userId)
-      .then(resp => {
-        if (resp.status === 200) {
-          _this.userInfo = resp.data.data
-        } else {
-          this.$message.error('error')
-        }
-      })
-      .catch(error => {
-        this.$message.error(error.response.data.message)
-      })
+        .then(resp => {
+          if (resp.status === 200) {
+            _this.timeTable = resp.data.data.timeTable
+          } else {
+            this.$message.error('error')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.response.data.message)
+        })
+      axios.get('http://localhost:8081/user/getInfo?userId=' + this.userId)
+        .then(resp => {
+          if (resp.status === 200) {
+            _this.userInfo = resp.data.data
+          } else {
+            this.$message.error('error')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.response.data.message)
+        })
+    }
   },
   methods: {
     search () {

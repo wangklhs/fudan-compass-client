@@ -15,11 +15,14 @@
                   <el-col :span="15" style="text-align: left; white-space: nowrap; overflow: hidden">
                     <span v-if="article.title.length < 14"
                           style="font-size: 16px; font-weight: bolder"> {{ article.title }} </span>
-                    <span v-else style="font-size: 16px; font-weight: bolder"> {{ article.title.substr(0, 14) }}... </span>
+                    <span v-else style="font-size: 16px; font-weight: bolder"> {{
+                        article.title.substr(0, 14)
+                      }}... </span>
                   </el-col>
                   <el-col :span="1">&nbsp;</el-col>
                   <el-col :span="6">
-                    <el-button type="primary" class="details-button2" @click="checkArticleDetail(article.id)">查看详情</el-button>
+                    <el-button type="primary" class="details-button2" @click="checkArticleDetail(article.id)">查看详情
+                    </el-button>
                   </el-col>
                   <el-col :span="1">&nbsp;</el-col>
                 </el-row>
@@ -58,11 +61,14 @@
                   <el-col :span="15" style="text-align: left; white-space: nowrap; overflow: hidden">
                     <span v-if="rating.title.length < 14"
                           style="font-size: 16px; font-weight: bolder"> {{ rating.title }} </span>
-                    <span v-else style="font-size: 16px; font-weight: bolder"> {{ rating.title.substr(0, 14) }}... </span>
+                    <span v-else style="font-size: 16px; font-weight: bolder"> {{
+                        rating.title.substr(0, 14)
+                      }}... </span>
                   </el-col>
                   <el-col :span="1">&nbsp;</el-col>
                   <el-col :span="6">
-                    <el-button type="primary" class="details-button2" @click="checkRatingDetail(rating.id)">查看详情</el-button>
+                    <el-button type="primary" class="details-button2" @click="checkRatingDetail(rating.id)">查看详情
+                    </el-button>
                   </el-col>
                   <el-col :span="1">&nbsp;</el-col>
                 </el-row>
@@ -163,7 +169,8 @@
                 <img src="static/images/mar-bustos.jpg" alt=""
                      style="width: 180px; height: 180px; object-fit: cover; border-radius: 50%">
                 <div style="margin-top: 0px; margin-left: 0">
-                  <span style="color: #bbb; font-size: 12px; font-family: 'OCR A Extended'">Fudan-Compass Premium Member</span>
+                  <span
+                    style="color: #bbb; font-size: 12px; font-family: 'OCR A Extended'">Fudan-Compass Premium Member</span>
                 </div>
               </el-col>
             </el-row>
@@ -185,8 +192,8 @@
               <el-col :span="1">&nbsp;</el-col>
               <el-col :span="22">
                 <el-table :data="timeTableSchedule" stripe border highlight-current-row style="border-radius: 10px">
-                  <el-table-column prop="index" label="节数" width="60" />
-                  <el-table-column prop="time" label="时间" width="95" />
+                  <el-table-column prop="index" label="节数" width="60"/>
+                  <el-table-column prop="time" label="时间" width="95"/>
                   <el-table-column label="周日" width="80">
                     <template slot-scope="scope">
                       <span>{{ timeTable7[scope.$index] }}</span>
@@ -583,198 +590,203 @@ export default {
     }
   },
   created () {
-    let _this = this
-    axios.get('http://localhost:8081/user/getUserMajor?userId=' + this.userId)
-      .then(resp => {
-        if (resp.status === 200) {
-          _this.major = resp.data
-        } else {
-          this.$message.error('error')
-        }
+    if (!this.username) {
+      this.$router.push({path: '/'})
+      this.$message.error('请登录')
+    } else {
+      let _this = this
+      axios.get('http://localhost:8081/user/getUserMajor?userId=' + this.userId)
+        .then(resp => {
+          if (resp.status === 200) {
+            _this.major = resp.data
+          } else {
+            this.$message.error('error')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.response.data.message)
+        })
+      axios.get('http://localhost:8081/user/getUserFavourArticles?userId=' + this.userId)
+        .then(resp => {
+          if (resp.status === 200) {
+            _this.favourArticles = resp.data
+          } else {
+            this.$message.error('error')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.response.data.message)
+        })
+      axios.get('http://localhost:8081/user/getUserFavourRatings?userId=' + this.userId)
+        .then(resp => {
+          if (resp.status === 200) {
+            _this.favourRatings = resp.data
+          } else {
+            this.$message.error('error')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.response.data.message)
+        })
+      axios.get('http://localhost:8081/user/getInfo?userId=' + this.userId)
+        .then(resp => {
+          if (resp.status === 200) {
+            _this.userInfo = resp.data.data
+          } else {
+            this.$message.error('error')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.response.data.message)
+        })
+      let formData = new FormData()
+      formData.append('userId', this.userId)
+      formData.append('day', 'Mon')
+      axios({
+        method: 'post',
+        url: 'http://localhost:8081/user/getUserTimeTableByDay',
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        data: formData
       })
-      .catch(error => {
-        this.$message.error(error.response.data.message)
+        .then(resp => {
+          if (resp.status === 200) {
+            _this.timeTable1 = resp.data.data.timeTable
+          } else {
+            this.$message.error('error')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.response.data.message)
+        })
+      formData = new FormData()
+      formData.append('userId', this.userId)
+      formData.append('day', 'Tue')
+      axios({
+        method: 'post',
+        url: 'http://localhost:8081/user/getUserTimeTableByDay',
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        data: formData
       })
-    axios.get('http://localhost:8081/user/getUserFavourArticles?userId=' + this.userId)
-      .then(resp => {
-        if (resp.status === 200) {
-          _this.favourArticles = resp.data
-        } else {
-          this.$message.error('error')
-        }
+        .then(resp => {
+          if (resp.status === 200) {
+            _this.timeTable2 = resp.data.data.timeTable
+          } else {
+            this.$message.error('error')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.response.data.message)
+        })
+      formData = new FormData()
+      formData.append('userId', this.userId)
+      formData.append('day', 'Wed')
+      axios({
+        method: 'post',
+        url: 'http://localhost:8081/user/getUserTimeTableByDay',
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        data: formData
       })
-      .catch(error => {
-        this.$message.error(error.response.data.message)
+        .then(resp => {
+          if (resp.status === 200) {
+            _this.timeTable3 = resp.data.data.timeTable
+          } else {
+            this.$message.error('error')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.response.data.message)
+        })
+      formData = new FormData()
+      formData.append('userId', this.userId)
+      formData.append('day', 'Thu')
+      axios({
+        method: 'post',
+        url: 'http://localhost:8081/user/getUserTimeTableByDay',
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        data: formData
       })
-    axios.get('http://localhost:8081/user/getUserFavourRatings?userId=' + this.userId)
-      .then(resp => {
-        if (resp.status === 200) {
-          _this.favourRatings = resp.data
-        } else {
-          this.$message.error('error')
-        }
+        .then(resp => {
+          if (resp.status === 200) {
+            _this.timeTable4 = resp.data.data.timeTable
+          } else {
+            this.$message.error('error')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.response.data.message)
+        })
+      formData = new FormData()
+      formData.append('userId', this.userId)
+      formData.append('day', 'Fri')
+      axios({
+        method: 'post',
+        url: 'http://localhost:8081/user/getUserTimeTableByDay',
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        data: formData
       })
-      .catch(error => {
-        this.$message.error(error.response.data.message)
+        .then(resp => {
+          if (resp.status === 200) {
+            _this.timeTable5 = resp.data.data.timeTable
+          } else {
+            this.$message.error('error')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.response.data.message)
+        })
+      formData = new FormData()
+      formData.append('userId', this.userId)
+      formData.append('day', 'Sat')
+      axios({
+        method: 'post',
+        url: 'http://localhost:8081/user/getUserTimeTableByDay',
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        data: formData
       })
-    axios.get('http://localhost:8081/user/getInfo?userId=' + this.userId)
-      .then(resp => {
-        if (resp.status === 200) {
-          _this.userInfo = resp.data.data
-        } else {
-          this.$message.error('error')
-        }
+        .then(resp => {
+          if (resp.status === 200) {
+            _this.timeTable6 = resp.data.data.timeTable
+          } else {
+            this.$message.error('error')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.response.data.message)
+        })
+      formData = new FormData()
+      formData.append('userId', this.userId)
+      formData.append('day', 'Sun')
+      axios({
+        method: 'post',
+        url: 'http://localhost:8081/user/getUserTimeTableByDay',
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        data: formData
       })
-      .catch(error => {
-        this.$message.error(error.response.data.message)
-      })
-    let formData = new FormData()
-    formData.append('userId', this.userId)
-    formData.append('day', 'Mon')
-    axios({
-      method: 'post',
-      url: 'http://localhost:8081/user/getUserTimeTableByDay',
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      },
-      data: formData
-    })
-      .then(resp => {
-        if (resp.status === 200) {
-          _this.timeTable1 = resp.data.data.timeTable
-        } else {
-          this.$message.error('error')
-        }
-      })
-      .catch(error => {
-        this.$message.error(error.response.data.message)
-      })
-    formData = new FormData()
-    formData.append('userId', this.userId)
-    formData.append('day', 'Tue')
-    axios({
-      method: 'post',
-      url: 'http://localhost:8081/user/getUserTimeTableByDay',
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      },
-      data: formData
-    })
-      .then(resp => {
-        if (resp.status === 200) {
-          _this.timeTable2 = resp.data.data.timeTable
-        } else {
-          this.$message.error('error')
-        }
-      })
-      .catch(error => {
-        this.$message.error(error.response.data.message)
-      })
-    formData = new FormData()
-    formData.append('userId', this.userId)
-    formData.append('day', 'Wed')
-    axios({
-      method: 'post',
-      url: 'http://localhost:8081/user/getUserTimeTableByDay',
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      },
-      data: formData
-    })
-      .then(resp => {
-        if (resp.status === 200) {
-          _this.timeTable3 = resp.data.data.timeTable
-        } else {
-          this.$message.error('error')
-        }
-      })
-      .catch(error => {
-        this.$message.error(error.response.data.message)
-      })
-    formData = new FormData()
-    formData.append('userId', this.userId)
-    formData.append('day', 'Thu')
-    axios({
-      method: 'post',
-      url: 'http://localhost:8081/user/getUserTimeTableByDay',
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      },
-      data: formData
-    })
-      .then(resp => {
-        if (resp.status === 200) {
-          _this.timeTable4 = resp.data.data.timeTable
-        } else {
-          this.$message.error('error')
-        }
-      })
-      .catch(error => {
-        this.$message.error(error.response.data.message)
-      })
-    formData = new FormData()
-    formData.append('userId', this.userId)
-    formData.append('day', 'Fri')
-    axios({
-      method: 'post',
-      url: 'http://localhost:8081/user/getUserTimeTableByDay',
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      },
-      data: formData
-    })
-      .then(resp => {
-        if (resp.status === 200) {
-          _this.timeTable5 = resp.data.data.timeTable
-        } else {
-          this.$message.error('error')
-        }
-      })
-      .catch(error => {
-        this.$message.error(error.response.data.message)
-      })
-    formData = new FormData()
-    formData.append('userId', this.userId)
-    formData.append('day', 'Sat')
-    axios({
-      method: 'post',
-      url: 'http://localhost:8081/user/getUserTimeTableByDay',
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      },
-      data: formData
-    })
-      .then(resp => {
-        if (resp.status === 200) {
-          _this.timeTable6 = resp.data.data.timeTable
-        } else {
-          this.$message.error('error')
-        }
-      })
-      .catch(error => {
-        this.$message.error(error.response.data.message)
-      })
-    formData = new FormData()
-    formData.append('userId', this.userId)
-    formData.append('day', 'Sun')
-    axios({
-      method: 'post',
-      url: 'http://localhost:8081/user/getUserTimeTableByDay',
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      },
-      data: formData
-    })
-      .then(resp => {
-        if (resp.status === 200) {
-          _this.timeTable7 = resp.data.data.timeTable
-        } else {
-          this.$message.error('error')
-        }
-      })
-      .catch(error => {
-        this.$message.error(error.response.data.message)
-      })
+        .then(resp => {
+          if (resp.status === 200) {
+            _this.timeTable7 = resp.data.data.timeTable
+          } else {
+            this.$message.error('error')
+          }
+        })
+        .catch(error => {
+          this.$message.error(error.response.data.message)
+        })
+    }
   }
 }
 </script>
