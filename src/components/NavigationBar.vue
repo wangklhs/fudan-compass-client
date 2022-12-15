@@ -94,10 +94,8 @@ export default {
     post () {
       if (this.postOption === '文章') {
         this.$refs.postArticleDlg.pop(this.title)
-        // this.$message.info('postArticle')
       } else if (this.postOption === '课评') {
         this.$refs.postRatingDlg.pop(this.title)
-        // this.$message.info('postRating')
       }
     }
   }
